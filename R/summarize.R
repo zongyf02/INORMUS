@@ -19,12 +19,13 @@ percent <- function(x) {
 #' of each datapoint
 #'
 #' @param form dataframe containing all infor of form1.1
+#' @param ... grouping
 #' @return dataframe, summary table
 #' @export
 #' @import tidyverse
-summarize_form1.1 <- function(form) {
+summarize_form1.1 <- function(form, ...) {
   return
-  form %>% group_by(region, site) %>%
+  form %>% group_by(...) %>%
     summarize(n = n(),
               pt18T = sum(pt18 == TRUE, na.rm = TRUE),
               pt18T_p = percent(mean(pt18 == TRUE, na.rm = TRUE)),
@@ -61,7 +62,9 @@ summarize_form1.1 <- function(form) {
               ptstatusF = sum(ptstatus == FALSE, na.rm = TRUE),
               ptstatusF_p = percent(mean(ptstatus == FALSE, na.rm = TRUE)),
               ptstatusNA = sum(is.na(ptstatus)),
-              ptstatusNA_p = percent(mean(is.na(ptstatus))))
+              ptstatusNA_p = percent(mean(is.na(ptstatus))),
+              condate_min = min(condate, na.rm = TRUE),
+              condate_max = max(condate, na.rm = TRUE))
 }
 
 #' Same as summarize_form1.1
@@ -69,9 +72,10 @@ summarize_form1.1 <- function(form) {
 #'An alias  to summarize_form1.1
 #'
 #' @param form dataframe containing all infor of form1.1
+#' @param ... grouping
 #' @return dataframe, summary table
 #' @export
 #' @import tidyverse
-summarise_form1.1 <- function(form) {
-  summarize_form1.1(form)
+summarise_form1.1 <- function(form, ...) {
+  summarize_form1.1(form, ...)
 }
