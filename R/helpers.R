@@ -116,17 +116,3 @@ parse_region <- function(id) {
     site < 500 ~ "Latin America",
   )
 }
-
-
-#' Format a number to a percentage
-#'
-#' the percentage will have 2 digits after the decimal
-#'
-#' @param x number
-#' @return percentage as a string
-#' @export
-percent <- function(x) {
-  paste0(
-    formatC(x * 100, format = "f", digits = 2),
-    "%")
-}
