@@ -24,7 +24,7 @@ read_form2.1 <- function(path, raw = FALSE) {
   return(form)
 }
 
-#' Check for missing/extraneous textfields in form2.1
+#' Check for missing/extraneous coding boxes in form2.1
 #'
 #' othoccup and p2q5 should be NA iff occup is not 13 (other)
 #'
@@ -32,7 +32,7 @@ read_form2.1 <- function(path, raw = FALSE) {
 #' @return problematic rows of form2.1
 #' @export
 #' @import tidyverse
-check_form2.1_textfield <- function(form2.1) {
+check_form2.1_box5 <- function(form2.1) {
   problems <- filter(form2.1,
                      (occup == 13 && (is.na(othoccup) || is.na(p2q5)))
                      || (occup != 13 && (!(is.na(othoccup) && is.na(p2q5)))))

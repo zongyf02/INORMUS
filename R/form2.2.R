@@ -23,20 +23,19 @@ read_form2.2 <- function(path, raw = FALSE) {
   return(form)
 }
 
-#' Check for missing/extraneous textfields in form2.2
+#' Check for missing/extraneous coding boxes in form2.2
 #'
-#' all p3q10x should be NA iff othercm is not 1 (checked)
+#' all p3q10x and comorb should be NA iff othercm is not 1 (checked)
 #'
 #' @param form form2.2
 #' @return problematic rows of form2.2
 #' @export
 #' @import tidyverse
-check_form2.2_textfield <- function(form2.2) {
+check_form2.2_box10 <- function(form2.2) {
   problems <- filter(form2.2,
-                     (othercm == 1 && (is.na(p3q101) + is.na(p3q102)
-                                       + is.na(p3q103) == 0)) ||
-                       (othercm == 0 && (!(is.na(p3q101))
-                                         && is.na(p3q102)
-                                         && is.na(p3q103))))
+                     (othercm == 1 && (is.na(comorb) ||
+                        (is.na(p3q101) && is.na(p3q102) && is.na(p3q103)))) ||
+                       (othercm == 0 && (!(is.na(comorb) && is.na(p3q101) &&
+                                           is.na(p3q102) && is.na(p3q103)))))
   return(problems)
 }
