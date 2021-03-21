@@ -13,10 +13,9 @@ read_form2.1 <- function(path, raw = FALSE) {
 
   if (!raw) {
     form <- form %>%
-      mutate(
-        across(c(3:7, 9:13), parse_int),
-        region = parse_region(studyid),
-        site = parse_site(studyid)
+      mutate(across(c(3:7, 9:13), parse_int),
+             region = parse_region(studyid),
+             site = parse_site(studyid)
       ) %>%
       relocate(c(region, site), .before = studyid)
   }
@@ -34,8 +33,8 @@ read_form2.1 <- function(path, raw = FALSE) {
 #' @import tidyverse
 check_form2.1_box5 <- function(form2.1) {
   problems <- filter(form2.1,
-                     (occup == 13 && (is.na(othoccup) || is.na(p2q5)))
-                     || (occup != 13 && (!(is.na(othoccup) && is.na(p2q5)))))
+                     (occup == 13 & (is.na(othoccup) | is.na(p2q5)))
+                     | (occup != 13 & (!(is.na(othoccup) & is.na(p2q5)))))
 
   return(problems)
 }

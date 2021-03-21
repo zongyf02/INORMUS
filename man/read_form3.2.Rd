@@ -4,7 +4,7 @@
 \alias{read_form3.2}
 \title{Read in form3.2}
 \usage{
-read_form3.2(path, raw = TRUE)
+read_form3.2(path, raw = FALSE)
 }
 \arguments{
 \item{path}{path to file}

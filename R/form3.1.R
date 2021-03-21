@@ -13,7 +13,7 @@ read_form3.1 <- function(path, raw = FALSE) {
 
  if (!raw) {
    form <- form %>%
-     mutate(injdate = parse_dmY(injdate),
+     mutate(across(c(4:7, 9:17, 19:20, 22:23, 25:27), parse_int),
             region = parse_region(studyid),
             site = parse_site(studyid)) %>%
      relocate(c(region, site), .before = studyid)

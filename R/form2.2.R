@@ -8,13 +8,12 @@
 #' @export
 #' @import tidyverse
 read_form2.2 <- function(path, raw = FALSE) {
-  form <- read_delim (file.choose(),
-                      delim = "|",
+  form <- read_delim(path, delim = "|",
                       col_types = "------iccccccccccccccccccccccc----")
 
   if(!raw) {
     form <- form %>%
-      mutate(across(3:19, parse_int),
+      mutate(across(c(3:19, 21:24), parse_int),
              region = parse_region(studyid),
              site = parse_site(studyid)) %>%
       relocate(c(region, site), .before = studyid)
@@ -33,9 +32,9 @@ read_form2.2 <- function(path, raw = FALSE) {
 #' @import tidyverse
 check_form2.2_box10 <- function(form2.2) {
   problems <- filter(form2.2,
-                     (othercm == 1 && (is.na(comorb) ||
-                        (is.na(p3q101) && is.na(p3q102) && is.na(p3q103)))) ||
-                       (othercm == 0 && (!(is.na(comorb) && is.na(p3q101) &&
-                                           is.na(p3q102) && is.na(p3q103)))))
+                     (othercm == 1 & (is.na(comorb) |
+                        (is.na(p3q101) & is.na(p3q102) & is.na(p3q103)))) |
+                       (othercm == 0 & (!(is.na(comorb) & is.na(p3q101) &
+                                           is.na(p3q102) & is.na(p3q103)))))
   return(problems)
 }

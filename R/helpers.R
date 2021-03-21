@@ -15,6 +15,23 @@ parse_int <- function(x) {
   return(parse_integer(x))
 }
 
+#' Convert string to decimal number
+#'
+#' M will be converted to -1.0
+#' * (lost) will be converted to -2.0
+#'
+#' @param x string
+#' @return decimal number
+#' @export
+#' @import tidyverse
+parse_dec <- function(x) {
+  x = if_else(x == "M", "-1.0",
+              if_else(x == "*", "-2.0",
+                      if_else(x == "N", "-3.0", x)))
+
+  return(parse_double(x))
+}
+
 #' Convert string in d/m/Y format to date
 #'
 #' Check parse_date for details
@@ -24,7 +41,7 @@ parse_int <- function(x) {
 #' @export
 #' @import tidyverse
 parse_dmY <- function(date) {
-  return(parse_date(date, format = "%d/%m/%Y", na = "N"))
+  return(parse_date(date, format = "%d/%m/%Y"))
 }
 
 #' Convert id to site location
@@ -100,7 +117,7 @@ parse_site <- function(id) {
 
 #' Convert id to site region
 #'
-#'Convert studyid to site region
+#' Convert studyid to site region
 #'
 #' @param id studyid
 #' @return string of site region or NA
@@ -115,4 +132,25 @@ parse_region <- function(id) {
     site < 400 ~ "Other Asia",
     site < 500 ~ "Latin America",
   )
+}
+
+#' Merge a list of forms
+#'
+#' Merge a list of parsed forms by region, sit, studyid, and ptintit
+#'
+#' @param forms list of parsed (not raw) forms
+#' @return merge dataframe
+#' @export
+#' @import tidyverse
+merge <- function(forms) {
+  for (i in 1:length(forms)) {
+    if (i == 1) {
+      res <- forms[[i]]
+    } else {
+      res <- left_join(res, forms[[i]],
+                       by = c("region", "site", "studyid", "ptinit"))
+    }
+  }
+
+  return(res)
 }
