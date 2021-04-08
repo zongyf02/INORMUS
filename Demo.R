@@ -114,11 +114,14 @@ form <- merge_forms(forms)
 # View the structure of all columns of form
 str(form, list.len = ncol(form))
 
+
+
 # Create a table with region, site, studyid, and sex columns
 select(form, c(region, site, studyid, sex))
 
 # Create a table with columns starting with "pneu"
 select(form, starts_with("pneu"))
+
 
 # Create a table with only male patients
 filter(form, sex == 1)
@@ -126,6 +129,21 @@ filter(form, sex == 1)
 # Create a table with only admitted patients, grouped by sex
 filter(form, ptstatus == 1) %>%
   group_by(sex)
+
+
+# Replace 1, 0 in ptstatus by "Admitted", "Not Admitted"
+mutate(form, ptstatus = if_else(ptstatus == 1, "Admitted", "Not Admitted"))
+
+# Compress the range of the income column
+mutate(form, income = case_when(income == 0 ~ 0,
+                                income == 1 | income == 2 ~ 1,
+                                income == 3 | income == 4 ~ 2,
+                                income == 5 | income == 6 ~ 3,
+                                income == 7 | income == 8 ~ 4,
+                                income == 9 ~ 5,
+                                income == 10 ~ 6,
+                                income == 11 ~ 7))
+
 
 # Create a summary table of number of patients in each region
 form %>% group_by(region) %>%
