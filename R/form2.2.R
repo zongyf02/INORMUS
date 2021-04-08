@@ -11,6 +11,8 @@ read_form2.2 <- function(path, raw = FALSE) {
   form <- read_delim(path, delim = "|",
                       col_types = "------iccccccccccccccccccccccc----")
 
+  form <- rename(form, pneum_2.2 = pneum)
+
   if(!raw) {
     form <- form %>%
       mutate(across(c(3:19, 21:24), parse_int),

@@ -41,7 +41,8 @@ parse_dec <- function(x) {
 #' @export
 #' @import tidyverse
 parse_dmY <- function(date) {
-  return(parse_date(date, format = "%d/%m/%Y"))
+  return(parse_date(date, format = "%d/%m/%Y",
+                    na = c("", "NA", "N", "*", "M")))
 }
 
 #' Convert id to site location
@@ -142,7 +143,7 @@ parse_region <- function(id) {
 #' @return merge dataframe
 #' @export
 #' @import tidyverse
-merge <- function(forms) {
+merge_forms <- function(forms) {
   for (i in 1:length(forms)) {
     if (i == 1) {
       res <- forms[[i]]
@@ -153,4 +154,19 @@ merge <- function(forms) {
   }
 
   return(res)
+}
+
+
+#' Convert decimal to percentage
+#'
+#' Convert a decimal number to a percentage as string
+#' with 2 decimal places
+#' 0.3 -> 30%
+#'
+#' @param x decimal number
+#' @return string
+#' @export
+#' @import tidyverse
+percent <- function(x) {
+  round(x * 100, digits = 2)
 }

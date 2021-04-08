@@ -1,8 +1,32 @@
+# Run this if you want to restart R
+# .rs.restartR()
+
+# Remove all variables in the environment
+rm(list = ls())
+
+# Install tidyverse, only needs to run for first time setup
+# install.packages(tidyverse)
+
+# Import and tidyverse
 library(tidyverse)
+
+# Install devtools, one time setup
+# install.packages(devtools)
+
+# Import devtools, only required to update INORMUS
 # library(devtools)
+
+# Unimport INORMUS, run before you update the package
+# detach("package:INORMUS", unload = TRUE)
+
+# (Re)Install INORMUS package, run this regularly to keep it updated
 # install_github("zongyf02/INORMUS")
+
+# Import INORMUS
 library(INORMUS)
 
+
+# Read in all forms
 form1.1 <- read_form1.1("1.1.csv")
 form1.1_raw <- read_form1.1("1.1.csv", raw = TRUE)
 
@@ -78,12 +102,71 @@ form7.3_raw <- read_form7.3("7.3.csv", raw = TRUE)
 form7.4 <- read_form7.4("7.4.csv")
 form7.4_raw <- read_form7.4("7.4.csv", raw = TRUE)
 
+# Create a list of all forms
 forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form4.1, form5.1,
               form5.2, form5.3, form5.4, form5.5, form5.6, form5.7, form5.8,
               form5.9, form5.10, form5.11, form5.12, form5.13, form5.14, form6.1,
               form7.1, form7.2, form7.3, form7.4)
 
-form <- merge(forms)
+# Merge all forms
+form <- merge_forms(forms)
 
-rm(list = ls())
-.rs.restartR()
+# View the structure of all columns of form
+str(form, list.len = ncol(form))
+
+# Create a table with region, site, studyid, and sex columns
+select(form, c(region, site, studyid, sex))
+
+# Create a table with columns starting with "pneu"
+select(form, starts_with("pneu"))
+
+# Create a table with only male patients
+filter(form, sex == 1)
+
+# Create a table with only admitted patients, grouped by sex
+filter(form, ptstatus == 1) %>%
+  group_by(sex)
+
+# Create a summary table of number of patients in each region
+form %>% group_by(region) %>%
+  summarize(n = n())
+# equivalently use the library function
+summarize_form(form, "studyid", region)
+
+# Create a summary table of number of admitted patients in each region
+form %>% group_by(region) %>%
+  summarize(nAdmitted = sum(ptstatus == 1, na.rm = TRUE))
+# equivalently, use the library function
+summarize_form(form, "ptstatus", region)
+
+# Create a summary table of patient consent date grouped by region and site
+form %>% group_by(region, site) %>%
+  summarize(minDate = min(parse_dmY(condate), na.rm = TRUE),
+            maxDate = max(parse_dmY(condate), na.rm = TRUE))
+# equivalently
+summarize_form(form, "condate", region, site)
+
+# Create a summary table of patient age grouped by region and site
+form %>% group_by(region, site) %>%
+  summarize(minAge = min(age, na.rm = TRUE),
+            maxAge = max(age, na.rm = TRUE),
+            meanAge = mean(age, na.rm = TRUE),
+            sdAge = sd(age, na.rm = TRUE))
+# equivalently
+summarize_form(form, "age", region, site)
+
+# Create a summary table of admitted patients' sex grouped by region and site
+form %>% group_by(region, site) %>% filter(ptstatus == 1) %>%
+  summarize(male = sum(sex == 1, na.rm = TRUE),
+            percentMale = mean(sex == 1, na.rm = TRUE),
+            female = sum(sex ==2, na.rm = TRUE),
+            percentFemale = mean(sex ==2, na.rm = TRUE),
+            other = sum(sex != 1 && sex != 2),
+            percentOther = mean(sex != 1 && sex != 2))
+#equivalently
+summarize_form(filter(form, ptstatus == 1), "sex", region, site)
+
+# Create summary table of the first 11 columns grouped by region
+# Note the first two omitted. The function will throw an error if asked
+# to summarize a column used for grouping
+summarize_form(form, colnames(form)[3:11], region)
