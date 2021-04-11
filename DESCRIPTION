@@ -3,7 +3,8 @@ Type: Package
 Title: Functions for the INORMUS Project
 Version: 0.1.0
 Author: Yifan Zong
-Maintainer: Yifan Zong <y22zong@uwaterloo.ca>
+Maintainer: Yifan Zong <y22zong@uwaterloo.ca>, 
+            Alex Li <a336li@uwaterloo.ca>
 Description: Read, summarize, and check data
 Imports: tidyverse
 License: GLP-3
