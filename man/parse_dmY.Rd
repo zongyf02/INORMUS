@@ -10,7 +10,7 @@ parse_dmY(date)
 \item{date}{d/m/Y string}
 }
 \value{
-date
+date or NA if date is invalid
 }
 \description{
 Check parse_date for details
