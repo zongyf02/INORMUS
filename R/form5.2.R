@@ -10,7 +10,7 @@
 read_form5.2610 <- function(path, raw, sfx) {
   form <-read_delim(
     path, delim = "|",
-    col_types = "------icccccccccccccccccccccccccccccc----")
+    col_types = "------iccccccccccccccccccccccccccccccccc----")
 
   # append sfx to colnames
   form <- rename_with(form,
@@ -19,7 +19,7 @@ read_form5.2610 <- function(path, raw, sfx) {
 
   if (!raw) {
     form <- form %>%
-      mutate(across(c(3:4, 6:10, 12:19, 21:23, 25:31), parse_int),
+      mutate(across(c(3:4, 6:10, 12:19, 21:23, 25:34), parse_int),
              region = parse_region(studyid),
              site = parse_site(studyid)) %>%
       relocate(c(region, site), .before = studyid)

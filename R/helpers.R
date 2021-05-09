@@ -41,8 +41,7 @@ parse_dec <- function(x) {
 #' @export
 #' @import tidyverse
 parse_dmY <- function(date) {
-  return(parse_date(date, format = "%d/%m/%Y",
-                    na = c("", "NA", "N", "*", "M")))
+  return(parse_date(date, format = "%d/%m/%Y"))
 }
 
 #' Convert id to site location
