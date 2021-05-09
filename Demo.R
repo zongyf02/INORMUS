@@ -5,13 +5,13 @@
 rm(list = ls())
 
 # Install tidyverse, only needs to run for first time setup
-# install.packages(tidyverse)
+# install.packages("tidyverse")
 
 # Import and tidyverse
 library(tidyverse)
 
 # Install devtools, one time setup
-# install.packages(devtools)
+# install.packages("devtools")
 
 # Import devtools, only required to update INORMUS
 # library(devtools)
@@ -25,6 +25,8 @@ library(tidyverse)
 # Import INORMUS
 library(INORMUS)
 
+# Change if needed
+setwd("C:\\Users\\Yifan Zong\\Documents\\INORMUSData")
 
 # Read in all forms
 form1.1 <- read_form1.1("1.1.csv")
@@ -114,7 +116,7 @@ form <- merge_forms(forms)
 # View the structure of all columns of form
 str(form, list.len = ncol(form))
 
-
+################################################################################
 
 # Create a table with region, site, studyid, and sex columns
 select(form, c(region, site, studyid, sex))
@@ -122,6 +124,7 @@ select(form, c(region, site, studyid, sex))
 # Create a table with columns starting with "pneu"
 select(form, starts_with("pneu"))
 
+################################################################################
 
 # Create a table with only male patients
 filter(form, sex == 1)
@@ -130,6 +133,7 @@ filter(form, sex == 1)
 filter(form, ptstatus == 1) %>%
   group_by(sex)
 
+################################################################################
 
 # Replace 1, 0 in ptstatus by "Admitted", "Not Admitted"
 mutate(form, ptstatus = if_else(ptstatus == 1, "Admitted", "Not Admitted"))
@@ -144,6 +148,7 @@ mutate(form, income = case_when(income == 0 ~ 0,
                                 income == 10 ~ 6,
                                 income == 11 ~ 7))
 
+################################################################################
 
 # Create a summary table of number of patients in each region
 form %>% group_by(region) %>%
