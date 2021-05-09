@@ -37,11 +37,34 @@ parse_dec <- function(x) {
 #' Check parse_date for details
 #'
 #' @param date d/m/Y string
-#' @return date
+#' @return date or NA if date is invalid
 #' @export
 #' @import tidyverse
 parse_dmY <- function(date) {
-  return(parse_date(date, format = "%d/%m/%Y"))
+  return(
+    tryCatch(parse_date(date, format = "%d/%m/%Y"),
+             warning = function(w) {return(NA)},
+             error = function(e) {return(NA)}))
+}
+
+#' Parse dates and find their difference in days
+#'
+#' date1 - date2 in days
+#' returns NA if either date1 or date2 cannot be parsed
+#'
+#' @param date1 first character
+#' @param date2 second character date
+#' @return number of days between those dates or NA
+#' @export
+#' @import tidyverse
+diff_date <- function(date1, date2) {
+  parsed_date1 <- parse_dmY(date1)
+  parsed_date2 <- parse_dmY(date2)
+  if (is.na(parsed_date1) || is.na(parsed_date2)) {
+    return(NA)
+  } else {
+    return(as.numeric(parsed_date1 - parsed_date2))
+  }
 }
 
 #' Convert id to site location
