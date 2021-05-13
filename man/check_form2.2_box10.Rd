@@ -4,13 +4,17 @@
 \alias{check_form2.2_box10}
 \title{Check for missing/extraneous coding boxes in form2.2}
 \usage{
-check_form2.2_box10(form2.2)
+check_form2.2_box10(form)
+
+check_form2.2_box10(form)
 }
 \arguments{
 \item{form}{form2.2}
 }
 \value{
 problematic rows of form2.2
+
+a data frame containing all the invalid rows
 }
 \description{
 all p3q10x and comorb should be NA iff othercm is not 1 (checked)
