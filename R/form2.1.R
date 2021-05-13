@@ -38,3 +38,16 @@ check_form2.1_box5 <- function(form2.1) {
 
   return(problems)
 }
+
+#' Filters out invalid rows for box 5 form 2.1
+#' 
+#' @param form form2.1 
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+#' 
+check_from2.1_box5 <- function(form) {
+  return (check_form_box_I(form, 13, "occup", "othoccup", "p2q5"))
+}
