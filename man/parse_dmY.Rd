@@ -2,12 +2,12 @@
 % Please edit documentation in R/helpers.R
 \name{parse_dmY}
 \alias{parse_dmY}
-\title{Convert string in d/m/Y format to date}
+\title{Convert string in d/m/Y format to dates}
 \usage{
-parse_dmY(date)
+parse_dmY(dates)
 }
 \arguments{
-\item{date}{d/m/Y string}
+\item{dates}{d/m/Y string}
 }
 \value{
 date or NA if date is invalid
