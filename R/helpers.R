@@ -32,19 +32,16 @@ parse_dec <- function(x) {
   return(parse_double(x))
 }
 
-#' Convert string in d/m/Y format to date
+#' Convert string in d/m/Y format to dates
 #'
 #' Check parse_date for details
 #'
-#' @param date d/m/Y string
+#' @param dates d/m/Y string
 #' @return date or NA if date is invalid
 #' @export
 #' @import tidyverse
-parse_dmY <- function(date) {
-  return(
-    tryCatch(parse_date(date, format = "%d/%m/%Y"),
-             warning = function(w) {return(NA)},
-             error = function(e) {return(NA)}))
+parse_dmY <- function(dates) {
+  return(parse_date(dates, format = "%d/%m/%Y"))
 }
 
 #' Convert id to site location
