@@ -5,16 +5,14 @@
 \title{Check that hospital admission date should be on the same day,
 or after the date of injury}
 \usage{
-check_hspdate_injdate(form3.1, form4.1)
+check_hspdate_injdate(merged_form)
 }
 \arguments{
-\item{form3.1}{a dataframe containing form3.1}
-
-\item{form4.1}{a dataframe containing form4.1}
+\item{merged_form}{a dataframe containing form1.1, form3.1, and form4.1}
 }
 \value{
 a dataframe containing problematic entries
 }
 \description{
-hpsdate after injdate less than 92 days
+hpsdate after injdate 0-92 days
 }

@@ -4,16 +4,14 @@
 \alias{check_condate_injdate}
 \title{Check that consent date should be on the same day, or after the date of injury}
 \usage{
-check_condate_injdate(form1.1, form3.1)
+check_condate_injdate(merged_form)
 }
 \arguments{
-\item{form1.1}{a dataframe containing form1.1}
-
-\item{form3.1}{a dataframe containing form3.1}
+\item{merged_form}{a dataframe containing form1.1 and form3.1}
 }
 \value{
 a dataframe containing problematic entries
 }
 \description{
-condate after injdate less than 92 days
+condate after injdate 0-92 days
 }
