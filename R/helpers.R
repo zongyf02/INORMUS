@@ -8,9 +8,9 @@
 #' @export
 #' @import tidyverse
 parse_int <- function(x) {
-  x = if_else(x == "M", "-1",
-          if_else(x == "*", "-2",
-                  if_else(x == "N", "-3", x)))
+  x = if_else(x == "M", "-2",
+          if_else(x == "*", "-3",
+                  if_else(x == "N", "-1", x)))
 
   return(parse_integer(x))
 }
@@ -25,9 +25,9 @@ parse_int <- function(x) {
 #' @export
 #' @import tidyverse
 parse_dec <- function(x) {
-  x = if_else(x == "M", "-1.0",
-              if_else(x == "*", "-2.0",
-                      if_else(x == "N", "-3.0", x)))
+  x = if_else(x == "M", "-2.0",
+              if_else(x == "*", "-3.0",
+                      if_else(x == "N", "-1.0", x)))
 
   return(parse_double(x))
 }
@@ -232,123 +232,4 @@ is_zero <- function(val) {
 #' 
 gt_zero <- function(val) {
   return (val > 0)
-}
-
-#' Determines whether a row is valid or not (Type I) 
-#'
-#' @param form any form 
-#' @param other_val int value corresponding to the 'other' option
-#' @param other string name of the 'other' column
-#' @param text_box string name of the 'text_box' column
-#' @param coding a vector of column names for coding boxes
-#' 
-#' @return TRUE if a Type I invalid case has been found, otherwise returns FALSE
-#' 
-#' @import tidyverse
-#' 
-check_invalid_I <- function(form, other_val, other, text_box, coding) {
-  return ((form[other] == other_val & (is.na(form[text_box]) | is_na_coding(form, coding)))
-          | (form[other] != other_val & form[other] >= 0 & 
-               (!(is.na(form[text_box]) & is_na_coding(form, coding)))))
-}
-
-#' Determines whether a row is valid or not (Type II) 
-#'
-#' @param form any form 
-#' @param other_val int value corresponding to the 'other' option
-#' @param other string name of the 'other' column
-#' @param text_box string name of the 'text_box' column
-#' @param coding a vector of column names for coding boxes
-#' @param none column name of the 'none' check box
-#' @param normal any normal check boxes
-#' 
-#' @return TRUE for a Type II invalid case, otherwise returns FALSE
-#' 
-#' @import tidyverse
-#'
-check_invalid_II <- function(form, other_val, other,text_box, coding, 
-                             none, normal) {
-  
-  return (form[none] == 1 & (!is_all(form, append(normal, other), is_zero) | !is_na_coding(form, coding))) | 
-    (check_invalid_I(form, other_val, other, text_box, coding))
-}
-
-#' Determines whether a row is valid or not (Type III)
-#'
-#' @param form any form 
-#' @param groups each group contains a column name for the header check box
-#' and the column names of its content elements
-#' 
-#' @return TRUE for a Type III invalid case, otherwise returns FALSE
-#' 
-#' @import tidyverse
-#' 
-check_invalid_III <- function(form, groups) {
-  all <- FALSE
-  for (i in 1:length(groups)) {
-    all <- all | ((form[groups[[i]][1]] == 1) & (check_invalid_I(form, groups[[i]][2], groups[[i]][3], 
-                                                                 groups[[i]][4], groups[[i]][5])))
-  }
-  return (all)
-}
-
-#' Filters out invalid rows in the form (Type I) 
-#'
-#' @param form any form 
-#' @param other_val int value corresponding to the 'other' option
-#' @param other string name of the 'other' column
-#' @param text_box string name of the 'text_box' column
-#' @param coding a vector of column names for coding boxes
-#' 
-#' @return a data frame containing all the invalid rows
-#' 
-#' @import tidyverse
-#' @export
-#'
-check_form_box_I <- function(form, other_val, other, text_box, coding) {
-  
-  # filters out all invalid rows from the form
-  problems <- filter(form, (form[other_val] <= 0 ) | check_invalid_I(form, other_val, other, 
-                                                                     text_box, coding))
-  
-  # returns a table of all invalid cases
-  return (problems)
-}
-
-#' Filters out invalid rows in the form (Type II) 
-#'
-#' @param form any form 
-#' @param other_val int value corresponding to the 'other' option
-#' @param other string name of the 'other' column
-#' @param text_box string name of the 'text_box' column
-#' @param coding a vector of column names for coding boxes
-#' @param none column name of the 'none' check box
-#' @param normal any normal check boxes
-#' 
-#' @return a data frame containing all the invalid rows
-#' 
-#' @import tidyverse
-#' @export
-#' 
-check_form_box_II <- function(form, other_val, other, text_box, coding,
-                              none, normal) {
-  problems <- filter(form, check_invalid_II(form, other_val, other, text_box, 
-                                            coding, none, normal))
-  return (problems)
-}
-
-#' Filters out invalid rows in the form (Type III) 
-#' 
-#' @param form any form 
-#' @param groups each group contains a column name for the header check box
-#' and the column names of its content elements
-#' 
-#' @return a data frame containing all the invalid rows
-#' 
-#' @import tidyverse
-#' 
-check_form_box_III <- function(form, groups, types) {
-  problems <- filter(form,(count_all(form, groups, gt_zero) > 1) | 
-                       check_invalid_III(form, groups, types))
-  return (problems)
 }
