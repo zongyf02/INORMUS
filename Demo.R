@@ -195,7 +195,24 @@ summarize_form(filter(form, ptstatus == 1), "sex", region, site)
 summarize_form(form, colnames(form)[3:11], region)
 
 ################################################################################
+# Check coding boxes
+problems_form2.1_box5 <- check_form2.1_box5(form)
+problems_form2.2_box10 <- check_form2.2_box10(form)
+problems_form3.1_box4 <- check_form3.1_box4(form)
+problems_form3.2_box5 <- check_form3.2_box5(form)
+problems_form3.2_box6 <- check_form3.2_box6(form)
+problems_form3.2_box7_chest <- check_form3.2_box7_chest(form)
+problems_form3.2_box7_abdo <- check_form3.2_box7_abdo(form)
+problems_form3.2_box7_hn <- check_form3.2_box7_hn(form)
+problems_form4.1_box2 <- check_form4.1_box2(form)
+problems_form4.1_box3 <- check_form4.1_box3(form)
+problems_form4.1_box5 <- check_form4.1_box5(form)
+
 # Checking date consistencies
-problems_condate_injdate <- check_condate_injdate(form1.1, form3.1)
-problems_hspdate_injdate <- check_hspdate_injdate(form3.1, form4.1)
-problems_condate_hspdate <- check_condate_hspdate(form1.1, form4.1)
+problems_condate_injdate <- check_condate_injdate(form)
+problems_hspdate_injdate <- check_hspdate_injdate(form)
+problems_condate_hspdate <- check_condate_hspdate(form)
+problems_injdate_hspdate <- check_injdate_hspdate(form)
+
+# Check number of injuries
+problem_northinf <- check_northinj(form)
