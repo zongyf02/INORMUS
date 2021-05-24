@@ -215,4 +215,4 @@ problems_condate_hspdate <- check_condate_hspdate(form)
 problems_injdate_hspdate <- check_injdate_hspdate(form)
 
 # Check number of injuries
-problem_northinf <- check_northinj(form)
+problems_northinf <- check_northinj(form)
