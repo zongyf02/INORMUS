@@ -57,7 +57,7 @@ form1.1 <- read_form1.1("1.1.csv")
 # read form1.1 (raw)
 form1.1 <- read_form1.1("1.1.csv", raw = TRUE)
 ```
-<hr><br>
+<hr>
 
 ### _To merge forms_
 
@@ -77,7 +77,7 @@ form <- merge_forms(forms)
 # View the structure of all columns of form
 str(form, list.len = ncol(form))
 ```
-<hr><br>
+<hr>
 
 ### _Creating tables from forms_
  > Sometimes, we don't need to see the entire form as it can be cumbersome to work with and will contain information that are irrelevant to us. As such , we will demonstrate below how you can create a better, more workable table from a form.  
@@ -104,7 +104,7 @@ filter(form, sex == 1)
 # Create a table with only admitted patients, grouped by sex
 filter(form, ptstatus == 1) %>% group_by(sex)
 ```
-<hr><br>
+<hr>
 
 ### _Modifying tables_
 > We use mutate to add new variables(columns) to the table while preserving current ones. 
@@ -123,7 +123,7 @@ mutate(form, income = case_when(income == 0 ~ 0,
                                 income == 10 ~ 6,
                                 income == 11 ~ 7))
 ```
-<hr><br>
+<hr>
 
 ### _Summarizing Functions_
 1.&nbsp; Summary of number of patients by region
@@ -177,7 +177,7 @@ summarize_form(filter(form, ptstatus == 1), "sex", region, site)
 # Create summary table of the first 11 columns grouped by region
 summarize_form(form, colnames(form)[3:11], region)
 ```
-<hr><br>
+<hr>
 
 ### _Data Validation_
 > As with any study, errors and accidental omissions of data can occur. Thus, we have to clean the data and filter out invalid cases. Below you will find examples of custom filter functions we used to clean the data.
