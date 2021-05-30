@@ -42,7 +42,7 @@ install_github("zongyf02/INORMUS")
 library(INORMUS)
 ```
 
-If you would like to try out our demo locally, you can download the R script using the following link:
+If you would like to try out our demo locally, you can either clone our repo or copy-paste the R script from the following link:
 
 <a href="./Demo.R" download>Click to Download</a>
 
