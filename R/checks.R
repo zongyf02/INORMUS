@@ -271,10 +271,10 @@ check_form5.1x_box1 <- function(form, rep) {
   is_any_field_invalid <- FALSE
   num_used_text_fields <- 0
   
-  oth_upper <- paste(c("lothup", "rothup", "othupsp"), rep, sep="_")
-  oth_spine <- paste(c("lothspin", "rothspin", "othspsp"), rep, sep="_")
-  oth_lower <- paste(c("lothlo", "rothlo", "othlosp"), rep, sep="_")
-  oth_pelvis <- paste(c("lothpelv", "rothpelv", "othplvsp"), rep, sep="_")
+  oth_upper <- str_c(c("lothup", "rothup", "othupsp"), rep, sep="_")
+  oth_spine <- str_c(c("lothspin", "rothspin", "othspsp"), rep, sep="_")
+  oth_lower <- str_c(c("lothlo", "rothlo", "othlosp"), rep, sep="_")
+  oth_pelvis <- str_c(c("lothpelv", "rothpelv", "othplvsp"), rep, sep="_")
   colname_list <- list(oth_upper, oth_spine, oth_lower, oth_pelvis)
   
   validate_fun <- if (rep == 1) {
@@ -302,7 +302,7 @@ check_form5.1x_box1 <- function(form, rep) {
                                     num_used_text_fields + 1)
   }
   
-  coding_box <- paste("injq1", rep, sep="_")
+  coding_box <- str_c("injq1", rep, sep="_")
   num_used_coding_boxes <-
     if_else(is.na(pull(form, coding_box)), 0, 1)
   
@@ -340,7 +340,7 @@ check_form5.2x_box2 <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("disloc", "othdloc", "injq2"), rep, sep="_")
+  group1 <- str_c(c("disloc", "othdloc", "injq2"), rep, sep="_")
   problems <- check_invalid_boxes(form, 12, group1[1], group1[2], group1[3], 
                                   "Textfield and coding box 2 of form5.2/6/10 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -363,7 +363,7 @@ check_form5.2x_box3a <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("locoth", "othloctx", "injq31", "injq312"), rep, sep="_")
+  group1 <- str_c(c("locoth", "othloctx", "injq31", "injq312"), rep, sep="_")
   problems <- check_invalid_boxes(form, 1, group1[1], group1[2], group1[3:4], 
                                   "Textfield and coding box 3 \"other locations of treatment\" of form5.2/6/10 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -386,7 +386,7 @@ check_form5.2x_box3b <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("othtx", "othtxsp", "injq321", "injq322", "injq323"), rep, sep="_")
+  group1 <- str_c(c("othtx", "othtxsp", "injq321", "injq322", "injq323"), rep, sep="_")
   problems <- check_invalid_boxes(form, 1, group1[1], group1[2], group1[3:5], 
                                   "Textfield and coding box 3 \"other treatment\" of form5.2/6/10 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -409,7 +409,7 @@ check_form5.2x_box4 <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("howstab", "othstab", "injq41", "injq42", "injq43"), rep, sep="_")
+  group1 <- str_c(c("howstab", "othstab", "injq41", "injq42", "injq43"), rep, sep="_")
   problems <- check_invalid_boxes(form, 6, group1[1], group1[2], group1[3:5], 
                                   "Textfield and coding box 4 of form5.2/6/10 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -432,7 +432,7 @@ check_form5.3x_box5a <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("oifix", "oifixsp", "injq51o", "injq52o"), rep, sep="_")
+  group1 <- str_c(c("oifix", "oifixsp", "injq51o", "injq52o"), rep, sep="_")
   problems <- check_invalid_boxes(form, 1, group1[1], group1[2], group1[3:4], 
                                   "Textfield and coding box 5 \"other internal fixation\" of form5.3/7/11 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -455,7 +455,7 @@ check_form5.3x_box5b <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("othnop", "othnopsp", "injq51no", "injq52no"), rep, sep="_")
+  group1 <- str_c(c("othnop", "othnopsp", "injq51no", "injq52no"), rep, sep="_")
   problems <- check_invalid_boxes(form, 1, group1[1], group1[2], group1[3:4], 
                                   "Textfield and coding box 5 \"other non-operative treatment\" of form5.3/7/11 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -478,7 +478,7 @@ check_form5.4x_box7a <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1<-paste(c("add", "othaddsp", "injq7a"), rep, sep="_")
+  group1<- str_c(c("add", "othaddsp", "injq7a"), rep, sep="_")
   problems <- check_invalid_boxes(form, 6, group1[1], group1[2], group1[3], 
                                   "Textfield and coding box 7 \"other solution additive\" of form5.4/8/12 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -501,7 +501,7 @@ check_form5.4x_box7b <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1<-paste(c("delivery", "othdelsp", "injq7b"), rep, sep="_")
+  group1 <- str_c(c("delivery", "othdelsp", "injq7b"), rep, sep="_")
   problems <- check_invalid_boxes(form, 6, group1[1], group1[2], group1[3], 
                                   "Textfield and coding box 7 \"Other delivery method\" of form5.4/8/12 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -524,7 +524,7 @@ check_form5.4x_box8 <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("failreas", "othflsp", "injq8"), rep, sep="_")
+  group1 <- str_c(c("failreas", "othflsp", "injq8"), rep, sep="_")
   problems <- check_invalid_boxes(form, 9, group1[1], group1[2], group1[3], 
                                   "Textfield and coding box 8 of form5.4/8/12 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -547,7 +547,7 @@ check_form5.4x_box9 <- function(form, rep) {
     disallow_any_na <- FALSE
   }
   
-  group1 <- paste(c("delreas", "othdlysp", "injq9"), rep, sep="_")
+  group1 <- str_c(c("delreas", "othdlysp", "injq9"), rep, sep="_")
   problems <- check_invalid_boxes(form, 9, group1[1], group1[2], group1[3], 
                                   "Textfield and coding box 9 of form5.4/8/12 is completed if and only if the other option is chosen",
                                   disallow_any_na, disallow_all_n = FALSE)
@@ -640,7 +640,7 @@ check_form6.1_box4 <- function(form) {
 #' @import tidyverse
 #' @export
 check_form7.x_box3 <- function(form, rep) {
-  group1 <- paste(c("typecmpl", "othcmpl", "cmpq3"),rep ,sep="~")
+  group1 <- str_c(c("typecmpl", "othcmpl", "cmpq3"),rep ,sep="~")
   return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
                               "Textfield and coding box 3 of form7.x is completed if and only if the other option is chosen",
           disallow_any_na = FALSE))
@@ -656,7 +656,7 @@ check_form7.x_box3 <- function(form, rep) {
 #' @import tidyverse
 #' @export
 check_form7.x_box4a <- function(form, rep) {
-  group1 <- paste(c("mancomp", "manoth", "cmpq4a"),rep ,sep="~")
+  group1 <- str_c(c("mancomp", "manoth", "cmpq4a"),rep ,sep="~")
   return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other treatment\" of form7.x is completed if and only if the other option is chosen",
                               disallow_any_na = FALSE))
@@ -672,7 +672,7 @@ check_form7.x_box4a <- function(form, rep) {
 #' @import tidyverse
 #' @export
 check_form7.x_box4b <- function(form, rep) {
-  group1 <- paste(c("nother", "nothersp", "cmpq4b"),rep ,sep="~")
+  group1 <- str_c(c("nother", "nothersp", "cmpq4b"),rep ,sep="~")
   return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other non-operative treatment\" of form7.x is completed if and only if the other option is chosen",
           disallow_any_na = FALSE))
@@ -689,7 +689,7 @@ check_form7.x_box4b <- function(form, rep) {
 #' @import tidyverse
 #' @export
 check_form7.x_box4c <- function(form, rep) {
-  group1 <- paste(c("mother", "mothersp", "cmpq4c"),rep ,sep="~")
+  group1 <- str_c(c("mother", "mothersp", "cmpq4c"),rep ,sep="~")
   return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other details\" of form7.x is completed if and only if the other option is chosen",
           disallow_any_na = FALSE))
@@ -796,36 +796,51 @@ check_injdate_hspdate <- function(form) {
 #' Check that the number of ortho injuries stated on form 3.2 is consistent 
 #' with the number of sets of injury forms completed
 #' 
-#' @param form dataframe containing all forms 
+#' @param form dataframe containing pststatus and form 3.2 
 #' @return a dataframe containing problematic entries
 #' @import tidyverse
 #' @export 
 check_northinj <- function(form) {
-  not_all_na <- function(x) {
-    !all(is.na(x))
+  col_names <- colnames(form)
+  set1 <- str_which(col_names, "_1$")
+  set2 <- str_which(col_names, "_2$")
+  set3 <- str_which(col_names, "_3$")
+  
+  is_set1_empty <- TRUE
+  for(i in set1) {
+    is_set1_empty <- is_set1_empty & is.na(pull(form, i))
   }
+  
+  is_set2_empty <- TRUE
+  for(i in set2) {
+    is_set2_empty <- is_set2_empty & is.na(pull(form, i))
+  }
+  
+  is_set3_empty <- TRUE
+  for(i in set3) {
+    is_set3_empty <- is_set3_empty & is.na(pull(form, i))
+  }
+  
   
   problems <- form %>% 
     transmute(
       region, site, studyid, ptinit, ptstatus, northinj,
-      is_set1_filled = apply(select(form, ends_with("_1")), 1, not_all_na),
-      continue_1,
-      is_set2_filled  = apply(select(form, ends_with("_2")), 1, not_all_na),
-      continue_2, 
-      is_set3_filled  = apply(select(form, ends_with("_3")), 1, not_all_na),
+      is_set1_empty = is_set1_empty, continue_1,
+      is_set2_empty  = is_set2_empty, continue_2, 
+      is_set3_empty  = is_set3_empty,
       comment = "The number of ortho injuries stated on form 3.2 should be consistent with the number of sets of injury forms completed") %>% 
     filter(
       is_invalid_na_or_n(ptstatus) |
         (ptstatus == 1 &
            (is_invalid_na_or_n(northinj) |
-              ((northinj != 0 | is_set1_filled | is_set2_filled | is_set3_filled) &
-                 (northinj != 1 | !is_set1_filled | is_set2_filled | is_set3_filled
+              ((northinj != 0 | !is_set1_empty | !is_set2_empty | !is_set3_empty) &
+                 (northinj != 1 | is_set1_empty | !is_set2_empty | !is_set3_empty
                   | is.na(continue_1) | continue_1 != 0) &
-                 (northinj != 2 | !is_set1_filled | !is_set2_filled |
-                    is_set3_filled | is.na(continue_1) | is.na(continue_2) |
+                 (northinj != 2 | is_set1_empty | is_set2_empty |
+                    !is_set3_empty | is.na(continue_1) | is.na(continue_2) |
                     continue_1 != 1 | continue_2 != 0) &
-                 (northinj != 3 | !is_set1_filled | !is_set2_filled |
-                    !is_set3_filled | is.na(continue_1) | is.na(continue_2) |
+                 (northinj != 3 | is_set1_empty | is_set2_empty |
+                    is_set3_empty | is.na(continue_1) | is.na(continue_2) |
                     continue_1 != 1 | continue_2 != 1)))))
   return (problems)
 }
