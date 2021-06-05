@@ -44,7 +44,7 @@ library(INORMUS)
 
 If you would like to try out our demo locally, you can either clone our repo or copy-paste the R script from the following link:
 
-<a href="./Demo.R" download>Click to Download</a>
+<a href="./Demo.R" download>Demo.R</a>
 
 ## Usage
 
@@ -197,23 +197,9 @@ problems_condate_hspdate <- check_condate_hspdate(form)
 problems_injdate_hspdate <- check_injdate_hspdate(form)
 ```
 
-2.&nbsp; Number of injuries check
+3.&nbsp; Number of injuries check
 ```R
 # Check number of injuries
 problems_northinf <- check_northinj(form)
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
