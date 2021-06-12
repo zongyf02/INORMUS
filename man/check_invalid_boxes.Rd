@@ -10,9 +10,7 @@ check_invalid_boxes(
   other_fields,
   text_fields,
   coding_boxes,
-  comment,
-  disallow_any_na = TRUE,
-  disallow_all_n = TRUE
+  comment
 )
 }
 \arguments{
@@ -27,10 +25,6 @@ check_invalid_boxes(
 \item{coding_boxes}{a vector of column names for coding boxes}
 
 \item{comment}{comment about specific check}
-
-\item{disallow_any_na}{whether to allow NA values in other_fields}
-
-\item{disallow_all_n}{whether to allow all other_fields to be N}
 }
 \value{
 a data frame containing all the invalid rows

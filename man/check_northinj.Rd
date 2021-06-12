@@ -2,18 +2,18 @@
 % Please edit documentation in R/checks.R
 \name{check_northinj}
 \alias{check_northinj}
-\title{Check that the number of ortho injuries stated on form 3.2 is consistent 
+\title{Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 with the number of sets of injury forms completed}
 \usage{
 check_northinj(form)
 }
 \arguments{
-\item{form}{dataframe containing all forms}
+\item{form}{dataframe containing pststatus and form 3.2}
 }
 \value{
 a dataframe containing problematic entries
 }
 \description{
-Check that the number of ortho injuries stated on form 3.2 is consistent 
+Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 with the number of sets of injury forms completed
 }

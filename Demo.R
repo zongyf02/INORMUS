@@ -195,7 +195,7 @@ summarize_form(filter(form, ptstatus == 1), "sex", region, site)
 summarize_form(form, colnames(form)[3:11], region)
 
 ################################################################################
-# Check coding boxes
+# Check that text field and coding box is filled if and only if "other" is chosen 
 problems_form2.1_box5 <- check_form2.1_box5(form)
 
 problems_form2.2_box10 <- check_form2.2_box10(form)
@@ -284,12 +284,34 @@ problems_form7.2_box4c <- check_form7.x_box4c(form, 2)
 problems_form7.3_box4c <- check_form7.x_box4c(form, 3)
 problems_form7.4_box4c <- check_form7.x_box4c(form, 4)
 
-# Checking date consistencies
+# Check that consent date should be on the same day, or after the date of injury
+# Check 1
 problems_condate_injdate <- check_condate_injdate(form)
+
+# Check that hospital admission date should be on the same day, or after the date of injury
+# Check 2
 problems_hspdate_injdate <- check_hspdate_injdate(form)
+
+# Check that consent date should be 0 - 30 days after hospital admission date
+# Check 3
 problems_condate_hspdate <- check_condate_hspdate(form)
+
+# Check that time from injury to hsp admission should be within +/- 24 hrs range of difference between injdate and hspdate
+# Check 5
 problems_injdate_hspdate <- check_injdate_hspdate(form)
+
+# The time from injury to hospital admission should be within 24 hours if the patient is coming from the Accident/Injury Site
+# Check 6
 problems_admfrom_ihunits <- check_admfrom_ihunits(form)
 
-# Check number of injuries
+# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
+# Check 4
 problems_northinf <- check_northinj(form)
+
+# Check that the location of fracture and the location of dislocation in one set of form5.x are related
+# Also ensures only 1 fracture per set of form
+# Checks 8 and 9
+problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
+problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
+problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
+

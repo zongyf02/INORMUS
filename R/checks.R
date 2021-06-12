@@ -249,7 +249,7 @@ check_form5.1x_box1 <- function(form, rep) {
   return(
     select(form, c(region, site, studyid, ptinit, ptstatus,
                    oth_upper, oth_spine, oth_lower, oth_pelvis, coding_box)) %>%
-      filter(ptstatus_vector == 1 &
+      filter(ptstatus == 1 &
                (is_text_field_invalid |
                   if_else(num_used_text_fields == 0,
                           num_used_coding_boxes != 0,
@@ -422,7 +422,6 @@ check_form5.4x_box9 <- function(form, rep) {
 #' Filters out invalid rows for box 1 "Other patient discharge" of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
-#' @param rep the repetition/iteration of the current form
 #' 
 #' @return a data frame containing all the invalid rows
 #' 
@@ -436,7 +435,6 @@ check_form6.1_box1a <- function(form) {
 #' Filters out invalid rows for box 1 "Cause of death" of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
-#' @param rep the repetition/iteration of the current form
 #' 
 #' @return a data frame containing all the invalid rows
 #' 
@@ -450,7 +448,6 @@ check_form6.1_box1b<- function(form) {
 #' Filters out invalid rows for box 2 "Other complication" of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
-#' @param rep the repetition/iteration of the current form
 #' 
 #' @return a data frame containing all the invalid rows
 #' 
@@ -464,7 +461,6 @@ check_form6.1_box2a <- function(form) {
 #' Filters out invalid rows for box 2 "Other cardiac complication" of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
-#' @param rep the repetition/iteration of the current form
 #' 
 #' @return a data frame containing all the invalid rows
 #' 
@@ -475,12 +471,9 @@ check_form6.1_box2b <- function(form) {
                               "Textfield and coding box 2 \"Other cardiac complication\" of form6.1 is completed if and only if the other option is chosen"))
 }
 
-
 #' Filters out invalid rows for box 4 of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
-#' @param rep the repetition/iteration of the current form
-#' 
 #' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
@@ -494,7 +487,6 @@ check_form6.1_box4 <- function(form) {
 #' 
 #' @param form a form containing ptstatus and form7.x
 #' @param rep the repetition/iteration of the current form
-#' 
 #' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
@@ -509,7 +501,6 @@ check_form7.x_box3 <- function(form, rep) {
 #' 
 #' @param form a form containing ptstatus and form7.x
 #' @param rep the repetition/iteration of the current form
-#' 
 #' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
@@ -524,7 +515,6 @@ check_form7.x_box4a <- function(form, rep) {
 #' 
 #' @param form a form containing ptstatus and form7.x
 #' @param rep the repetition/iteration of the current form
-#' 
 #' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
@@ -540,7 +530,6 @@ check_form7.x_box4b <- function(form, rep) {
 #' 
 #' @param form a form containing ptstatus and form7.x
 #' @param rep the repetition/iteration of the current form
-#' 
 #' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
@@ -558,6 +547,7 @@ check_form7.x_box4c <- function(form, rep) {
 #' 
 #' @param form a dataframe containing form1.1 and form3.1
 #' @return a dataframe containing problematic entries
+#' 
 #' @import tidyverse
 #' @export
 check_condate_injdate <- function(form) {
@@ -580,6 +570,7 @@ check_condate_injdate <- function(form) {
 #' 
 #' @param form a dataframe containing form1.1, form3.1, and form4.1
 #' @return a dataframe containing problematic entries
+#' 
 #' @import tidyverse
 #' @export
 check_hspdate_injdate <- function(form) {
@@ -601,6 +592,7 @@ check_hspdate_injdate <- function(form) {
 #' 
 #' @param form a dataframe containing form1.1 and form4.1
 #' @return a dataframe containing problematic entries
+#' 
 #' @import tidyverse
 #' @export
 check_condate_hspdate <- function(form) {
@@ -621,6 +613,7 @@ check_condate_hspdate <- function(form) {
 #' 
 #' @param form a dataframe containing form1.1, form3.1, form4.1
 #' @return a dataframe containing problematic entries
+#' 
 #' @import tidyverse
 #' @export
 check_injdate_hspdate <- function(form) {
@@ -641,11 +634,12 @@ check_injdate_hspdate <- function(form) {
   return(problems)
 }
 
-#' Check that the number of ortho injuries stated on form 3.2 is consistent 
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 #' with the number of sets of injury forms completed
 #' 
 #' @param form dataframe containing pststatus and form 3.2 
 #' @return a dataframe containing problematic entries
+#' 
 #' @import tidyverse
 #' @export 
 check_northinj <- function(form) {
@@ -691,16 +685,108 @@ check_northinj <- function(form) {
 #' The time from injury to hospital admission should be within 24 hours
 #' if the patient is coming from the Accident/Injury Site 
 #' 
-#' @param merged_form a dataframe containing ptstatus and form4.1
+#' @param form a dataframe containing ptstatus and form4.1
 #' @return a dataframe containing problematic entries with relevant columns
 #' 
 #' @import tidyverse
 #' @export
-check_admfrom_ihunits <- function(forms) {
-  problems <- transmute(forms,
+check_admfrom_ihunits <- function(form) {
+  problems <- transmute(form,
                         region, site, studyid, ptinit, ptstatus, admfrom, ihunits, ihhrs, ihdays,
                         comment = "The time from injury to hospital admission should be within 24 hours if the patient is coming from the Accident/Injury Site") %>%
     filter(ptstatus == 1 &
              (admfrom  == 1 & (ihunits != 1 | (ihunits == 1 & ihhrs > 24))))
+  return(problems)
+}
+
+#' Check that the location of fracture and the location of dislocation in one
+#'  set of form5.x are related
+#' 
+#' Also checks that only one fracture is selected per set
+#' 
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @param rep which set of form5.x is checked
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export 
+check_fracwith_diswith <- function(form, rep) {
+  upper <- str_c(c("lclav","rclav","lscap","rscap", "lphum", "rphum", "lmhum",
+                   "rmhum", "lolec", "rolec", "lprad", "rprad", "lmrad", "rmrad",
+                   "ldrad", "rdrad", "lpuln","rpuln", "lmuln", "rmuln", "lduln",
+                   "rduln", "lothup", "rothup"), rep, sep = "_")
+  num_upper_fractures <- 0
+  for (fracture in upper) {
+    num_upper_fractures <- if_else(pull(form, fracture) == 1,
+                                   num_upper_fractures + 1,
+                                   num_upper_fractures)
+  }
+  
+  spine <- str_c(c("lcerv", "rcerv", "lthor", "rthor", "llumb", "rlumb",
+                   "lothspin", "rothspin"), rep, sep = "_")
+  num_spine_fractures <- 0
+  for (fracture in spine) {
+    num_spine_fractures <- if_else(pull(form, fracture) == 1,
+                                   num_spine_fractures + 1,
+                                   num_spine_fractures)
+  }
+  
+  lower <- str_c(c("lpfem", "rpfem", "lmfem", "rmfem", "ldfem", "rdfem", "lpat",
+                   "rpat", "lptib", "rptib", "lmtib", "rmtib", "ldtib", "rdtib",
+                   "lfib", "rfib", "lankp", "rankp", "lankm", "rankm","ltalus",
+                   "rtalus","lcalc", "rcalc", "lfoot", "rfoot", "lothlo",
+                   "rothlo"), rep, sep = "_")
+  num_lower_fractures <- 0
+  for (fracture in lower) {
+    num_lower_fractures <- if_else(pull(form, fracture) == 1,
+                                   num_lower_fractures + 1,
+                                   num_lower_fractures)
+  }
+  
+  pelvis <- str_c(c("lacet","racet", "lsacro", "rsacro", "lsacrum", "rsacrum",
+                    "liwing", "riwing", "lpsymph", "rpsymph", "lramus", "rramus",
+                    "lothpelv", "rothpelv"), rep, sep = "_")
+  num_pelvis_fractures <- 0
+  for (fracture in pelvis) {
+    num_pelvis_fractures <- if_else(pull(form, fracture) == 1,
+                                    num_pelvis_fractures + 1,
+                                    num_pelvis_fractures)
+  }
+  
+  num_of_fractures <- num_upper_fractures + num_spine_fractures +
+    num_lower_fractures + num_pelvis_fractures
+  location_of_fracture <-
+    case_when(
+      num_upper_fractures > 0 ~ "U",
+      num_spine_fractures > 0 ~ "S",
+      num_lower_fractures > 0 ~ "L",
+      num_pelvis_fractures > 0 ~ "P"
+    )
+  
+  disloc_vector <- pull(form, str_c("disloc", rep, sep = "_"))
+  injq2_vector <- pull(form, str_c("injq2", rep, sep = "_"))
+  location_of_dislocation <-
+    case_when(
+      disloc_vector %in% c(4, 5, 6, 8, 10) ~ "U",
+      disloc_vector %in% c(1, 2, 3) ~ "L",
+      disloc_vector %in% c(9) ~ "S",
+      disloc_vector %in% c(7, 11) ~ "P",
+      disloc_vector == 12 ~
+        case_when(
+          injq2_vector %in% c(1, 3, 4) ~ "U",
+          injq2_vector == 2 ~ "P",
+          injq2_vector == 5 ~ "L"
+        )
+    )
+  
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus,
+      num_of_fractures = num_of_fractures,
+      location_of_fracture = location_of_fracture,
+      location_of_dislocation = location_of_dislocation,
+      comment = "The location of fracture and the location of dislocation in one set of forms should be related") %>% 
+    filter(ptstatus == 1 & (num_of_fractures > 1 |
+                              location_of_fracture != location_of_dislocation))
   return(problems)
 }

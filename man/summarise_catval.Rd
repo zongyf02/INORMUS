@@ -10,6 +10,8 @@ summarise_catval(grouped_form, colname, val)
 \item{grouped_form}{any grouped dataframe}
 
 \item{colname}{name to column to summarise}
+
+\item{val}{the value to be summarized}
 }
 \value{
 summary dataframe

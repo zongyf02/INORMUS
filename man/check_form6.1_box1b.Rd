@@ -8,8 +8,6 @@ check_form6.1_box1b(form)
 }
 \arguments{
 \item{form}{a form containing ptstatus and form6.1}
-
-\item{rep}{the repetition/iteration of the current form}
 }
 \value{
 a data frame containing all the invalid rows

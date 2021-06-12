@@ -5,10 +5,10 @@
 \title{The time from injury to hospital admission should be within 24 hours
 if the patient is coming from the Accident/Injury Site}
 \usage{
-check_admfrom_ihunits(forms)
+check_admfrom_ihunits(form)
 }
 \arguments{
-\item{merged_form}{a dataframe containing ptstatus and form4.1}
+\item{form}{a dataframe containing ptstatus and form4.1}
 }
 \value{
 a dataframe containing problematic entries with relevant columns

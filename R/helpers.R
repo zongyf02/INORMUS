@@ -40,7 +40,7 @@ parse_site <- function(id) {
   site <- id %/% 10000
   case_when(
     site == 001 ~ "001-Beijing Chaoyang Hospital",
-    site == 002 ~ "002-Langfang People’s Hospital",
+    site == 002 ~ "002-Langfang People's Hospital",
     site == 005 ~ "005-Langfang Aidebao General Hospital",
     site == 007 ~ "007-Second Bethune Hospital of Jilin University",
     site == 008 ~ "008-Tianjin Hospital",
@@ -150,7 +150,7 @@ merge_forms <- function(forms) {
 #' @export
 #' @import tidyverse
 percent <- function(x) {
-  round(x * 100, digits = 2)
+  str_c(round(x * 100, digits = 2), "%")
 }
 
 
@@ -169,7 +169,7 @@ is_invalid <- function(x) {
   } else if (is.numeric(x)) {
     x < -1
   } else {
-    stop("Operand not a character or number")
+    stop("Argument not a character or number", x)
   }
 }
 
@@ -188,7 +188,7 @@ is_n <- function(x) {
   } else if (is.numeric(x)) {
     x == -1
   } else {
-    stop("Operand not a character or number")
+    stop("Argument not a character or number", x)
   }
 }
 
@@ -218,7 +218,7 @@ is_invalid_or_n <- function(x) {
   } else if (is.numeric(x)) {
     x < 0
   } else {
-    stop("Operand not a character or number")
+    stop("Argument not a character or number", x)
   }
 }
 

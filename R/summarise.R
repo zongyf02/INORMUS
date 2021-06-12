@@ -1,11 +1,11 @@
 #' Same as summarise_form
 #'
-#' #' @param form any form
+#' @param form any form
 #' @param cols names of the columns to summarise
 #' @param ... names of the columns to group by
 #' @return summary dataframe
+#' 
 #' @import tidyverse
-#' @export
 #' @export
 summarize_form <- function(form, cols, ...) {
   summarise_form(form, cols, ...)
@@ -20,11 +20,12 @@ summarize_form <- function(form, cols, ...) {
 #' @param cols names of the columns to summarise
 #' @param ... names of the columns to group by
 #' @return summary dataframe
+#' 
 #' @import tidyverse
 #' @export
 summarise_form <- function(form, cols, ...) {
   if(typeof(cols) != "character") {
-    stop("Unrecognized column names", cols)
+    stop("Column names must to characters", cols)
   }
 
   first <- TRUE
@@ -92,7 +93,9 @@ summarise_date <- function(grouped_form, colname) {
     summarise(
       across(colname,
              list("min" = function(x){min(parse_dmY(x), na.rm = TRUE)},
-                  "max" = function(x){max(parse_dmY(x), na.rm = TRUE)}),
+                  "max" = function(x){max(parse_dmY(x), na.rm = TRUE)},
+                  "nNondate" = function(x){sum(is.na(parse_dmY(na.omit(x))))},
+                  "pNondate" = function(x){percent(mean(is.na(parse_dmY(na.omit(x)))))}),
              .names = "{.col}_{.fn}"))
 
   return (left_join(res, summarise_NA(grouped_form, colname)))
@@ -152,6 +155,8 @@ summarise_cat <- function(grouped_form, colname, vals) {
 #'
 #' @param grouped_form any grouped dataframe
 #' @param colname name to column to summarise
+#' @param val the value to be summarized
+#' 
 #' @return summary dataframe
 #' @import tidyverse
 summarise_catval <- function(grouped_form, colname, val) {
@@ -160,7 +165,7 @@ summarise_catval <- function(grouped_form, colname, val) {
       across(colname,
              list("n" = function(x){sum(x == val, na.rm = TRUE)},
                   "p" = function(x){percent(mean(x == val, na.rm = TRUE))}),
-             .names = paste("{.col}_{.fn}", val, sep = "")))
+             .names = str_c("{.col}_{.fn}", val, sep = "")))
 }
 
 #' Summarise NAs in a column

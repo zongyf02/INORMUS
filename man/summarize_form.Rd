@@ -7,6 +7,8 @@
 summarize_form(form, cols, ...)
 }
 \arguments{
+\item{form}{any form}
+
 \item{cols}{names of the columns to summarise}
 
 \item{...}{names of the columns to group by}
@@ -15,5 +17,5 @@ summarize_form(form, cols, ...)
 summary dataframe
 }
 \description{
-#' @param form any form
+Same as summarise_form
 }
