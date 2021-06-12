@@ -1,3 +1,4 @@
+# Last Updated: June 12, 2021, 19:50 EDT
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -310,7 +311,7 @@ problems_northinf <- check_northinj(form)
 
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
 # Also ensures only 1 fracture per set of form
-# Checks 8 and 9
+# Checks 8
 problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)

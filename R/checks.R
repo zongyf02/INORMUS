@@ -731,7 +731,7 @@ check_fracwith_diswith <- function(form, rep) {
                                    num_spine_fractures)
   }
   
-  lower <- str_c(c("lpfem", "rpfem", "lmfem", "rmfem", "ldfem", "rdfem", "lpat",
+  lower <- str_c(c("lmfem", "rmfem", "ldfem", "rdfem", "lpat",
                    "rpat", "lptib", "rptib", "lmtib", "rmtib", "ldtib", "rdtib",
                    "lfib", "rfib", "lankp", "rankp", "lankm", "rankm","ltalus",
                    "rtalus","lcalc", "rcalc", "lfoot", "rfoot", "lothlo",
@@ -743,9 +743,9 @@ check_fracwith_diswith <- function(form, rep) {
                                    num_lower_fractures)
   }
   
-  pelvis <- str_c(c("lacet","racet", "lsacro", "rsacro", "lsacrum", "rsacrum",
-                    "liwing", "riwing", "lpsymph", "rpsymph", "lramus", "rramus",
-                    "lothpelv", "rothpelv"), rep, sep = "_")
+  pelvis <- str_c(c("lpfem", "rpfem", "lacet","racet", "lsacro", "rsacro", "lsacrum",
+                    "rsacrum", "liwing", "riwing", "lpsymph", "rpsymph", "lramus",
+                    "rramus", "lothpelv", "rothpelv"), rep, sep = "_")
   num_pelvis_fractures <- 0
   for (fracture in pelvis) {
     num_pelvis_fractures <- if_else(pull(form, fracture) == 1,
