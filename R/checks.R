@@ -790,3 +790,44 @@ check_fracwith_diswith <- function(form, rep) {
                               location_of_fracture != location_of_dislocation))
   return(problems)
 }
+
+#' Check that the time from injury to def. stabilization should be within
+#'  1 hour of the time from injury to abx administration
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_locof1stadmin_pritosur <- function(form) {
+  hrswithin <- 1
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, ihhrs, ishrs_1, iahrs,
+      itoshrs = ihhrs + ishrs_1, 
+      comment = "The time from injury to def. stabilization should be within 1 hour of the time from injury to abx administration") %>% 
+    filter(ptstatus == 1 & !(abs(itoshrs - iahrs) <= hrswithin | ihhrs < 0 | ishrs_1 < 0 | iahrs < 0))
+  return(problems)
+}
+
+#' Check that the time from injury to abx administration should be no more than
+#'  12 hours from the time from injury to def. stabilization
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_locof1stadmin_ope <- function(form) {
+  hrsmore <- 12
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, 
+      ihhrs = coalesce(pull(form, ihhrs), 0), ihdays = coalesce(pull(form, ihdays), 0),
+      ishrs_1 = coalesce(pull(form, ishrs_1), 0), isdays_1 = coalesce(pull(form, isdays_1), 0),
+      iahrs = coalesce(pull(form, iahrs), 0), iadays = coalesce(pull(form, iadays), 0),
+      hrsdiff = (iahrs + iadays * 24) - (ihhrs + ihdays * 24 + ishrs_1 + isdays_1 * 24),
+      comment = "The time from injury to abx administration should be no more than 12 hours from the time from injury to def. stabilization") %>% 
+    filter(ptstatus == 1 &
+             !(ihhrs <0 | ihdays <0 | ishrs_1 < 0 | isdays_1 < 0 | iahrs < 0 | iadays < 0 | 
+                 (hrsdiff <= 12 & hrsdiff >= 0)))
+  return(problems)
+}
