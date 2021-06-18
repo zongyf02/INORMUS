@@ -1,4 +1,4 @@
-# Last Updated: June 12, 2021, 19:50 EDT
+# Last Updated: June 18, 2021, 18:20 EDT
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -113,6 +113,9 @@ forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form4.1, form5.1,
 
 # Merge all forms
 form <- merge_forms(forms)
+
+# Select the precovid forms
+precovid_form <- filter_precovid(form)
 
 # View the structure of all columns of form
 str(form, list.len = ncol(form))

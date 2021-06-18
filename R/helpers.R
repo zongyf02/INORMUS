@@ -233,3 +233,17 @@ is_invalid_or_n <- function(x) {
 is_invalid_na_or_n <- function(x) {
   is.na(x) | is_invalid_or_n(x)
 }
+
+#' Filter out patients who were admitted to a hospital pre-covid
+#' Defined as before March 11, 2020
+#' 
+#' @param form form containing hspdate
+#' @return filtered tibble
+#' 
+#' @export
+#' @import tidyverse
+filter_precovid <- function(form) {
+  form %>% filter(
+    parse_dmY(hspdate) < parse_dmY("11/03/2020")
+  )
+}
