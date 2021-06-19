@@ -207,6 +207,32 @@ check_form4.1_box5 <- function(form) {
                         "Textfield and coding box 5 of form4.1 is completed if and only if the other option is chosen"))
 }
 
+#' Filters out invalid rows for box 6 of form 4.1 for location of first administration = At The Injury Scene
+#' 
+#' @param form a form containing ptstatus and form 4.1 
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form4.1_box6 <- function(form){
+  abx_to_admission_difference_cutoff <- 5
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, locabx, iaunits, iahrs, iadays, 
+      ihunits, ihhrs, ihdays,
+      comment = "For antibiotics first administered at the injury scene, time from injury to antibiotics administration should be shortly before time from injury to hospital admission") %>%
+    filter(ptstatus == 1 & locabx == 1 & 
+            (iaunits == 0 | 
+              (iaunits == 1 & 
+                ((ihunits == 1 & (ihhrs - iahrs < 0) | (ihhrs - iahrs > abx_to_admission_difference_cutoff)) |
+                  (ihunits == 2 & (ihdays * 24 - iahrs < 0) | (ihdays * 24 - iahrs> abx_to_admission_difference_cutoff)))) |
+              (iaunits == 2 & 
+                ((ihunits == 1 & (ihhrs - iadays * 24 < 0) | (ihhrs - iadays * 24 > abx_to_admission_difference_cutoff)) |
+                  (ihunits == 2 & (ihdays * 24 - iadays * 24 < 0) | (ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff))))))
+  return(problems)
+}
+
 #' Filters out invalid rows for box 1 of form 5.1
 #' 
 #' @param form a form containing ptstatus and form5.1
