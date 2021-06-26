@@ -1,0 +1,23 @@
+First time only:
+1. git clone https://github.com/zongyf02/INORMUS.git (makes a copy locally)
+
+All other dev: 
+2. Create a new branch on github (Naming convention: Alex -> abranch, Yifan -> ybranch)
+3. open cmd or terminal
+4. Navigate to local repo and open Rproj in RStudio 
+5. git pull (to get and merge latest changes to your local repo)
+6. git branch -a to show which branch (by default local main branch)
+7. git checkout --track origin/<REMOTE_BRANCH_NAME> (example: git checkout --track origin/abranch)
+8. git branch -a to confirm that you are in the new branch you created in step 2
+9. Make code changes in RStudio (Example Update Checks.R) -> Make sure to update Demo.R to include examples
+10. Install & build in RStudio (make sure no errors)
+11. Generate documentation (ctrl+shift+D)
+12. git add -A (selects all changes)
+13. git commit -m "Give a description" (saves changes to local branch)
+14. git push (or git push -u origin for first time users) -> sends local changes to github
+15. Make PR request on github
+16. If approved remove branch (on github and locally) -> to remove locally first git checkout <another_branch> 
+and then git branch -D <branch> 
+17. Otherwise, PR will be closed and return to step 3.
+
+
