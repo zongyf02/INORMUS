@@ -792,7 +792,11 @@ check_fracwith_diswith <- function(form, rep) {
 }
 
 #' Check if the number of fractures, if any, is valid for the set form5.x
-#' Also considers the logic of related selections for this check
+#' Also considers the logic of related selections for this check:
+#'   “Is there a fracture with this injury” must be completed
+#'   If fracture, either “Open Fracture” or “Closed Fracture” must be selected
+#'   If "Open fracture", either “Low Grade” or “High Grade” must be selected 
+#'   If no fracture, no location selected
 #' 
 #' @param form dataframe containing ptstatus and one set of form5.x
 #' @param rep which set of form5.x is checked
@@ -801,7 +805,7 @@ check_fracwith_diswith <- function(form, rep) {
 #' @import tidyverse
 #' @export 
 
-check_injwith_frac <- function(form, rep) {
+check_fracwith <- function(form, rep) {
   
   upper <- str_c(c("lclav","rclav","lscap","rscap", "lphum", "rphum", "lmhum",
                    "rmhum", "lolec", "rolec", "lprad", "rprad", "lmrad", "rmrad",

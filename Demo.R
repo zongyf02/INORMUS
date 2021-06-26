@@ -320,8 +320,7 @@ problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
 # Check if the number of fractures, if any, is valid for the set form5.x
-# Also considers the logic of related selections for this check
 #Checks 9
-problems_injwith_frac_1 <-check_injwith_frac(form, 1)
-problems_injwith_frac_2 <-check_injwith_frac(form, 2)
-problems_injwith_frac_3 <-check_injwith_frac(form, 3)
+problems_check_fracwith_1 <-check_fracwith(form, 1)
+problems_check_fracwith_2 <-check_fracwith(form, 2)
+problems_check_fracwith_3 <-check_fracwith(form, 3)
