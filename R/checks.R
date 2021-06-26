@@ -790,3 +790,58 @@ check_fracwith_diswith <- function(form, rep) {
                               location_of_fracture != location_of_dislocation))
   return(problems)
 }
+
+#' Check if the number of fractures, if any, is valid for the set form5.x
+#' Also considers the logic of related selections for this check
+#' 
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @param rep which set of form5.x is checked
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export 
+
+check_injwith_frac <- function(form, rep) {
+  
+  upper <- str_c(c("lclav","rclav","lscap","rscap", "lphum", "rphum", "lmhum",
+                   "rmhum", "lolec", "rolec", "lprad", "rprad", "lmrad", "rmrad",
+                   "ldrad", "rdrad", "lpuln","rpuln", "lmuln", "rmuln", "lduln",
+                   "rduln", "lothup", "rothup"), rep, sep = "_")
+  spine <- str_c(c("lcerv", "rcerv", "lthor", "rthor", "llumb", "rlumb",
+                   "lothspin", "rothspin"), rep, sep = "_")
+  lower <- str_c(c("lmfem", "rmfem", "ldfem", "rdfem", "lpat",
+                   "rpat", "lptib", "rptib", "lmtib", "rmtib", "ldtib", "rdtib",
+                   "lfib", "rfib", "lankp", "rankp", "lankm", "rankm","ltalus",
+                   "rtalus","lcalc", "rcalc", "lfoot", "rfoot", "lothlo",
+                   "rothlo"), rep, sep = "_")
+  pelvis <- str_c(c("lpfem", "rpfem", "lacet","racet", "lsacro", "rsacro", "lsacrum",
+                    "rsacrum", "liwing", "riwing", "lpsymph", "rpsymph", "lramus",
+                    "rramus", "lothpelv", "rothpelv"), rep, sep = "_")
+  all <- c(upper, spine, lower, pelvis)
+  
+  num_of_fractures <- 0
+  for (fracture in all) {
+    num_of_fractures <- if_else(pull(form, fracture) == 1, 
+                                num_of_fractures + 1, 
+                                num_of_fractures)
+  }
+  
+  
+  injfrac <- pull(form, str_c("fracwith", rep, sep = "_"))
+  fractype <- pull(form, str_c("openclos", rep, sep = "_"))
+  grade <- pull(form, str_c("ggrade", rep, sep = "_"))
+  
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus,
+      injfrac, fractype, grade, 
+      num_of_fractures = num_of_fractures,
+      comment = "The number of fractures per set does not equal to 1 or has invalid selections") %>% 
+    filter(ptstatus == 1 & (injfrac == 0 | 
+                              (injfrac == 2 & num_of_fractures > 0) |                    
+                              (injfrac == 1 & (fractype == 0 | 
+                                                 (fractype == 1 & grade == 0)) 
+                               & num_of_fractures != 1)))
+  
+  return(problems)
+}
