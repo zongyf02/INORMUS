@@ -446,6 +446,70 @@ check_form5.4x_box9 <- function(form, rep) {
   return (problems)
 }
 
+#' Filters out invalid rows for box 1a "Other solution" of form5.14
+#' 
+#' @param form a form containing ptstatus and form5.14
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form5.14_box1a <- function(form) {
+  check_invalid_boxes(form, c(1, 1, 1),
+                      c("iosoln1", "iosoln2", "iosoln3"),
+                      c("iosolns1", "iosolns2", "iosolns3"),
+                      c("esolcd1", "esolcd2", "esolcd3"),
+                      "Textfield and coding box 1a \"Other solution\" of form5.14 is completed if and only if the other option is chosen")
+}
+
+#' Filters out invalid rows for box 1b "Other time of application" of form5.14
+#' 
+#' @param form a form containing ptstatus and form5.14
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form5.14_box1b <- function(form) {
+  check_invalid_boxes(form, c(3, 3, 3),
+                      c("applied1", "applied2", "applied3"),
+                      c("applids1", "applids2", "applids3"),
+                      c("wappcd1", "wappcd2", "wappcd3"),
+                      "Textfield and coding box 1b \"Other time of application\" of form5.14 is completed if and only if the other option is chosen")
+}
+
+#' Filters out invalid rows for box 2 of form5.14
+#' 
+#' @param form a form containing ptstatus and form5.14
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form5.14_box2 <- function(form) {
+  check_invalid_boxes(form, c(1, 1, 1),
+                      c("odres1", "odres2", "odres3"),
+                      c("odress1", "odress2", "odress3"),
+                      c("drescd1", "drescd2", "drescd3"),
+                      "Textfield and coding box 2 of form5.14 is completed if and only if the other option is chosen")
+}
+
+#' Filters out invalid rows for box 3 of form5.14
+#' 
+#' @param form a form containing ptstatus and form5.14
+#' 
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form5.14_box3 <- function(form) {
+  check_invalid_boxes(form, c(1, 1, 1),
+                      c("sosoln1", "sosoln2", "sosoln3"),
+                      c("sosolns1", "sosolns2", "sosolns3"),
+                      c("ssolcd1", "ssolcd2", "ssolcd3"),
+                      "Textfield and coding box 3 of form5.14 is completed if and only if the other option is chosen")
+}
+
 #' Filters out invalid rows for box 1 "Other patient discharge" of form6.1
 #' 
 #' @param form a form containing ptstatus and form6.1
@@ -664,12 +728,12 @@ check_injdate_hspdate <- function(form) {
 #' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 #' with the number of sets of injury forms completed
 #' 
-#' @param form dataframe containing pststatus and form 3.2 
+#' @param form dataframe containing pststatus, form 3.2, and form5.x 
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
 #' @export 
-check_northinj <- function(form) {
+check_northinj_form5.x <- function(form) {
   col_names <- colnames(form)
   set1 <- str_which(col_names, "_1$")
   set2 <- str_which(col_names, "_2$")
@@ -699,8 +763,7 @@ check_northinj <- function(form) {
       is_set3_empty  = is_set3_empty,
       comment = "The number of ortho injuries stated on form 3.2 should be consistent with the number of sets of injury forms completed") %>% 
     filter(ptstatus == 1 &
-             ((northinj != 0 | !is_set1_empty | !is_set2_empty | !is_set3_empty) &
-                (northinj != 1 | is_set1_empty | !is_set2_empty | !is_set3_empty
+             ((northinj != 1 | is_set1_empty | !is_set2_empty | !is_set3_empty
                  | continue_1 != 0) &
                 (northinj != 2 | is_set1_empty | is_set2_empty | !is_set3_empty |
                    continue_1 != 1 | continue_2 != 0) &
@@ -875,4 +938,44 @@ check_fracwith <- function(form, rep) {
                                & num_of_fractures != 1)))
   
   return(problems)
+}
+
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
+#' with the Wound & Skin Prep form 5.14
+#' 
+#' @param form a dataframe containing pststatus, form 3.2, and form 5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export 
+check_northinj_form5.14 <- function(form) {
+  form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus,
+      northinj, noinj2, noinj3,
+      comment = "The number of orthopedic injuries stated on form 3.2 isn't consistent with the Wound & Skin Prep form 5.14") %>%
+    filter(ptstatus == 1 &
+             ((northinj != 1 | noinj2 != 1 | noinj3 != 1) &
+                (northinj != 2 | noinj2 != 0 | noinj3 != 1) &
+                (northinj != 3 | noinj2 != 0 | noinj3 != 0)))
+}
+
+#' Check that all entries in form1.1 are filled with valid values
+#' 
+#' @param form dataframe containing form1.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form1.1 <- function(form) {
+  form %>% 
+    filter(
+      is_invalid_na_or_n(fracdis) | fracdis == 0 |
+        is_invalid_na_or_n(acute3m) | acute3m == 0 |
+        is_invalid_na_or_n(willing) | willing == 0 |
+        is_invalid_na_or_n(comply) | comply == 0 |
+        is_invalid_na_or_n(ptstatus) | ptstatus == 0 |
+        (ptstatus == 1 & is_invalid_na_or_n(condate)) |
+        (ptstatus == 2 & is_invalid_or_na(condate))
+    )
 }

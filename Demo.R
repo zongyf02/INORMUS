@@ -262,6 +262,11 @@ problems_form5.4_box9 <- check_form5.4x_box9(form, 1)
 problems_form5.8_box9 <- check_form5.4x_box9(form, 2)
 problems_form5.12_box9 <- check_form5.4x_box9(form, 3)
 
+problems_form5.14 <- check_form5.14_box1a(form)
+problems_form5.14 <- check_form5.14_box1b(form)
+problems_form5.14 <- check_form5.14_box2(form)
+problems_form5.14 <- check_form5.14_box3(form)
+
 problems_form6.1_box1a <- check_form6.1_box1a(form)
 problems_form6.1_box1b <- check_form6.1_box1b(form)
 
@@ -300,6 +305,10 @@ problems_hspdate_injdate <- check_hspdate_injdate(form)
 # Check 3
 problems_condate_hspdate <- check_condate_hspdate(form)
 
+# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
+# Check 4
+problems_northinf_form5.x <- check_northinj_form5.x(form)
+
 # Check that time from injury to hsp admission should be within +/- 24 hrs range of difference between injdate and hspdate
 # Check 5
 problems_injdate_hspdate <- check_injdate_hspdate(form)
@@ -307,10 +316,6 @@ problems_injdate_hspdate <- check_injdate_hspdate(form)
 # The time from injury to hospital admission should be within 24 hours if the patient is coming from the Accident/Injury Site
 # Check 6
 problems_admfrom_ihunits <- check_admfrom_ihunits(form)
-
-# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
-# Check 4
-problems_northinf <- check_northinj(form)
 
 # Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
 # Check 7
@@ -328,3 +333,6 @@ problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 problems_check_fracwith_1 <-check_fracwith(form, 1)
 problems_check_fracwith_2 <-check_fracwith(form, 2)
 problems_check_fracwith_3 <-check_fracwith(form, 3)
+
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
+problems_northinj_form5.14 <- check_northinj_form5.14(form)
