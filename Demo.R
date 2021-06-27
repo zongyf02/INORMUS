@@ -1,4 +1,4 @@
-# Last Updated: June 18, 2021, 18:20 EDT
+# Last Updated: June 27, 2021, 14:00 EDT
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -262,10 +262,10 @@ problems_form5.4_box9 <- check_form5.4x_box9(form, 1)
 problems_form5.8_box9 <- check_form5.4x_box9(form, 2)
 problems_form5.12_box9 <- check_form5.4x_box9(form, 3)
 
-problems_form5.14 <- check_form5.14_box1a(form)
-problems_form5.14 <- check_form5.14_box1b(form)
-problems_form5.14 <- check_form5.14_box2(form)
-problems_form5.14 <- check_form5.14_box3(form)
+problems_form5.14_box1a <- check_form5.14_box1a(form)
+problems_form5.14_box1b <- check_form5.14_box1b(form)
+problems_form5.14_box2 <- check_form5.14_box2(form)
+problems_form5.14_box3 <- check_form5.14_box3(form)
 
 problems_form6.1_box1a <- check_form6.1_box1a(form)
 problems_form6.1_box1b <- check_form6.1_box1b(form)
@@ -336,3 +336,6 @@ problems_check_fracwith_3 <-check_fracwith(form, 3)
 
 #' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
 problems_northinj_form5.14 <- check_northinj_form5.14(form)
+
+# Check for invalid/missing entries in form1.1
+problems_invalid_form1.1 <- check_invalid_form1.1(form)

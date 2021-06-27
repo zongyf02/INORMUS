@@ -224,13 +224,16 @@ check_abx_locabx_1 <- function(form){
       ihunits, ihhrs, ihdays,
       comment = "For antibiotics first administered at the injury scene, time from injury to antibiotics administration should be at most 5 hours before time from injury to hospital admission") %>%
     filter(ptstatus == 1 & locabx == 1 & abx == 1 &
-             if_else(iaunits == 1,
-                     if_else(ihunits == 1, ihhrs < iahrs | ihhrs - iahrs > abx_to_admission_difference_cutoff, 
-                             ihdays * 24 < iahrs | ihdays * 24 - iahrs > abx_to_admission_difference_cutoff),
-                     if_else(ihunits == 1, ihhrs < iadays * 24 | ihhrs - iadays * 24 > abx_to_admission_difference_cutoff, 
-                             ihdays * 24 < iadays * 24 | ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff)
-                     )
-          )
+             ((iaunits == 1 & 
+                 ((ihunits == 1 &
+                     (ihhrs < iahrs | ihhrs - iahrs > abx_to_admission_difference_cutoff)) |
+                    (ihunits == 2 &
+                       (ihdays * 24 < iahrs | ihdays * 24 - iahrs > abx_to_admission_difference_cutoff)))) |
+                (iaunits == 2 & 
+                   ((ihunits == 1 &
+                       (ihhrs < iadays * 24 | ihhrs - iadays * 24 > abx_to_admission_difference_cutoff)) |
+                      (ihunits == 2 &
+                         (ihdays * 24 < iadays * 24 | ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff))))))
   return(problems)
 }
 
