@@ -313,6 +313,7 @@ problems_admfrom_ihunits <- check_admfrom_ihunits(form)
 problems_northinf <- check_northinj(form)
 
 # Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
+# Check 7
 problems_abx_locabx_1 <- check_abx_locabx_1(form)
 
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
