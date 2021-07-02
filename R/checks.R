@@ -601,7 +601,7 @@ check_form7.x_box3 <- function(form, rep) {
 #' @export
 check_form7.x_box4a <- function(form, rep) {
   group1 <- str_c(c("mancomp", "manoth", "cmpq4a"), rep ,sep="~")
-  return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
+  return (check_invalid_boxes(form, 3, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other treatment\" of form7.x is completed if and only if the other option is chosen"))
 }
 
@@ -615,7 +615,7 @@ check_form7.x_box4a <- function(form, rep) {
 #' @export
 check_form7.x_box4b <- function(form, rep) {
   group1 <- str_c(c("mother", "mothersp", "cmpq4b"), rep ,sep="~")
-  return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
+  return (check_invalid_boxes(form, 1, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other non-operative treatment\" of form7.x is completed if and only if the other option is chosen"))
 }
 
@@ -630,7 +630,7 @@ check_form7.x_box4b <- function(form, rep) {
 #' @export
 check_form7.x_box4c <- function(form, rep) {
   group1 <- str_c(c("nother", "nothersp", "cmpq4c"), rep ,sep="~")
-  return (check_invalid_boxes(form, 14, group1[1], group1[2], group1[3],
+  return (check_invalid_boxes(form, 1, group1[1], group1[2], group1[3],
                               "Textfield and coding box 4 \"Other details\" of form7.x is completed if and only if the other option is chosen"))
 }
 
