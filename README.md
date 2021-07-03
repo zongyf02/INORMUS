@@ -209,16 +209,28 @@ problems_injdate_hspdate <- check_injdate_hspdate(form)
 # The time from injury to hospital admission should be within 24 hours if the patient is coming from the Accident/Injury Site
 # Check 6
 problems_admfrom_ihunits <- check_admfrom_ihunits(form)
+
+# Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
+# Check 7
+problems_abx_locabx_1 <- check_abx_locabx_1(form)
 ```
 
-3.&nbsp; Number of injuries check
+3.&nbsp; Number of injuries checks
 ```R
 # Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
 # Check 4
 problems_northinf <- check_northinj(form)
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
+problems_northinj_form5.14 <- check_northinj_form5.14(form)
+
+# Check if the number of fractures, if any, is valid for the set form5.x
+#Checks 9
+problems_check_fracwith_1 <-check_fracwith(form, 1)
+problems_check_fracwith_2 <-check_fracwith(form, 2)
+problems_check_fracwith_3 <-check_fracwith(form, 3)
 ```
 
-4.&nbsp; Location of injuries check
+4.&nbsp; Location of injuries checks
 ```R
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
 # Also ensures only 1 fracture per set of form
@@ -228,4 +240,9 @@ problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 ```
 
+5.&nbsp; Invalid/Missing Entries checks
+```R
+# Check for invalid/missing entries in form1.1
+problems_invalid_form1.1 <- check_invalid_form1.1(form)
+```
 
