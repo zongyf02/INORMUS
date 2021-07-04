@@ -849,3 +849,47 @@ check_fracwith <- function(form, rep) {
   
   return(problems)
 }
+
+#' Check that the time from injury to def. stabilization should be within
+#'  1 hour of the time from injury to abx administration
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_ihhrs_ishrs_iahrs_1hrwithin <- function(form) {
+  hrswithin <- 1
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, 
+      ihhrstotal = if_else(!is.na(ihhrs), ihhrs, ihdays * 24),
+      ishrstotal = if_else(!is.na(ishrs_1), ishrs_1, isdays_1 * 24), 
+      iahrstotal = if_else(!is.na(iahrs), iahrs, iadays * 24), 
+      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
+      comment = "The time from injury to abx administration should be within 1 hour of the time from injury to def. stabilization") %>% 
+    filter(ptstatus == 1 &
+             !(hrsdiff <= 1 & hrsdiff >= -1))
+  return(problems)
+}
+
+#' Check that the time from injury to abx administration should be no more than
+#'  12 hours from the time from injury to def. stabilization
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_ihhrs_ishrs_iahrs_12hrsafter <- function(form) {
+  hrsmore <- 12
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, 
+      ihhrstotal = if_else(!is.na(ihhrs), ihhrs, ihdays * 24),
+      ishrstotal = if_else(!is.na(ishrs_1), ishrs_1, isdays_1 * 24), 
+      iahrstotal = if_else(!is.na(iahrs), iahrs, iadays * 24), 
+      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
+      comment = "The time from injury to abx administration should be no more than 12 hours from the time from injury to def. stabilization") %>% 
+    filter(ptstatus == 1 &
+             !(hrsdiff <= 12 & hrsdiff >= 0))
+  return(problems)
+}
