@@ -862,9 +862,9 @@ check_ihhrs_ishrs_iahrs_1hrwithin <- function(form) {
   problems <- form %>% 
     transmute(
       region, site, studyid, ptinit, ptstatus, 
-      ihhrstotal = if_else(!is.na(ihhrs), ihhrs, ihdays * 24),
-      ishrstotal = if_else(!is.na(ishrs_1), ishrs_1, isdays_1 * 24), 
-      iahrstotal = if_else(!is.na(iahrs), iahrs, iadays * 24), 
+      ihhrstotal = if_else(ihunits == 1, ihhrs, ihdays * 24),
+      ishrstotal = if_else(hsunits_1 == 1, ishrs_1, isdays_1 * 24), 
+      iahrstotal = if_else(iaunits == 1, iahrs, iadays * 24), 
       hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
       comment = "The time from injury to abx administration should be within 1 hour of the time from injury to def. stabilization") %>% 
     filter(ptstatus == 1 &
@@ -884,9 +884,9 @@ check_ihhrs_ishrs_iahrs_12hrsafter <- function(form) {
   problems <- form %>% 
     transmute(
       region, site, studyid, ptinit, ptstatus, 
-      ihhrstotal = if_else(!is.na(ihhrs), ihhrs, ihdays * 24),
-      ishrstotal = if_else(!is.na(ishrs_1), ishrs_1, isdays_1 * 24), 
-      iahrstotal = if_else(!is.na(iahrs), iahrs, iadays * 24), 
+      ihhrstotal = if_else(ihunits == 1, ihhrs, ihdays * 24),
+      ishrstotal = if_else(hsunits_1 == 1, ishrs_1, isdays_1 * 24), 
+      iahrstotal = if_else(iaunits == 1, iahrs, iadays * 24), 
       hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
       comment = "The time from injury to abx administration should be no more than 12 hours from the time from injury to def. stabilization") %>% 
     filter(ptstatus == 1 &
