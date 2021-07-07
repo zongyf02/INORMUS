@@ -943,6 +943,57 @@ check_fracwith <- function(form, rep) {
   return(problems)
 }
 
+#' Check that the time from injury to stabilization should be within 1 hour of
+#' the time from injury to antibiotics administration if administered prior to
+#' surgery
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_ihhrs_ishrs_iahrs_1hrwithin <- function(form) {
+  hrswithin <- 1
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, locabx,
+      ihhrstotal = if_else(ihunits == 1, ihhrs,
+                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+      ishrstotal = if_else(hsunits_1 == 1, ishrs_1,
+                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
+      iahrstotal = if_else(iaunits == 1, iahrs,
+                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))), 
+      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
+      comment = "The time from injury to stabilization should be within 1 hour of the time from injury to antibiotics administration if administered prior to surgery") %>% 
+    filter(ptstatus == 1 & locabx == 3 &
+             !(hrsdiff <= hrswithin & hrsdiff >= -hrswithin))
+  return(problems)
+}
+
+#' Check that the time from injury to stabilization should be no more than 12
+#' hours from the time from injury to antibiotics administration if administred
+#' operatively
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_ihhrs_ishrs_iahrs_12hrsafter <- function(form) {
+  hrswithin <- 12
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, locabx,
+      ihhrstotal = if_else(ihunits == 1, ihhrs,
+                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+      ishrstotal = if_else(hsunits_1 == 1, ishrs_1,
+                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))), 
+      iahrstotal = if_else(iaunits == 1, iahrs,
+                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
+      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
+      comment = "The time from injury to stabilization should be no more than 12 hours from the time from injury to antibiotics administration if administred operatively") %>% 
+    filter(ptstatus == 1 & locabx == 4 &
+             !(hrsdiff <= hrswithin & hrsdiff >= 0))
+  return(problems)
+
 #' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 #' with the Wound & Skin Prep form 5.14
 #' 
