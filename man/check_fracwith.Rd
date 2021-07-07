@@ -2,17 +2,12 @@
 % Please edit documentation in R/checks.R
 \name{check_fracwith}
 \alias{check_fracwith}
-\title{Check if the number of fractures, if any, is valid for the set form5.x
-Also considers the logic of related selections for this check:
-  “Is there a fracture with this injury” must be completed
-  If fracture, either “Open Fracture” or “Closed Fracture” must be selected
-  If "Open fracture", either “Low Grade” or “High Grade” must be selected 
-  If no fracture, no location selected}
+\title{Check only one fracture, if any, is checked per form5.1x}
 \usage{
 check_fracwith(form, rep)
 }
 \arguments{
-\item{form}{dataframe containing ptstatus and one set of form5.x}
+\item{form}{dataframe containing ptstatus and one set of form5.1x}
 
 \item{rep}{which set of form5.x is checked}
 }
@@ -20,10 +15,5 @@ check_fracwith(form, rep)
 a dataframe containing problematic entries
 }
 \description{
-Check if the number of fractures, if any, is valid for the set form5.x
-Also considers the logic of related selections for this check:
-  “Is there a fracture with this injury” must be completed
-  If fracture, either “Open Fracture” or “Closed Fracture” must be selected
-  If "Open fracture", either “Low Grade” or “High Grade” must be selected 
-  If no fracture, no location selected
+Check only one fracture, if any, is checked per form5.1x
 }

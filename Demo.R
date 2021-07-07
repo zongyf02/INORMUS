@@ -45,6 +45,9 @@ form3.1 <- read_form3.1("3.1.csv")
 form3.2 <- read_form3.2("3.2.csv")
 # form3.2_raw <- read_form3.2("3.2.csv", raw = TRUE)
 
+form3.3 <- read_form3.3("3.3.csv")
+# form3.3_raw <- read_form3.3("3.3.csv", raw = TRUE)
+
 form4.1 <- read_form4.1("4.1.csv")
 # form4.1_raw <- read_form4.1("4.1.csv", raw = TRUE)
 
@@ -106,10 +109,10 @@ form7.4 <- read_form7.4("7.4.csv")
 # form7.4_raw <- read_form7.4("7.4.csv", raw = TRUE)
 
 # Create a list of all forms
-forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form4.1, form5.1,
-              form5.2, form5.3, form5.4, form5.5, form5.6, form5.7, form5.8,
-              form5.9, form5.10, form5.11, form5.12, form5.13, form5.14, form6.1,
-              form7.1, form7.2, form7.3, form7.4)
+forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form3.3, form4.1,
+              form5.1, form5.2, form5.3, form5.4, form5.5, form5.6, form5.7,
+              form5.8, form5.9, form5.10, form5.11, form5.12, form5.13,
+              form5.14, form6.1, form7.1, form7.2, form7.3, form7.4)
 
 # Merge all forms
 form <- merge_forms(forms)
@@ -213,6 +216,9 @@ problems_form3.2_box6 <- check_form3.2_box6(form)
 problems_form3.2_box7_chest <- check_form3.2_box7_chest(form)
 problems_form3.2_box7_abdo <- check_form3.2_box7_abdo(form)
 problems_form3.2_box7_hn <- check_form3.2_box7_hn(form)
+
+problems_form3.3_p50dist <- check_form3.3_p50dist(form)
+problems_form3.3_p50city <- check_form3.3_p50city(form)
 
 problems_form4.1_box2 <- check_form4.1_box2(form)
 

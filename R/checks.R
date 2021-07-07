@@ -165,6 +165,38 @@ check_form3.2_box7_hn <- function(form) {
                         "Head/neck textfield and coding box 7 of form3.2 is completed if and only if the other option is chosen"))
 }
 
+#' Filters out invalid rows for district code for form3.3
+#' 
+#' @param form a form containing ptstatus and form3.3
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form3.3_p50dist <- function(form) {
+  form %>%
+    transmute(region, site, studyid, ptinit, ptstatus, district, p50dist,
+              comment = "District code needs to be completed if disctrict is entered") %>%
+    filter(ptstatus == 1 & (
+      !is.na(district) & is.na(p50dist)
+    ))
+}
+
+#' Filters out invalid rows for city code for form3.3
+#' 
+#' @param form a form containing ptstatus and form3.3
+#' @return a data frame containing all the invalid rows
+#' 
+#' @import tidyverse
+#' @export
+check_form3.3_p50city <- function(form) {
+  form %>%
+    transmute(region, site, studyid, ptinit, ptstatus, cityprov, p50city,
+              comment = "City code needs to be completed if city is entered") %>%
+    filter(ptstatus == 1 & (
+      !is.na(cityprov) & is.na(p50city)
+    ))
+}
+
 #' Filters out invalid rows for box 2 of form4.1
 #' 
 #' @param form a form containing ptstatus and form4.1
@@ -719,9 +751,8 @@ check_injdate_hspdate <- function(form) {
                                    units = "hours"),
       comment = "Time of injury to hsp admission should be within +/- 24 hr range of date difference between injdate and hspdate") %>%
     filter(ptstatus == 1 &
-             (ihunits == 0 | 
-                (ihunits == 1 &
-                   ((ihhrs < (date_diff - 24)) | (ihhrs > (date_diff + 24)))) |
+             ((ihunits == 1 &
+                 ((ihhrs < (date_diff - 24)) | (ihhrs > (date_diff + 24)))) |
                 (ihunits == 2 &
                    ((ihdays * 24 < (date_diff - 24)) | (ihdays * 24 > (date_diff + 24))))))
   
@@ -884,14 +915,9 @@ check_fracwith_diswith <- function(form, rep) {
   return(problems)
 }
 
-#' Check if the number of fractures, if any, is valid for the set form5.x
-#' Also considers the logic of related selections for this check:
-#'   “Is there a fracture with this injury” must be completed
-#'   If fracture, either “Open Fracture” or “Closed Fracture” must be selected
-#'   If "Open fracture", either “Low Grade” or “High Grade” must be selected 
-#'   If no fracture, no location selected
+#' Check only one fracture, if any, is checked per form5.1x
 #' 
-#' @param form dataframe containing ptstatus and one set of form5.x
+#' @param form dataframe containing ptstatus and one set of form5.1x
 #' @param rep which set of form5.x is checked
 #' @return a dataframe containing problematic entries
 #' 
@@ -923,22 +949,19 @@ check_fracwith <- function(form, rep) {
                                 num_of_fractures)
   }
   
-  
-  injfrac <- pull(form, str_c("fracwith", rep, sep = "_"))
-  fractype <- pull(form, str_c("openclos", rep, sep = "_"))
-  grade <- pull(form, str_c("ggrade", rep, sep = "_"))
+  fracwith_col <- str_c("fracwith", rep, sep = "_")
   
   problems <- form %>% 
-    transmute(
-      region, site, studyid, ptinit, ptstatus,
-      injfrac, fractype, grade, 
+    select(
+      c(region, site, studyid, ptinit, ptstatus,
+        fracwith_col)) %>%
+    mutate(
       num_of_fractures = num_of_fractures,
-      comment = "The number of fractures per set does not equal to 1 or has invalid selections") %>% 
-    filter(ptstatus == 1 & (injfrac == 0 | 
-                              (injfrac == 2 & num_of_fractures > 0) |                    
-                              (injfrac == 1 & (fractype == 0 | 
-                                                 (fractype == 1 & grade == 0)) 
-                               & num_of_fractures != 1)))
+      comment = "The number of fractures should be one per form when a frature has been recorded") %>% 
+    filter(ptstatus == 1 & ((eval(parse(text = fracwith_col)) == 2 &
+                               num_of_fractures > 0) |             
+                              (eval(parse(text = fracwith_col)) == 1 &
+                                 num_of_fractures != 1)))
   
   return(problems)
 }
