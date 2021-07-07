@@ -239,36 +239,6 @@ check_form4.1_box5 <- function(form) {
                         "Textfield and coding box 5 of form4.1 is completed if and only if the other option is chosen"))
 }
 
-#' Checks that if antibiotics was first administered at the injury scene,
-#' time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
-#' 
-#' @param form a form containing ptstatus and form 4.1 
-#' 
-#' @return a data frame containing all the invalid rows
-#' 
-#' @import tidyverse
-#' @export
-check_abx_locabx_1 <- function(form){
-  abx_to_admission_difference_cutoff <- 5
-  problems <- form %>%
-    transmute(
-      region, site, studyid, ptinit, ptstatus, abx, locabx, iaunits, iahrs, iadays, 
-      ihunits, ihhrs, ihdays,
-      comment = "For antibiotics first administered at the injury scene, time from injury to antibiotics administration should be at most 5 hours before time from injury to hospital admission") %>%
-    filter(ptstatus == 1 & locabx == 1 & abx == 1 &
-             ((iaunits == 1 & 
-                 ((ihunits == 1 &
-                     (ihhrs < iahrs | ihhrs - iahrs > abx_to_admission_difference_cutoff)) |
-                    (ihunits == 2 &
-                       (ihdays * 24 < iahrs | ihdays * 24 - iahrs > abx_to_admission_difference_cutoff)))) |
-                (iaunits == 2 & 
-                   ((ihunits == 1 &
-                       (ihhrs < iadays * 24 | ihhrs - iadays * 24 > abx_to_admission_difference_cutoff)) |
-                      (ihunits == 2 &
-                         (ihdays * 24 < iadays * 24 | ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff))))))
-  return(problems)
-}
-
 #' Filters out invalid rows for box 1 of form 5.1
 #' 
 #' @param form a form containing ptstatus and form5.1
@@ -806,6 +776,26 @@ check_northinj_form5.x <- function(form) {
   return (problems)
 }
 
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
+#' with the Wound & Skin Prep form 5.14
+#' 
+#' @param form a dataframe containing pststatus, form 3.2, and form 5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export 
+check_northinj_form5.14 <- function(form) {
+  form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus,
+      northinj, noinj2, noinj3,
+      comment = "The number of orthopedic injuries stated on form 3.2 isn't consistent with the Wound & Skin Prep form 5.14") %>%
+    filter(ptstatus == 1 &
+             ((northinj != 1 | noinj2 != 1 | noinj3 != 1) &
+                (northinj != 2 | noinj2 != 0 | noinj3 != 1) &
+                (northinj != 3 | noinj2 != 0 | noinj3 != 0)))
+}
+
 #' The time from injury to hospital admission should be within 24 hours
 #' if the patient is coming from the Accident/Injury Site 
 #' 
@@ -824,9 +814,10 @@ check_admfrom_ihunits <- function(form) {
 }
 
 #' Check that the location of fracture and the location of dislocation in one
-#'  set of form5.x are related
+#' set of form5.x are related
 #' 
 #' Also checks that only one fracture is selected per set
+#' Note proximal femur counts as pelvis, not lower body
 #' 
 #' @param form dataframe containing ptstatus and one set of form5.x
 #' @param rep which set of form5.x is checked
@@ -915,54 +906,34 @@ check_fracwith_diswith <- function(form, rep) {
   return(problems)
 }
 
-#' Check only one fracture, if any, is checked per form5.1x
+#' Checks that if antibiotics was first administered at the injury scene, time
+#' from injury to antibiotics administration is at most 5 hours before time from
+#' injury to hospital admission
 #' 
-#' @param form dataframe containing ptstatus and one set of form5.1x
-#' @param rep which set of form5.x is checked
-#' @return a dataframe containing problematic entries
+#' @param form a form containing ptstatus and form 4.1 
+#' 
+#' @return a data frame containing all the invalid rows
 #' 
 #' @import tidyverse
-#' @export 
-
-check_fracwith <- function(form, rep) {
-  
-  upper <- str_c(c("lclav","rclav","lscap","rscap", "lphum", "rphum", "lmhum",
-                   "rmhum", "lolec", "rolec", "lprad", "rprad", "lmrad", "rmrad",
-                   "ldrad", "rdrad", "lpuln","rpuln", "lmuln", "rmuln", "lduln",
-                   "rduln", "lothup", "rothup"), rep, sep = "_")
-  spine <- str_c(c("lcerv", "rcerv", "lthor", "rthor", "llumb", "rlumb",
-                   "lothspin", "rothspin"), rep, sep = "_")
-  lower <- str_c(c("lmfem", "rmfem", "ldfem", "rdfem", "lpat",
-                   "rpat", "lptib", "rptib", "lmtib", "rmtib", "ldtib", "rdtib",
-                   "lfib", "rfib", "lankp", "rankp", "lankm", "rankm","ltalus",
-                   "rtalus","lcalc", "rcalc", "lfoot", "rfoot", "lothlo",
-                   "rothlo"), rep, sep = "_")
-  pelvis <- str_c(c("lpfem", "rpfem", "lacet","racet", "lsacro", "rsacro", "lsacrum",
-                    "rsacrum", "liwing", "riwing", "lpsymph", "rpsymph", "lramus",
-                    "rramus", "lothpelv", "rothpelv"), rep, sep = "_")
-  all <- c(upper, spine, lower, pelvis)
-  
-  num_of_fractures <- 0
-  for (fracture in all) {
-    num_of_fractures <- if_else(pull(form, fracture) == 1, 
-                                num_of_fractures + 1, 
-                                num_of_fractures)
-  }
-  
-  fracwith_col <- str_c("fracwith", rep, sep = "_")
-  
-  problems <- form %>% 
-    select(
-      c(region, site, studyid, ptinit, ptstatus,
-        fracwith_col)) %>%
-    mutate(
-      num_of_fractures = num_of_fractures,
-      comment = "The number of fractures should be one per form when a frature has been recorded") %>% 
-    filter(ptstatus == 1 & ((eval(parse(text = fracwith_col)) == 2 &
-                               num_of_fractures > 0) |             
-                              (eval(parse(text = fracwith_col)) == 1 &
-                                 num_of_fractures != 1)))
-  
+#' @export
+check_locabx_injurySite <- function(form){
+  abx_to_admission_difference_cutoff <- 5
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, locabx, iaunits, iahrs, iadays, 
+      ihunits, ihhrs, ihdays,
+      comment = "For antibiotics first administered at the injury scene, time from injury to antibiotics administration should be at most 5 hours before time from injury to hospital admission") %>%
+    filter(ptstatus == 1 & locabx == 1 &
+             ((iaunits == 1 & 
+                 ((ihunits == 1 &
+                     (ihhrs < iahrs | ihhrs - iahrs > abx_to_admission_difference_cutoff)) |
+                    (ihunits == 2 &
+                       (ihdays * 24 < iahrs | ihdays * 24 - iahrs > abx_to_admission_difference_cutoff)))) |
+                (iaunits == 2 & 
+                   ((ihunits == 1 &
+                       (ihhrs < iadays * 24 | ihhrs - iadays * 24 > abx_to_admission_difference_cutoff)) |
+                      (ihunits == 2 &
+                         (ihdays * 24 < iadays * 24 | ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff))))))
   return(problems)
 }
 
@@ -974,7 +945,7 @@ check_fracwith <- function(form, rep) {
 #' @return a dataframe containing problematic entries with relevant columns
 #' @import tidyverse
 #' @export 
-check_ihhrs_ishrs_iahrs_1hrwithin <- function(form) {
+check_locabx_priorSurgery <- function(form) {
   hrswithin <- 1
   problems <- form %>% 
     transmute(
@@ -1000,7 +971,7 @@ check_ihhrs_ishrs_iahrs_1hrwithin <- function(form) {
 #' @return a dataframe containing problematic entries with relevant columns
 #' @import tidyverse
 #' @export 
-check_ihhrs_ishrs_iahrs_12hrsafter <- function(form) {
+check_locabx_operatively <- function(form) {
   hrswithin <- 12
   problems <- form %>% 
     transmute(
@@ -1016,25 +987,6 @@ check_ihhrs_ishrs_iahrs_12hrsafter <- function(form) {
     filter(ptstatus == 1 & locabx == 4 &
              !(hrsdiff <= hrswithin & hrsdiff >= 0))
   return(problems)
-
-#' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
-#' with the Wound & Skin Prep form 5.14
-#' 
-#' @param form a dataframe containing pststatus, form 3.2, and form 5.14
-#' @return a dataframe containing problematic entries
-#' 
-#' @import tidyverse
-#' @export 
-check_northinj_form5.14 <- function(form) {
-  form %>%
-    transmute(
-      region, site, studyid, ptinit, ptstatus,
-      northinj, noinj2, noinj3,
-      comment = "The number of orthopedic injuries stated on form 3.2 isn't consistent with the Wound & Skin Prep form 5.14") %>%
-    filter(ptstatus == 1 &
-             ((northinj != 1 | noinj2 != 1 | noinj3 != 1) &
-                (northinj != 2 | noinj2 != 0 | noinj3 != 1) &
-                (northinj != 3 | noinj2 != 0 | noinj3 != 0)))
 }
 
 #' Check that all entries in form1.1 are filled with valid values

@@ -1,4 +1,4 @@
-# Last Updated: July 02, 2021
+# Last Updated: July 06, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -311,9 +311,10 @@ problems_hspdate_injdate <- check_hspdate_injdate(form)
 # Check 3
 problems_condate_hspdate <- check_condate_hspdate(form)
 
-# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
+# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms and form5.14
 # Check 4
 problems_northinf_form5.x <- check_northinj_form5.x(form)
+problems_northinj_form5.14 <- check_northinj_form5.14(form)
 
 # Check that time from injury to hsp admission should be within +/- 24 hrs range of difference between injdate and hspdate
 # Check 5
@@ -325,23 +326,16 @@ problems_admfrom_ihunits <- check_admfrom_ihunits(form)
 
 # Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
 # Check 7
-problems_abx_locabx_1 <- check_abx_locabx_1(form)
+problems_abx_locabx_injurySite <- check_locabx_injurySite(form)
+problems_abx_locabx_priorSurgery <- check_locabx_priorSurgery(form)
+problems_abx_locabx_operatively <- check_locabx_operatively(form)
 
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
 # Also ensures only 1 fracture per set of form
-# Checks 8
+# Checks 8 and 9
 problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
-
-# Check if the number of fractures, if any, is valid for the set form5.x
-#Checks 9
-problems_check_fracwith_1 <-check_fracwith(form, 1)
-problems_check_fracwith_2 <-check_fracwith(form, 2)
-problems_check_fracwith_3 <-check_fracwith(form, 3)
-
-#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
-problems_northinj_form5.14 <- check_northinj_form5.14(form)
 
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
