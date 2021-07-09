@@ -1008,3 +1008,54 @@ check_invalid_form1.1 <- function(form) {
         (ptstatus == 2 & is_invalid_or_na(condate))
     )
 }
+
+#' Check that all entries in form3.1 are filled with valid values
+#' 
+#' @param form dataframe containing form3.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form3.1_2 <- function(form) {
+  form %>% 
+    filter(
+      is_invalid_na_or_n(injdate) | injdate == 0 |
+        is_invalid_na_or_n(alcohol) | alcohol == 0 |
+        is_invalid_na_or_n(selfi) | selfi == 0 |
+        
+        is_invalid_na_or_n(trans) |
+        (trans == 1 &
+           (is_invalid_na_or_n(transsp) | transsp == 0 |
+              (transsp == 6 & (is_invalid_na_or_n(bhelm) | bhelm == 0)) |
+              (transsp == 7 & (is_invalid_na_or_n(mhelm) | mhelm == 0)) |
+              (transsp == 8 & (is_invalid_na_or_n(tbsbelt) | tbsbelt == 0)) |
+              (transsp == 9 & (is_invalid_na_or_n(asbelt) | asbelt == 0)) |
+              (transsp == 10 & is_invalid_na_or_n(othtrans)) )) |
+        (trans == 0 & is_invalid_or_na(transsp)) |
+        is_invalid_na_or_n(fall) | 
+        (fall == 1 & 
+           (is_invalid_na_or_n(fallfrom) | fallfrom == 0 | 
+              (fallfrom == 2 & (is_invalid_na_or_n(lowhigh) | lowhigh == 0)) )) |
+        (fall == 0 & is_invalid_or_na(fallfrom)) |
+        is_invalid_na_or_n(intent) | 
+        (intent == 1 &
+           (is_invalid_na_or_n(intentsp) | intentsp == 0 | 
+              (intentsp == 6 & (is_invalid_na_or_n(othinten) | othinten == 0)) )) |
+        (intent == 0 & is_invalid_or_na(intent)) |
+        is_invalid_na_or_n(strklift) | 
+        (strklift == 1 &
+           (is_invalid_na_or_n(stliftsp) | stliftsp == 0 | 
+              (stliftsp == 4 & (is_invalid_na_or_n(othstlif) | othstlif == 0)) )) |
+        (strklift == 0 & is_invalid_or_na(strklift)) |
+        is_invalid_na_or_n(othmech) | 
+        (othmech == 1 &
+           (is_invalid_na_or_n(omechsp) | omechsp == 0 | 
+              (omechsp == 5 & (is_invalid_na_or_n(othmoth) | othmoth == 0)) )) |
+        (othmech == 0 & is_invalid_or_na(othmech)) |
+        (trans == 0 & fall == 0 & intent == 0 & othmech == 0) |
+        
+        is_invalid_na_or_n(intinj) | intinj == 0 |
+        (intinj == 2 & is_invalid_na_or_n(intentof)) |
+        (intinj != 2 & intinj != 0 & is_invalid_or_na(intentof))
+    )
+}
