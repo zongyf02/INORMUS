@@ -1020,7 +1020,7 @@ check_invalid_form1.1 <- function(form) {
 check_invalid_form2.1 <- function(form){
   problems <- form %>% 
     filter(
-      is_invalid_na_or_n(age) |
+      is_invalid_na_or_n(age) | age < 18 |
         is_invalid_na_or_n(sex) | sex == 0 |
         is_invalid_na_or_n(literate) | literate == 0 |
         is_invalid_na_or_n(educ) | educ == 0 |
