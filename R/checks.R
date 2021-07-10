@@ -1008,3 +1008,29 @@ check_invalid_form1.1 <- function(form) {
         (ptstatus == 2 & is_invalid_or_na(condate))
     )
 }
+
+#' Check that all entries in form2.1 are filled with valid values
+#' 
+#' @param form dataframe containing form2.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form2.1 <- function(form){
+  problems <- form %>% 
+    filter(
+      is_invalid_na_or_n(age) | age < 18 |
+        is_invalid_na_or_n(sex) | sex == 0 |
+        is_invalid_na_or_n(literate) | literate == 0 |
+        is_invalid_na_or_n(educ) | educ == 0 |
+        is_invalid_na_or_n(occup) | occup == 0 |
+        is_invalid_or_n(othoccup) |
+        is_invalid_na_or_n(income) | income == 0 |
+        is_invalid_na_or_n(locat) | locat == 0 |
+        is_invalid_na_or_n(smoking) | smoking == 0 |
+        is_invalid_na_or_n(hlthins) | hlthins == 0
+    ) %>%
+    mutate(comment="Invalid or missing entries")
+  return(problems)
+}
