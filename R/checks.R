@@ -906,87 +906,44 @@ check_fracwith_diswith <- function(form, rep) {
   return(problems)
 }
 
-#' Checks that if antibiotics was first administered at the injury scene, time
-#' from injury to antibiotics administration is at most 5 hours before time from
-#' injury to hospital admission
-#' 
-#' @param form a form containing ptstatus and form 4.1 
-#' 
-#' @return a data frame containing all the invalid rows
-#' 
-#' @import tidyverse
-#' @export
-check_locabx_injurySite <- function(form){
-  abx_to_admission_difference_cutoff <- 5
-  problems <- form %>%
-    transmute(
-      region, site, studyid, ptinit, ptstatus, locabx, iaunits, iahrs, iadays, 
-      ihunits, ihhrs, ihdays,
-      comment = "For antibiotics first administered at the injury scene, time from injury to antibiotics administration should be at most 5 hours before time from injury to hospital admission") %>%
-    filter(ptstatus == 1 & locabx == 1 &
-             ((iaunits == 1 & 
-                 ((ihunits == 1 &
-                     (ihhrs < iahrs | ihhrs - iahrs > abx_to_admission_difference_cutoff)) |
-                    (ihunits == 2 &
-                       (ihdays * 24 < iahrs | ihdays * 24 - iahrs > abx_to_admission_difference_cutoff)))) |
-                (iaunits == 2 & 
-                   ((ihunits == 1 &
-                       (ihhrs < iadays * 24 | ihhrs - iadays * 24 > abx_to_admission_difference_cutoff)) |
-                      (ihunits == 2 &
-                         (ihdays * 24 < iadays * 24 | ihdays * 24 - iadays * 24 > abx_to_admission_difference_cutoff))))))
-  return(problems)
-}
-
-#' Check that the time from injury to stabilization should be within 1 hour of
-#' the time from injury to antibiotics administration if administered prior to
-#' surgery
+#' Check that the time from injury to the first antibiotic administration must
+#' be consistent with the location of the first administration
 #' 
 #' @param form dataframe containing ptstatus, form 4.1, and form5.3
 #' @return a dataframe containing problematic entries with relevant columns
 #' @import tidyverse
 #' @export 
-check_locabx_priorSurgery <- function(form) {
-  hrswithin <- 1
-  problems <- form %>% 
+check_locabx <- function(form) {
+  form %>% 
     transmute(
       region, site, studyid, ptinit, ptstatus, locabx,
-      ihhrstotal = if_else(ihunits == 1, ihhrs,
-                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
-      ishrstotal = if_else(hsunits_1 == 1, ishrs_1,
-                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
-      iahrstotal = if_else(iaunits == 1, iahrs,
-                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))), 
-      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
-      comment = "The time from injury to stabilization should be within 1 hour of the time from injury to antibiotics administration if administered prior to surgery") %>% 
-    filter(ptstatus == 1 & locabx == 3 &
-             !(hrsdiff <= hrswithin & hrsdiff >= -hrswithin))
-  return(problems)
-}
-
-#' Check that the time from injury to stabilization should be no more than 12
-#' hours from the time from injury to antibiotics administration if administred
-#' operatively
-#' 
-#' @param form dataframe containing ptstatus, form 4.1, and form5.3
-#' @return a dataframe containing problematic entries with relevant columns
-#' @import tidyverse
-#' @export 
-check_locabx_operatively <- function(form) {
-  hrswithin <- 12
-  problems <- form %>% 
-    transmute(
-      region, site, studyid, ptinit, ptstatus, locabx,
-      ihhrstotal = if_else(ihunits == 1, ihhrs,
-                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
-      ishrstotal = if_else(hsunits_1 == 1, ishrs_1,
-                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))), 
-      iahrstotal = if_else(iaunits == 1, iahrs,
-                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
-      hrsdiff = iahrstotal - (ihhrstotal + ishrstotal),
-      comment = "The time from injury to stabilization should be no more than 12 hours from the time from injury to antibiotics administration if administred operatively") %>% 
-    filter(ptstatus == 1 & locabx == 4 &
-             !(hrsdiff <= hrswithin & hrsdiff >= 0))
-  return(problems)
+      time_from_injury_to_hsp =
+        if_else(ihunits == 1, ihhrs,
+                if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+      time_from_injury_to_abx =
+        if_else(iaunits == 1, iahrs,
+                if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
+      time_from_hsp_to_stabilization =
+        if_else(hsunits_1 == 1, ishrs_1,
+                if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
+      diff_time_from_inj_to_hsp_and_time_from_injury_to_abx =
+        time_from_injury_to_hsp - time_from_injury_to_abx,
+      diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx = 
+        time_from_injury_to_hsp + time_from_hsp_to_stabilization -
+        time_from_injury_to_abx,
+      comment = "The time from injury to the first antibiotic administration must be consistent with the location of the first administration") %>% 
+    filter(ptstatus == 1 &
+             ((locabx == 1 &
+                 (diff_time_from_inj_to_hsp_and_time_from_injury_to_abx > 5 |
+                    diff_time_from_inj_to_hsp_and_time_from_injury_to_abx < 0)) |
+                (locabx == 3 &
+                   (diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx > 1 |
+                      diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx < 0)) |
+                ((locabx == 4 | locabx == 5) & 
+                   (diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx < -12 |
+                      diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx > 0)))) %>%
+    mutate(diff_time_from_inj_to_hsp_and_time_from_injury_to_abx = NULL,
+           diff_time_from_inj_to_stabilization_and_time_from_injury_to_abx = NULL)
 }
 
 #' Check that all entries in form1.1 are filled with valid values
@@ -1006,5 +963,6 @@ check_invalid_form1.1 <- function(form) {
         is_invalid_na_or_n(ptstatus) | ptstatus == 0 |
         (ptstatus == 1 & is_invalid_na_or_n(condate)) |
         (ptstatus == 2 & is_invalid_or_na(condate))
-    )
+    ) %>%
+    mutate(comment = "Invalid or missing entries")
 }
