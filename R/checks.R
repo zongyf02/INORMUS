@@ -985,44 +985,21 @@ check_invalid_form1.1 <- function(form) {
 
 #' Time from injury to abx administration must be within the time interval (5h) from injury to hospital admission
 #' 
-#' @param merged_form a dataframe containing all forms
+#' @param form a dataframe containing all forms
 #' @return a dataframe containing problematic entries with relevant columns
 #' @import tidyverse
 #' @export
 
-check_iahrs_ihhrs <- function(forms) {
-  problems <- select(forms,
-                     region, site, studyid, ptinit, locabx, ptstatus, admfrom, ihunits, ihhrs, ihdays, iaunits, iahrs, iadays) %>%
-    filter((locabx == 1 & ptstatus == 1 & ihunits == 1 & iaunits == 1 & ((iahrs < ihhrs) | (iahrs > ihhrs + 12))) 
-           | (locabx == 1 & ptstatus == 1 & ihunits == 1 & iaunits == 2 & ((iadays * 24 < ihhrs) | (iadays * 24 > ihhrs + 12)))
-           | (locabx == 1 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & ((iahrs < ihdays * 24) | (iahrs > ihdays * 24 + 12)))
-           | (locabx == 1 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & ihdays != iadays))
-  
-  problems$comment = "Time from injury to abx administration must be within the time interval (5h) from injury to hospital admission"
-  
-  return(problems)
-}
-
-#' If the patient was admitted from another healthcare facility (Q2), then the time from injury to abx administration would be before admission to the site hospital
-#' 
-#' @param merged_form a dataframe containing all forms
-#' @return a dataframe containing problematic entries with relevant columns
-#' @import tidyverse
-#' @export
-
-
-check_iahrs_ihhrs_locabxis2 <- function(forms) {
-  problems <- select(forms, region, site, studyid, ptinit, ptstatus, admfrom, locabx, abxprior_1, ihunits, ihhrs, ihdays, iaunits, iahrs, iadays) %>%
-    filter((abxprior_1 == 1 & locabx == 4 & ptstatus == 1 & ihunits == 1 & iaunits == 1 & iahrs > ihhrs) 
-           | (abxprior_1 == 1 & locabx == 4 & ptstatus == 1 & ihunits == 1 & iaunits == 2 & iadays * 24 > ihhrs)
-           | (abxprior_1 == 1 & locabx == 4 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & iahrs > ihdays * 24)
-           | (abxprior_1 == 1 & locabx == 4 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & iadays > ihdays)
-           | (abxprior_1 == 0 & locabx == 4 & ptstatus == 1 & ihunits == 1 & iaunits == 1 & iahrs < ihhrs)
-           | (abxprior_1 == 0 & locabx == 4 & ptstatus == 1 & ihunits == 1 & iaunits == 2 & iadays * 24 < ihhrs)
-           | (abxprior_1 == 0 & locabx == 4 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & iahrs < ihdays * 24)
-           | (abxprior_1 == 1 & locabx == 4 & ptstatus == 1 & ihunits == 2 & iaunits == 1 & iadays < ihdays))
-  
-  problems$comment = "time from injury to abx administration would be before admission to the site hospital"
+check_iahrs_ihhrs <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, locabx, ptstatus, abxprior_1, admfrom, ihunits, ihhrs, ihdays, iaunits, iahrs, iadays,
+      comment = "Time from injury to abx administration must be 12 hours before the time to injury to hospital admission and abxprior must be true") %>%
+    filter((locabx == 2 & ptstatus == 1 & abxprior_1 == 1) 
+           & ((ihunits == 1 & iaunits == 1 & iahrs > ihhrs - 12) 
+              | (ihunits== 1 & iaunits == 2 & iadays * 24 > ihhrs - 12) 
+              | (ihunits == 2 & iaunits == 1 & iahrs > ihdays * 24 - 12) 
+              | (ihunits == 2 & iaunits == 1 & ihdays != iadays)))
   
   return(problems)
 }
