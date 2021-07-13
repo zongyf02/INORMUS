@@ -1034,3 +1034,42 @@ check_invalid_form2.1 <- function(form){
     mutate(comment="Invalid or missing entries")
   return(problems)
 }
+
+#' Check that all entries in form5.2 are filled with valid values
+#' 
+#' @param form dataframe containing form5.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form5.2 <- function(form){
+  problems <- form %>% filter(
+    is_invalid_na_or_n(diswith_1) | diswith_1 == 0 |
+      (diswith_1 == 1 & is_invalid_na_or_n(disloc_1)) |
+      (diswith_1 == 2 & is_invalid_or_na(disloc_1)) | 
+      is_invalid_or_n(othdloc_1) |
+      is_invalid_na_or_n(txprior_1) | txprior_1 == 0 |
+      (txprior_1 == 1 & 
+          (is_invalid_na_or_n(lohosp_1) | is_invalid_na_or_n(ltradhl_1) | is_invalid_na_or_n(lnonhosp_1) | 
+          is_invalid_na_or_n(locoth_1) | is_invalid_or_n(othloctx_1) | 
+          is_invalid_na_or_n(splint_1) | is_invalid_na_or_n(dressopn_1) | is_invalid_na_or_n(nostabil_1) | 
+          is_invalid_na_or_n(irrig_1) | is_invalid_na_or_n(abxprior_1) | is_invalid_na_or_n(bandages_1) |
+          is_invalid_na_or_n(ostabil_1) | is_invalid_na_or_n(othtx_1) | is_invalid_or_n(othtxsp_1))) |
+      (txprior_1 == 2 & 
+         (is_invalid_or_na(lohosp_1) | is_invalid_or_na(ltradhl_1) | is_invalid_or_na(lnonhosp_1) |
+          is_invalid_or_na(locoth_1) | is_invalid(othloctx_1) | 
+          is_invalid_or_na(splint_1) | is_invalid_or_na(dressopn_1) | is_invalid_or_na(nostabil_1) | 
+          is_invalid_or_na(irrig_1) | is_invalid_or_na(abxprior_1) | is_invalid_or_na(bandages_1) |
+          is_invalid_or_na(ostabil_1) | is_invalid_or_na(othtx_1) | is_invalid(othtxsp_1))) |
+      is_invalid_na_or_n(ptstabil_1) | ptstabil_1 == 0 |
+      (ptstabil_1 == 1 & 
+         (is_invalid_na_or_n(method_1) | is_invalid_na_or_n(howstab_1) | is_invalid_or_n(othstab_1) |
+          is_invalid_na_or_n(hspstab_1))) |
+      (ptstabil_1 == 2 & 
+         (is_invalid_or_na(method_1) | is_invalid_or_na(howstab_1) | is_invalid(othstab_1) |
+          is_invalid_or_na(hspstab_1)))
+    ) %>%
+  mutate(comment="Invalid or missing entries")
+  return(problems)
+}
