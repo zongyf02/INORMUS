@@ -246,5 +246,7 @@ problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
 problems_invalid_form2.1 <- check_invalid_form2.1(form)
+# Check for invalid/missing entries in form5.2
+problems_invalid_form5.2 <- check_invalid_form5.2(form)
 ```
 
