@@ -1003,3 +1003,19 @@ check_iahrs_ihhrs <- function(form) {
   
   return(problems)
 }
+
+#' Check that all entries in form2.2 are filled with valid values
+#' 
+#' @param form dataframe containing form2.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form2.2 <- function(form) {
+  problems <- form %>%
+    filter(is_invalid_na_or_n (nonecm) | is_invalid_na_or_n(ischhrt) | is_invalid_na_or_n(cvascd) | is_invalid_na_or_n(lowresp) | is_invalid_na_or_n(cancer)
+           | is_invalid_na_or_n(diabetes) | is_invalid_na_or_n(copd) | is_invalid_na_or_n(htn) | is_invalid_na_or_n(hivaids) | is_invalid_na_or_n(anembld) | is_invalid_na_or_n(tb) | is_invalid_na_or_n(pneum_2.2) | is_invalid_na_or_n(malaria) | is_invalid_na_or_n(asthma)
+           | is_invalid_na_or_n(osteo) | is_invalid_na_or_n(othercm) | (othercm == 1 & is_invalid_na_or_n(comorb)))
+  
+  return(problems)
+}
