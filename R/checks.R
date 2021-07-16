@@ -1101,3 +1101,41 @@ check_invalid_form3.1 <- function(form) {
     )
   return(problems)
 }
+
+#' Check that all entries in form3.1 are filled with valid values
+#' 
+#' @param form dataframe containing form4.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form4.1 <- function(form) {
+  problems <- form %>% 
+    filter(
+      is_invalid_na_or_n(hspdate) | hspdate == 0 |
+        is_invalid_na_or_n(admfrom) | admfrom == 0 | is_invalid_or_na(othfrom) |
+        (admfrom == 6 & (is_n(othfrom) | othfrom == 0)) |
+        is_invalid_na_or_n(transto) | transto == 0 | is_invalid_or_na(othto) |
+        (transto == 8 & (is_n(othto) | othto == 0)) |
+        is_invalid_na_or_n(ihunits) | ihunits == 0 | 
+        is_invalid_or_na(ihhrs) | is_invalid_or_na(ihdays) |
+        (ihunits == 1 & (is_n(ihhrs) | ihhrs == 0)) | 
+        (ihunits == 2 & (is_n(ihdays) | ihdays == 0)) |
+        is_invalid_na_or_n(rsdelay) | rsdelay == 0 | is_invalid_or_na(othdelay) |
+        (rsdelay == 10 & (is_n(othdelay) | othdelay == 0)) |
+        is_invalid_na_or_n(abx) | abx == 0 | is_invalid_or_na(iaunits) | 
+        is_invalid_or_na(iahrs) | is_invalid_or_na(iadays) |
+        is_invalid_or_na(locabx) | is_invalid_or_na(injscene) | 
+        is_invalid_or_na(erinhosp) | is_invalid_or_na(preop) | 
+        is_invalid_or_na(oper) | is_invalid_or_na(postop) | is_invalid_or_na(dnradabx) |
+        (abx == 1 & ((iaunits == 1 & (is_n(iahrs) | iahrs == 0)) | 
+                       (iaunits == 2 & (is_n(iadays) | iadays == 0)) |
+                       is_n(locabx) | locabx == 0 |
+                       is_n(injscene) | is_n(erinhosp) |
+                       is_n(preop) | is_n(oper) | 
+                       is_n(postop) | is_n(dnradabx) |
+                       injscene + erinhosp + preop + oper + postop + dnradabx == 0))
+    ) %>%
+    mutate(comment="Invalid or missing entries")
+  return(problems)
+}
