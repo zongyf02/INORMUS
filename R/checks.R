@@ -944,8 +944,8 @@ check_invalid_form1.1 <- function(form) {
         is_invalid_na_or_n(willing) | willing == 0 |
         is_invalid_na_or_n(comply) | comply == 0 |
         is_invalid_na_or_n(ptstatus) | ptstatus == 0 |
-        (ptstatus == 1 & is_invalid_na_or_n(condate)) |
-        (ptstatus == 2 & is_invalid_or_na(condate))
+        (ptstatus == 1 & !is_n(condate)) |
+        (ptstatus == 2 & is_na(parse_dmY(condate)))
     )
 }
 
@@ -958,18 +958,17 @@ check_invalid_form1.1 <- function(form) {
 #' @export
 check_invalid_form2.1 <- function(form){
   problems <- form %>% 
-    filter(
-      is_invalid_na_or_n(age) | age < 18 |
-        is_invalid_na_or_n(sex) | sex == 0 |
-        is_invalid_na_or_n(literate) | literate == 0 |
-        is_invalid_na_or_n(educ) | educ == 0 |
-        is_invalid_na_or_n(occup) | occup == 0 |
-        is_invalid_or_n(othoccup) |
-        is_invalid_na_or_n(income) | income == 0 |
-        is_invalid_na_or_n(locat) | locat == 0 |
-        is_invalid_na_or_n(smoking) | smoking == 0 |
-        is_invalid_na_or_n(hlthins) | hlthins == 0
-    ) %>%
+    filter(ptstatus == 1 &
+             (is_invalid_na_or_n(age) | age < 18 |
+                is_invalid_na_or_n(sex) | sex == 0 |
+                is_invalid_na_or_n(literate) | literate == 0 |
+                is_invalid_na_or_n(educ) | educ == 0 |
+                is_invalid_na_or_n(occup) | occup == 0 |
+                is_invalid_or_n(othoccup) |
+                is_invalid_na_or_n(income) | income == 0 |
+                is_invalid_na_or_n(locat) | locat == 0 |
+                is_invalid_na_or_n(smoking) | smoking == 0 |
+                is_invalid_na_or_n(hlthins) | hlthins == 0)) %>%
     mutate(comment="Invalid or missing entries")
   return(problems)
 }
@@ -999,26 +998,27 @@ check_invalid_form2.2 <- function(form) {
              as.numeric(asthma == 1) +
              as.numeric(osteo == 1) +
              as.numeric(othercm == 1)) %>%
-    filter(is_invalid_na_or_n(nonecm) |
-             is_invalid_na_or_n(ischhrt) |
-             is_invalid_na_or_n(cvascd) |
-             is_invalid_na_or_n(lowresp) |
-             is_invalid_na_or_n(cancer) |
-             is_invalid_na_or_n(diabetes) |
-             is_invalid_na_or_n(copd) |
-             is_invalid_na_or_n(htn) |
-             is_invalid_na_or_n(hivaids) |
-             is_invalid_na_or_n(gidisord) |
-             is_invalid_na_or_n(anembld) |
-             is_invalid_na_or_n(tb) |
-             is_invalid_na_or_n(pneum_2.2) |
-             is_invalid_na_or_n(malaria) |
-             is_invalid_na_or_n(asthma) |
-             is_invalid_na_or_n(osteo) |
-             is_invalid_na_or_n(othercm) |
-             is_invalid_or_n(comorb) |
-             (nonecm == 0 & num_comorb <= 0) |
-             (nonecm == 1 & num_comorb > 0)) %>%
+    filter(ptstatus == 1 &
+             (is_invalid_na_or_n(nonecm) |
+                is_invalid_na_or_n(ischhrt) |
+                is_invalid_na_or_n(cvascd) |
+                is_invalid_na_or_n(lowresp) |
+                is_invalid_na_or_n(cancer) |
+                is_invalid_na_or_n(diabetes) |
+                is_invalid_na_or_n(copd) |
+                is_invalid_na_or_n(htn) |
+                is_invalid_na_or_n(hivaids) |
+                is_invalid_na_or_n(gidisord) |
+                is_invalid_na_or_n(anembld) |
+                is_invalid_na_or_n(tb) |
+                is_invalid_na_or_n(pneum_2.2) |
+                is_invalid_na_or_n(malaria) |
+                is_invalid_na_or_n(asthma) |
+                is_invalid_na_or_n(osteo) |
+                is_invalid_na_or_n(othercm) |
+                is_invalid_or_n(comorb) |
+                (nonecm == 0 & num_comorb <= 0) |
+                (nonecm == 1 & num_comorb > 0))) %>%
     mutate(num_comorb = NULL,
            comment = "Invalid or missing entries")
   
