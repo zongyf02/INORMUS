@@ -879,15 +879,17 @@ check_fracwith_diswith <- function(form, rep) {
   
   problems <- form %>% 
     transmute(
-      region, site, studyid, ptinit, ptstatus, upper_fracture, spine_fracture,
-      lower_fracture, pelvis_fracture,
+      region, site, studyid, ptinit, ptstatus,
+      fracwith = eval(parse(text = str_c("fracwith_", rep))), upper_fracture,
+      spine_fracture, lower_fracture, pelvis_fracture,
+      diswith = eval(parse(text = str_c("diswith_", rep))),
       location_of_dislocation = location_of_dislocation,
       comment = "The location of fracture and the location of dislocation in one set of forms should be related") %>% 
-    filter(ptstatus == 1 & case_when(
-      location_of_dislocation == "U" ~ upper_fracture,
-      location_of_dislocation == "L" ~ lower_fracture,
-      location_of_dislocation == "P" ~ pelvis_fracture,
-      location_of_dislocation == "S" ~ spine_fracture))
+    filter(ptstatus == 1 & fracwith == 1 & diswith == 1 & case_when(
+      location_of_dislocation == "U" ~ !upper_fracture,
+      location_of_dislocation == "L" ~ !lower_fracture,
+      location_of_dislocation == "P" ~ !pelvis_fracture,
+      location_of_dislocation == "S" ~ !spine_fracture))
   
   return(problems)
 }
@@ -944,7 +946,7 @@ check_invalid_form1.1 <- function(form) {
         is_invalid_na_or_n(willing) | willing == 0 |
         is_invalid_na_or_n(comply) | comply == 0 |
         is_invalid_na_or_n(ptstatus) | ptstatus == 0 |
-        (ptstatus == 1 & !is_n(condate)) |
+        (ptstatus == 1 & is_n(condate)) |
         (ptstatus == 2 & is_na(parse_dmY(condate)))
     )
 }
