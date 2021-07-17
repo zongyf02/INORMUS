@@ -1024,3 +1024,105 @@ check_invalid_form2.2 <- function(form) {
   
   return(problems)
 }
+
+#' Check that all entries in Q5 form3.2 are filled with valid values
+#' 
+#' @param form dataframe containing form3.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form3.2_5 <- function(form) {
+  return (form %>% 
+            filter(
+              is_invalid_na_or_n(placeinj) | 
+                placeinj == 0
+            ) %>% 
+            mutate (comment="Invalid or missing entries"))
+}
+
+#' Check that all entries in Q6 form3.2 are filled with valid values
+#' 
+#' @param form dataframe containing form3.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form3.2_6 <- function(form) {
+  return (form %>% 
+            filter(
+              is_invalid_na_or_n(transfus) | 
+                transfus == 0 |
+                (transfus == 2 & is_invalid_na_or_n(transnot))) %>%
+            mutate(comment="Invalid or missing entries"))
+}
+
+#' Check that all entries in Q7 form3.2 are filled with valid values
+#' 
+#' @param form dataframe containing form3.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form3.2_7 <- function(form) {
+  return (form %>% 
+            filter(
+              is_invalid_na_or_n(nonorth) | 
+                nonorth == 0 |
+                (chest == 1 & (is_invalid_na_or_n(pneumot) |  
+                                 is_invalid_na_or_n(rib) |
+                                 is_invalid_na_or_n(hemopneu) | 
+                                 is_invalid_na_or_n(hvasc) | 
+                                 is_invalid_na_or_n(contbr) |
+                                 is_invalid_na_or_n(othchest) | 
+                                 ((pneumot == 1) + (rib == 1) +
+                                    (hemopneu == 1) + (hvasc == 1) +
+                                    (contbr == 1) + (othchest == 1) == 0))) |
+                
+                (abdo == 1 &  (is_invalid_na_or_n(spleen) |
+                                 is_invalid_na_or_n(liver) | 
+                                 is_invalid_na_or_n(lbowel) | 
+                                 is_invalid_na_or_n(sbowel) | 
+                                 is_invalid_na_or_n(urethra) | 
+                                 is_invalid_na_or_n(bladder) |
+                                 is_invalid_na_or_n(kidney) |
+                                 is_invalid_na_or_n(othabdo) | 
+                                 ((spleen == 1) + (liver == 1) +
+                                    (lbowel == 1) + (sbowel == 1) +
+                                    (urethra == 1) + (bladder == 1) +
+                                    (kidney == 1) + (othabdo == 1) == 0))) |
+                
+                (hdneck == 1 & (is_invalid_na_or_n(majfacl) |
+                                  is_invalid_na_or_n(minfacl) |
+                                  is_invalid_na_or_n(faclfrac) |
+                                  is_invalid_na_or_n(concuss) |
+                                  is_invalid_na_or_n(icbleed) | 
+                                  is_invalid_na_or_n(minhead) |
+                                  is_invalid_na_or_n(sklfrac) | 
+                                  is_invalid_na_or_n(othhn) | 
+                                  ((majfacl == 1) + (minfacl == 1) +
+                                     (faclfrac == 1) + (concuss == 1) +
+                                     (icbleed == 1) + (minhead == 1) +
+                                     (sklfrac == 1) + (othhn == 1) == 0))) |
+                (burn == 1 & (burnsev == 0 | is_invalid_na_or_n(burnsev) | 
+                                (burnsev != 0 & (is_invalid_na_or_n(sarea) | sarea == 0))))) 
+          %>% mutate(comment="Invalid or missing entries"))
+}
+
+#' Check that all entries in Q8 form3.2 are filled with valid values
+#' 
+#' @param form dataframe containing form3.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_invalid_form3.2_8 <- function(form) {
+  return(form %>% 
+           filter(
+             (northinj == 0 | is_invalid_na_or_n(northinj))) %>%
+           mutate( comment="Invalid or missing entries"))
+}
