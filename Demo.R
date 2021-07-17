@@ -341,3 +341,9 @@ problems_invalid_form1.1 <- check_invalid_form1.1(form)
 problems_invalid_form2.1 <- check_invalid_form2.1(form)
 # Check for invalid/missing entries in form2.2
 problems_invalid_form2.2 <- check_invalid_form2.2(form)
+
+# Check for invalid_form/missing entries in form3.2
+problems_invalid_form3.2_5 <- check_invalid_form3.2_5(form)
+problems_invalid_form3.2_6 <- check_invalid_form3.2_6(form)
+problems_invalid_form3.2_7 <- check_invalid_form3.2_7(form)
+problems_invalid_form3.2_8 <- check_invalid_form3.2_8(form)
