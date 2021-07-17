@@ -1009,6 +1009,43 @@ check_invalid_form1.1 <- function(form) {
     )
 }
 
+#' Time from injury to abx administration must be within the time interval (5h) from injury to hospital admission
+#' 
+#' @param form a dataframe containing all forms
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export
+
+check_iahrs_ihhrs <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, locabx, ptstatus, abxprior_1, admfrom, ihunits, ihhrs, ihdays, iaunits, iahrs, iadays,
+      comment = "Time from injury to abx administration must be 12 hours before the time to injury to hospital admission and abxprior must be true") %>%
+    filter((locabx == 2 & ptstatus == 1 & abxprior_1 == 1) 
+           & ((ihunits == 1 & iaunits == 1 & iahrs > ihhrs - 12) 
+              | (ihunits== 1 & iaunits == 2 & iadays * 24 > ihhrs - 12) 
+              | (ihunits == 2 & iaunits == 1 & iahrs > ihdays * 24 - 12) 
+              | (ihunits == 2 & iaunits == 1 & ihdays != iadays)))
+  
+  return(problems)
+}
+
+#' Check that all entries in form2.2 are filled with valid values
+#' 
+#' @param form dataframe containing form2.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form2.2 <- function(form) {
+  problems <- form %>%
+    filter(is_invalid_na_or_n (nonecm) | is_invalid_na_or_n(ischhrt) | is_invalid_na_or_n(cvascd) | is_invalid_na_or_n(lowresp) | is_invalid_na_or_n(cancer)
+           | is_invalid_na_or_n(diabetes) | is_invalid_na_or_n(copd) | is_invalid_na_or_n(htn) | is_invalid_na_or_n(hivaids) | is_invalid_na_or_n(anembld) | is_invalid_na_or_n(tb) | is_invalid_na_or_n(pneum_2.2) | is_invalid_na_or_n(malaria) | is_invalid_na_or_n(asthma)
+           | is_invalid_na_or_n(osteo) | is_invalid_na_or_n(othercm) | (othercm == 1 & is_invalid_na_or_n(comorb)))
+  
+  return(problems)
+}
+
 #' Check that all entries in form2.1 are filled with valid values
 #' 
 #' @param form dataframe containing form2.1
@@ -1016,7 +1053,6 @@ check_invalid_form1.1 <- function(form) {
 #' 
 #' @import tidyverse
 #' @export
-
 check_invalid_form2.1 <- function(form){
   problems <- form %>% 
     filter(
