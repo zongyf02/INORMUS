@@ -1,4 +1,4 @@
-# Last Updated: July 02, 2021
+# Last Updated: July 06, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -44,6 +44,9 @@ form3.1 <- read_form3.1("3.1.csv")
 
 form3.2 <- read_form3.2("3.2.csv")
 # form3.2_raw <- read_form3.2("3.2.csv", raw = TRUE)
+
+form3.3 <- read_form3.3("3.3.csv")
+# form3.3_raw <- read_form3.3("3.3.csv", raw = TRUE)
 
 form4.1 <- read_form4.1("4.1.csv")
 # form4.1_raw <- read_form4.1("4.1.csv", raw = TRUE)
@@ -106,10 +109,10 @@ form7.4 <- read_form7.4("7.4.csv")
 # form7.4_raw <- read_form7.4("7.4.csv", raw = TRUE)
 
 # Create a list of all forms
-forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form4.1, form5.1,
-              form5.2, form5.3, form5.4, form5.5, form5.6, form5.7, form5.8,
-              form5.9, form5.10, form5.11, form5.12, form5.13, form5.14, form6.1,
-              form7.1, form7.2, form7.3, form7.4)
+forms <- list(form1.1, form2.1, form2.2, form3.1, form3.2, form3.3, form4.1,
+              form5.1, form5.2, form5.3, form5.4, form5.5, form5.6, form5.7,
+              form5.8, form5.9, form5.10, form5.11, form5.12, form5.13,
+              form5.14, form6.1, form7.1, form7.2, form7.3, form7.4)
 
 # Merge all forms
 form <- merge_forms(forms)
@@ -214,6 +217,9 @@ problems_form3.2_box7_chest <- check_form3.2_box7_chest(form)
 problems_form3.2_box7_abdo <- check_form3.2_box7_abdo(form)
 problems_form3.2_box7_hn <- check_form3.2_box7_hn(form)
 
+problems_form3.3_p50dist <- check_form3.3_p50dist(form)
+problems_form3.3_p50city <- check_form3.3_p50city(form)
+
 problems_form4.1_box2 <- check_form4.1_box2(form)
 
 problems_form4.1_box3 <- check_form4.1_box3(form)
@@ -305,9 +311,10 @@ problems_hspdate_injdate <- check_hspdate_injdate(form)
 # Check 3
 problems_condate_hspdate <- check_condate_hspdate(form)
 
-# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
+# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms and form5.14
 # Check 4
 problems_northinf_form5.x <- check_northinj_form5.x(form)
+problems_northinj_form5.14 <- check_northinj_form5.14(form)
 
 # Check that time from injury to hsp admission should be within +/- 24 hrs range of difference between injdate and hspdate
 # Check 5
@@ -319,23 +326,18 @@ problems_admfrom_ihunits <- check_admfrom_ihunits(form)
 
 # Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
 # Check 7
-problems_abx_locabx_1 <- check_abx_locabx_1(form)
+problems_abx_locabx_injurySite <- check_locabx_injurySite(form)
+problems_abx_locabx_priorSurgery <- check_locabx_priorSurgery(form)
+problems_abx_locabx_operatively <- check_locabx_operatively(form)
 
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
 # Also ensures only 1 fracture per set of form
-# Checks 8
+# Checks 8 and 9
 problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
-# Check if the number of fractures, if any, is valid for the set form5.x
-#Checks 9
-problems_check_fracwith_1 <-check_fracwith(form, 1)
-problems_check_fracwith_2 <-check_fracwith(form, 2)
-problems_check_fracwith_3 <-check_fracwith(form, 3)
-
-#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
-problems_northinj_form5.14 <- check_northinj_form5.14(form)
-
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
+# Check for invalid/missing entries in form2.1
+problems_invalid_form2.1 <- check_invalid_form2.1(form)

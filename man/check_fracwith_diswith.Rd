@@ -3,7 +3,7 @@
 \name{check_fracwith_diswith}
 \alias{check_fracwith_diswith}
 \title{Check that the location of fracture and the location of dislocation in one
- set of form5.x are related}
+set of form5.x are related}
 \usage{
 check_fracwith_diswith(form, rep)
 }
@@ -17,4 +17,5 @@ a dataframe containing problematic entries
 }
 \description{
 Also checks that only one fracture is selected per set
+Note proximal femur counts as pelvis, not lower body
 }
