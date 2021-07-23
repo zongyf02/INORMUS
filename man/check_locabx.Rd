@@ -2,9 +2,8 @@
 % Please edit documentation in R/checks.R
 \name{check_locabx}
 \alias{check_locabx}
-\title{Check that the time from injury to stabilization should be within 1 hour of
-the time from injury to antibiotics administration if administered prior to
-surgery}
+\title{Check that the time from injury to the first antibiotic administration must
+be consistent with the location of the first administration}
 \usage{
 check_locabx(form)
 }
@@ -15,7 +14,6 @@ check_locabx(form)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
-Check that the time from injury to stabilization should be within 1 hour of
-the time from injury to antibiotics administration if administered prior to
-surgery
+Check that the time from injury to the first antibiotic administration must
+be consistent with the location of the first administration
 }
