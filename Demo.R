@@ -1,4 +1,4 @@
-# Last Updated: July 06, 2021
+# Last Updated: July 17, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -347,3 +347,10 @@ problems_invalid_form3.2_5 <- check_invalid_form3.2_5(form)
 problems_invalid_form3.2_6 <- check_invalid_form3.2_6(form)
 problems_invalid_form3.2_7 <- check_invalid_form3.2_7(form)
 problems_invalid_form3.2_8 <- check_invalid_form3.2_8(form)
+
+# Check for invalid/missing entries in form5.2
+problems_invalid_form5.2x <- check_invalid_form5.2(form, 1)
+problems_invalid_form5.2x <- check_invalid_form5.2(form, 2)
+problems_invalid_form5.2x <- check_invalid_form5.2(form, 3)
+problems_invalid_form5.2x <- check_invalid_form5.2(form, 4)
+

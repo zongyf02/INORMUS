@@ -7,7 +7,7 @@
 check_invalid_form2.2(form)
 }
 \arguments{
-\item{form}{dataframe containing form2.2}
+\item{form}{dataframe containing form1.1 and form2.2}
 }
 \value{
 a dataframe containing problematic entries
