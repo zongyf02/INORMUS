@@ -7,7 +7,7 @@
 check_invalid_form5.2x(form, rep)
 }
 \arguments{
-\item{form}{dataframe containing form5.2}
+\item{form}{dataframe containing form1.1, form3.2, and form5.2}
 
 \item{rep}{which set of form}
 }

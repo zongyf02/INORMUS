@@ -767,9 +767,8 @@ check_northinj_form5.x <- function(form) {
       is_set3_empty  = is_set3_empty,
       comment = "The number of ortho injuries stated on form 3.2 should be consistent with the number of sets of injury forms completed") %>% 
     filter(ptstatus == 1 &
-             (northinj == 0 |
-                (northinj != 1 | is_set1_empty | !is_set2_empty | !is_set3_empty
-                 | continue_1 != 0) &
+             ((northinj != 1 | is_set1_empty | !is_set2_empty | !is_set3_empty
+               | continue_1 != 0) &
                 (northinj != 2 | is_set1_empty | is_set2_empty | !is_set3_empty |
                    continue_1 != 1 | continue_2 != 0) &
                 ((northinj != 3 & northinj != 4) | is_set1_empty | is_set2_empty
@@ -792,8 +791,7 @@ check_northinj_form5.14 <- function(form) {
       northinj, noinj2, noinj3,
       comment = "The number of orthopedic injuries stated on form 3.2 isn't consistent with the Wound & Skin Prep form 5.14") %>%
     filter(ptstatus == 1 &
-             (northinj == 0 |
-                (northinj != 1 | noinj2 != 1 | noinj3 != 1) &
+             ((northinj != 1 | noinj2 != 1 | noinj3 != 1) &
                 (northinj != 2 | noinj2 != 0 | noinj3 != 1) &
                 ((northinj != 3 & northinj != 4) | noinj2 != 0 | noinj3 != 0)))
 }
@@ -977,7 +975,7 @@ check_invalid_form2.1 <- function(form){
 
 #' Check that all entries in form2.2 are filled with valid values
 #' 
-#' @param form dataframe containing form2.2
+#' @param form dataframe containing form1.1 and form2.2
  #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
@@ -1028,7 +1026,7 @@ check_invalid_form2.2 <- function(form) {
 
 #' Check that all entries in form5.2 are filled with valid values
 #' 
-#' @param form dataframe containing form5.2
+#' @param form dataframe containing form1.1, form3.2, and form5.2
 #' @param rep which set of form
 #' @return a dataframe containing problematic entries
 #' 
@@ -1061,30 +1059,30 @@ check_invalid_form5.2x <- function(form, rep){
   
   
   problems <- form %>% filter(
-    ptstatus == 1 & (
-      is_invalid_na_or_n(diswith) | diswith == 0 |
-        is_invalid_or_na(disloc) | (diswith == 1 & is_n(disloc)) |
-        is_invalid_or_n(othdloc) |
-        is_invalid_na_or_n(txprior) | txprior == 0 |
-        is_invalid_or_na(lohosp) | is_invalid_or_na(ltradhl) |
-        is_invalid_or_na(lnonhosp) | is_invalid_or_na(locoth) |
-        is_invalid(othloctx) |
-        is_invalid_or_na(splint) | is_invalid_or_na(dressopn) |
-        is_invalid_or_na(nostabil) | is_invalid_or_na(irrig) |
-        is_invalid_or_na(abxprior) | is_invalid_or_na(bandages) |
-        is_invalid_or_na(ostabil) | is_invalid_or_na(othtx) |
-        is_invalid(othtxsp) |
-        (txprior == 1 & 
-           (is_n(lohosp) | is_n(ltradhl) | is_n(lnonhosp) | is_n(locoth) |
-              is_n(othloctx) |
-              is_n(splint) | is_n(dressopn) | is_n(nostabil) | is_n(irrig) |
-              is_n(abxprior) | is_n(bandages) | is_n(ostabil) | is_n(othtx) |
-              is_n(othtxsp))) |
-        is_invalid_na_or_n(ptstabil) | ptstabil == 0 |
-        is_invalid_or_na(method) | is_invalid_or_na(howstab) |
-        is_invalid(othstab) | is_invalid_or_na(hspstab) |
-        (ptstabil == 1 & 
-           (is_n(method) | is_n(howstab) | is_n(othstab) | is_n(hspstab))))) %>%
+    ptstatus == 1 & rep <= northinj &
+      (is_invalid_na_or_n(diswith) | diswith == 0 |
+         is_invalid_or_na(disloc) | (diswith == 1 & is_n(disloc)) |
+         is_invalid_or_n(othdloc) |
+         is_invalid_na_or_n(txprior) | txprior == 0 |
+         is_invalid_or_na(lohosp) | is_invalid_or_na(ltradhl) |
+         is_invalid_or_na(lnonhosp) | is_invalid_or_na(locoth) |
+         is_invalid(othloctx) |
+         is_invalid_or_na(splint) | is_invalid_or_na(dressopn) |
+         is_invalid_or_na(nostabil) | is_invalid_or_na(irrig) |
+         is_invalid_or_na(abxprior) | is_invalid_or_na(bandages) |
+         is_invalid_or_na(ostabil) | is_invalid_or_na(othtx) |
+         is_invalid(othtxsp) |
+         (txprior == 1 & 
+            (is_n(lohosp) | is_n(ltradhl) | is_n(lnonhosp) | is_n(locoth) |
+               is_n(othloctx) |
+               is_n(splint) | is_n(dressopn) | is_n(nostabil) | is_n(irrig) |
+               is_n(abxprior) | is_n(bandages) | is_n(ostabil) | is_n(othtx) |
+               is_n(othtxsp))) |
+         is_invalid_na_or_n(ptstabil) | ptstabil == 0 |
+         is_invalid_or_na(method) | is_invalid_or_na(howstab) |
+         is_invalid(othstab) | is_invalid_or_na(hspstab) |
+         (ptstabil == 1 & 
+            (is_n(method) | is_n(howstab) | is_n(othstab) | is_n(hspstab))))) %>%
     mutate(comment="Invalid or missing entries")
-    return(problems)
+  return(problems)
 }
