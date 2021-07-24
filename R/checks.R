@@ -1038,37 +1038,62 @@ check_invalid_form2.1 <- function(form){
 #' Check that all entries in form5.2 are filled with valid values
 #' 
 #' @param form dataframe containing form5.2
+#' @param rep which set of form
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
 #' @export
-
-check_invalid_form5.2 <- function(form){
+check_invalid_form5.2x <- function(form, rep){
+  diswith <- pull(form, str_c("diswith", rep, sep = "_"))
+  disloc <- pull(form, str_c("disloc", rep, sep = "_"))
+  othdloc <- pull(form, str_c("othdloc", rep, sep = "_"))
+  txprior <- pull(form, str_c("txprior", rep, sep = "_"))
+  lohosp <- pull(form, str_c("lohosp", rep, sep = "_"))
+  ltradhl <- pull(form, str_c("ltradhl", rep, sep = "_"))
+  lnonhosp <- pull(form, str_c("lnonhosp", rep, sep = "_"))
+  locoth <- pull(form, str_c("locoth", rep, sep = "_"))
+  othloctx <- pull(form, str_c("othloctx", rep, sep = "_"))
+  splint <- pull(form, str_c("splint", rep, sep = "_"))
+  dressopn <- pull(form, str_c("dressopn", rep, sep = "_"))
+  nostabil <- pull(form, str_c("nostabil", rep, sep = "_"))
+  irrig <- pull(form, str_c("irrig", rep, sep = "_"))
+  abxprior <- pull(form, str_c("abxprior", rep, sep = "_"))
+  bandages <- pull(form, str_c("bandages", rep, sep = "_"))
+  ostabil <- pull(form, str_c("ostabil", rep, sep = "_"))
+  othtx <- pull(form, str_c("othtx", rep, sep = "_"))
+  othtxsp <- pull(form, str_c("othtxsp", rep, sep = "_"))
+  ptstabil <- pull(form, str_c("ptstabil", rep, sep = "_"))
+  method <- pull(form, str_c("method", rep, sep = "_"))
+  howstab <- pull(form, str_c("howstab", rep, sep = "_"))
+  othstab <- pull(form, str_c("othstab", rep, sep = "_"))
+  hspstab <- pull(form, str_c("hspstab", rep, sep = "_"))
+  
+  
   problems <- form %>% filter(
     ptstatus == 1 & (
-      is_invalid_na_or_n(diswith_1) | diswith_1 == 0 |
-      is_invalid_or_na(disloc_1) | (diswith_1 == 1 & is_n(disloc_1)) |
-      is_invalid_or_n(othdloc_1) |
-      is_invalid_na_or_n(txprior_1) | txprior_1 == 0 |
-      is_invalid_or_na(lohosp_1) | is_invalid_or_na(ltradhl_1) | is_invalid_or_na(lnonhosp_1) |
-      is_invalid_or_na(locoth_1) | is_invalid(othloctx_1) | 
-      is_invalid_or_na(splint_1) | is_invalid_or_na(dressopn_1) | is_invalid_or_na(nostabil_1) | 
-      is_invalid_or_na(irrig_1) | is_invalid_or_na(abxprior_1) | is_invalid_or_na(bandages_1) |
-      is_invalid_or_na(ostabil_1) | is_invalid_or_na(othtx_1) | is_invalid(othtxsp_1) |
-      (txprior_1 == 1 & 
-          (is_n(lohosp_1) | is_n(ltradhl_1) | is_n(lnonhosp_1) | 
-          is_n(locoth_1) | is_n(othloctx_1) | 
-          is_n(splint_1) | is_n(dressopn_1) | is_n(nostabil_1) | 
-          is_n(irrig_1) | is_n(abxprior_1) | is_n(bandages_1) |
-          is_n(ostabil_1) | is_n(othtx_1) | is_n(othtxsp_1))) |
-      is_invalid_na_or_n(ptstabil_1) | ptstabil_1 == 0 |
-      is_invalid_or_na(method_1) | is_invalid_or_na(howstab_1) | is_invalid(othstab_1) |
-      is_invalid_or_na(hspstab_1) |
-      (ptstabil_1 == 1 & 
-         (is_n(method_1) | is_n(howstab_1) | is_n(othstab_1) |
-          is_n(hspstab_1)))
-      )
-    ) %>%
-  mutate(comment="Invalid or missing entries")
+      is_invalid_na_or_n(diswith) | diswith == 0 |
+        is_invalid_or_na(disloc) | (diswith == 1 & is_n(disloc)) |
+        is_invalid_or_n(othdloc) |
+        is_invalid_na_or_n(txprior) | txprior == 0 |
+        is_invalid_or_na(lohosp) | is_invalid_or_na(ltradhl) |
+        is_invalid_or_na(lnonhosp) | is_invalid_or_na(locoth) |
+        is_invalid(othloctx) |
+        is_invalid_or_na(splint) | is_invalid_or_na(dressopn) |
+        is_invalid_or_na(nostabil) | is_invalid_or_na(irrig) |
+        is_invalid_or_na(abxprior) | is_invalid_or_na(bandages) |
+        is_invalid_or_na(ostabil) | is_invalid_or_na(othtx) |
+        is_invalid(othtxsp) |
+        (txprior == 1 & 
+           (is_n(lohosp) | is_n(ltradhl) | is_n(lnonhosp) | is_n(locoth) |
+              is_n(othloctx) |
+              is_n(splint) | is_n(dressopn) | is_n(nostabil) | is_n(irrig) |
+              is_n(abxprior) | is_n(bandages) | is_n(ostabil) | is_n(othtx) |
+              is_n(othtxsp))) |
+        is_invalid_na_or_n(ptstabil) | ptstabil == 0 |
+        is_invalid_or_na(method) | is_invalid_or_na(howstab) |
+        is_invalid(othstab) | is_invalid_or_na(hspstab) |
+        (ptstabil == 1 & 
+           (is_n(method) | is_n(howstab) | is_n(othstab) | is_n(hspstab))))) %>%
+    mutate(comment="Invalid or missing entries")
   return(problems)
 }
