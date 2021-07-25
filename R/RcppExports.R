@@ -10,8 +10,10 @@
 #' @param x string
 #' @return integer
 #' @export
+#' @useDynLib INORMUS, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
 #' @import tidyverse
 parse_num_c <- function(x) {
-    .Call('_INORMUS_parse_num_c', PACKAGE = 'INORMUS', x)
+    .Call(`_INORMUS_parse_num_c`, x)
 }
 

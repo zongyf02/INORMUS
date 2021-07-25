@@ -11,6 +11,8 @@ using namespace Rcpp;
 //' @param x string
 //' @return integer
 //' @export
+//' @useDynLib INORMUS, .registration = TRUE
+//' @importFrom Rcpp sourceCpp
 //' @import tidyverse
 // [[Rcpp::export]]
 IntegerVector parse_num_c(CharacterVector x) {
