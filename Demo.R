@@ -1,4 +1,4 @@
-# Last Updated: July 17, 2021
+# Last Updated: July 28, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -346,3 +346,6 @@ problems_invalid_form5.2x <- check_invalid_form5.2(form, 1)
 problems_invalid_form5.2x <- check_invalid_form5.2(form, 2)
 problems_invalid_form5.2x <- check_invalid_form5.2(form, 3)
 problems_invalid_form5.2x <- check_invalid_form5.2(form, 4)
+
+# Check initials
+problems_initials <- check_initials(forms)

@@ -1086,3 +1086,38 @@ check_invalid_form5.2x <- function(form, rep){
     mutate(comment="Invalid or missing entries")
   return(problems)
 }
+
+#' Check that initials between forms are consistent
+#' 
+#' @param list list of forms to check for intial consistencies
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_initials <- function(list) {
+  for (i in 1:length(list)) {
+    form <- list[[i]] %>% select("region", "site", "studyid", "ptinit")
+    if (i == 1) {
+      merged <- form
+    } else {
+      merged <- full_join(merged, form, by = c("region", "site", "studyid"),
+                          suffix = c(str_c("(", i - 1, ")"),
+                                     str_c("(", i, ")")))
+    }
+  }
+  
+  cols <- str_extract(colnames(merged), ".*\\(\\d*\\).*")
+  cols <- cols[!is.na(cols)]
+  cond <- FALSE
+  i <- 1
+  end <- length(cols)
+  while (i < end) {
+    print(i)
+    cond <- cond | (pull(merged, cols[i]) != pull(merged, cols[i + 1]))
+    i <- i + 1
+  }
+  
+  merged %>%
+    transmute(region, site, studyid, comment = "Inconsistent initials") %>%
+    filter(cond)
+}
