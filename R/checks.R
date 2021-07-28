@@ -1029,70 +1029,69 @@ check_invalid_form2.2 <- function(form) {
 
 #' Check that all entries in form3.1 are filled with valid values
 #' 
-#' @param form dataframe containing form3.1
+#' @param form dataframe containing form1.1 and form3.1
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
 #' @export
 check_invalid_form3.1 <- function(form) {
   problems <- form %>% 
-    mutate(
-      is_trans_column_invalid_or_missing = is_invalid_na_or_n(trans) |
-        (trans == 1 &
-           (is_invalid_na_or_n(transsp) | transsp == 0 |
-              is_invalid_or_na(bhelm) | is_invalid_or_na(mhelm) |
-              is_invalid_or_na(tbsbelt) | is_invalid_or_na(asbelt) | 
-              is_invalid_or_n(othtrans) |
-              (transsp == 6 & is_n(bhelm) | bhelm == 0) |
-              (transsp == 7 & (is_n(mhelm) | mhelm == 0)) |
-              (transsp == 8 & (is_n(tbsbelt) | tbsbelt == 0)) |
-              (transsp == 9 & (is_n(asbelt) | asbelt == 0)) )) |
-        (trans == 0 & is_invalid_or_na(transsp)),
-      is_fall_column_invalid_or_missing = is_invalid_na_or_n(fall) | 
-        (fall == 1 & 
-           (is_invalid_na_or_n(fallfrom) | fallfrom == 0 | 
-              is_invalid_or_na(lowhigh) |
-              (fallfrom == 2 & (is_n(lowhigh) | lowhigh == 0)) )) |
-        (fall == 0 & is_invalid_or_na(fallfrom)),
-      is_intent_column_invalid_or_missing = is_invalid_na_or_n(intent) | 
-        (intent == 1 &
-           (is_invalid_na_or_n(intentsp) | intentsp == 0 | 
-              is_invalid_or_n(othinten) )) |
-        (intent == 0 & is_invalid_or_na(intent)), 
-      is_strklift_column_invalid_or_missing = is_invalid_na_or_n(strklift) | 
-        (strklift == 1 &
-           (is_invalid_na_or_n(stliftsp) | stliftsp == 0 | 
-              is_invalid_or_n(othstlif) )) |
-        (strklift == 0 & is_invalid_or_na(strklift)),
-      is_othmech_column_invalid_or_missing = is_invalid_na_or_n(othmech) | 
-        (othmech == 1 &
-           (is_invalid_na_or_n(omechsp) | omechsp == 0 | 
-              is_invalid_or_n(othmoth) )) |
-        (othmech == 0 & is_invalid_or_na(othmech)), 
-      num_of_mechanism_of_injury = 
-        (trans != 0) + (fall != 0) + (intent != 0) + (strklift != 0) + (othmech != 0),
-      comment="Invalid or missing entries"
-    ) %>% 
     filter(ptstatus == 1 &
-             (is_invalid_na_or_n(injdate) | injdate == 0 | is.na(parse_dmY(injdate)) |
+             (is.na(parse_dmY(injdate)) |
                 is_invalid_na_or_n(alcohol) | alcohol == 0 |
                 is_invalid_na_or_n(selfi) | selfi == 0 |
-                is_trans_column_invalid_or_missing | 
-                is_fall_column_invalid_or_missing |
-                is_intent_column_invalid_or_missing |
-                is_strklift_column_invalid_or_missing |
-                is_othmech_column_invalid_or_missing |
-                num_of_mechanism_of_injury != 1 |
+                # transport column
+                is_invalid_na_or_n(trans) |
+                is_invalid_or_na(transsp) | 
+                is_invalid_or_na(bhelm) | is_invalid_or_na(mhelm) |
+                is_invalid_or_na(tbsbelt) | is_invalid_or_na(asbelt) |
+                is_invalid(othtrans) |
+                (trans == 1 &
+                   (is_n(transsp) | transsp == 0 | is_n(othtrans) |
+                      (transsp == 6 & (is_n(bhelm) | bhelm == 0)) |
+                      (transsp == 7 & (is_n(mhelm) | mhelm == 0)) |
+                      (transsp == 8 & (is_n(tbsbelt) | tbsbelt == 0)) |
+                      (transsp == 9 & (is_n(asbelt) | asbelt == 0)))) |
+                # fall column
+                is_invalid_na_or_n(fall) |
+                is_invalid_or_na(fallfrom) | 
+                is_invalid_or_na(lowhigh) |
+                (fall == 1 &
+                   (is_n(fallfrom) | fallfrom == 0 |
+                      (fallfrom == 2 & (is_n(lowhigh) | lowhigh == 0)))) |
+                # intentional column
+                is_invalid_na_or_n(intent) |
+                is_invalid_or_na(intentsp) |
+                is_invalid(othinten) |
+                (intent == 1 & (is_n(intentsp) | intentsp == 0 |
+                                  is_n(othinten))) |
+                # struck/lifting column
+                is_invalid_na_or_n(strklift) |
+                is_invalid_or_na(stliftsp)  |
+                is_invalid(othstlif) |
+                (strklift == 1 & (is_n(stliftsp) | stliftsp == 0
+                                  | is_n(othstlif))) |
+                # other column
+                is_invalid_na_or_n(othmech) |
+                is_invalid_or_na(omechsp) | 
+                is_invalid(othmoth) |
+                (othmech == 1 & (is_n(omechsp) | omechsp == 0 |
+                                   is_n(othmoth))) |
+                # number of injuries should be one
+                (trans == 1) + (fall == 1) + (intent == 1) + (strklift == 1) +
+                (othmech == 1) != 1 |
+                # Intent of injury
                 is_invalid_na_or_n(intinj) | intinj == 0 |
-                (intinj == 2 & is_invalid_na_or_n(intentof)) |
-                (intinj != 2 & intinj != 0 & is_invalid_or_na(intentof)))
-    )
+                is_invalid_or_na(intentof) |
+                (intinj == 2 & is_n(intentof)))) %>%
+    mutate(comment="Invalid or missing entries")
   return(problems)
 }
 
-#' Check that all entries in form3.1 are filled with valid values
+
+#' Check that all entries in form4.1 are filled with valid values
 #' 
-#' @param form dataframe containing form4.1
+#' @param form dataframe containing form1.1 and form4.1
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
@@ -1100,21 +1099,35 @@ check_invalid_form3.1 <- function(form) {
 check_invalid_form4.1 <- function(form) {
   problems <- form %>% 
     filter(ptstatus == 1 & 
-             (is_invalid_na_or_n(hspdate) | hspdate == 0 | is.na(parse_dmY(hspdate)) |
-                is_invalid_na_or_n(admfrom) | admfrom == 0 | is_invalid_or_n(othfrom) |
-                is_invalid_na_or_n(transto) | transto == 0 | is_invalid_or_n(othto) |
+             (is.na(parse_dmY(hspdate)) |
+                is_invalid_na_or_n(admfrom) | admfrom == 0 |
+                is_invalid_or_n(othfrom) |
+                is_invalid_na_or_n(transto) | transto == 0 |
+                is_invalid_or_n(othto) |
+                is_invalid_na_or_n(ihunits) | ihunits == 0 |
                 is_invalid_or_n(ihhrs) | is_invalid_or_n(ihdays) |
-                is_invalid_na_or_n(rsdelay) | rsdelay == 0 | is_invalid_or_n(othdelay) |
+                is_invalid_or_na(rsdelay) | rsdelay == 0 |
+                is_invalid_or_n(othdelay) |
+                (((ihunits == 1 & ihhrs > 24) | ihunits == 2) &
+                   is_n(rsdelay)) |
+                # Q6
                 is_invalid_na_or_n(abx) | abx == 0 |
-                is_invalid_or_n(iahrs) | is_invalid_or_n(iadays) |
-                is_invalid_or_na(locabx) | is_invalid_or_na(injscene) | 
-                is_invalid_or_na(erinhosp) | is_invalid_or_na(preop) | 
-                is_invalid_or_na(oper) | is_invalid_or_na(postop) | is_invalid_or_na(dnradabx) |
-                (abx == 1 & (is_n(locabx) | locabx == 0 |
-                               is_n(injscene) | is_n(erinhosp) |
-                               is_n(preop) | is_n(oper) | 
-                               is_n(postop) | is_n(dnradabx) |
-                               injscene + erinhosp + preop + oper + postop + dnradabx == 0)))
+                is_invalid_or_na(iaunits) | iaunits == 0 |
+                is_invalid(iahrs) | is_invalid(iadays) |
+                is_invalid_or_na(locabx) | locabx == 0 |
+                is_invalid_or_na(injscene) | is_invalid_or_na(erinhosp) |
+                is_invalid_or_na(preop) | is_invalid_or_na(oper) |
+                is_invalid_or_na(postop) | is_invalid_or_na(dnradabx) |
+                (abx == 1 &
+                   (is_n(iaunits) | is_n(iahrs) | is_n(iadays) |
+                      is_n(locabx) |
+                      is_n(injscene) | is_n(erinhosp) |
+                      is_n(preop) | is_n(oper) | 
+                      is_n(postop) | is_n(dnradabx) |
+                      (injscene + erinhosp + preop + oper + postop +
+                         dnradabx == 0) |
+                      (dnradabx == 1 &
+                         injscene + erinhosp + preop + oper + postop > 0))))
     ) %>%
     mutate(comment="Invalid or missing entries")
   return(problems)
