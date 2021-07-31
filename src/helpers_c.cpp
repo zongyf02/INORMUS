@@ -27,6 +27,8 @@ IntegerVector parse_num_c(CharacterVector x) {
       result[i] = -3;
     }else if(s == "N"){
       result[i] = -1;
+    }else if(CharacterVector::is_na(x[i])){
+      result[i] = NA_INTEGER;
     }else{
       result[i] = std::stoi(s);
     }
