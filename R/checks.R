@@ -929,6 +929,35 @@ check_locabx <- function(form) {
   return(problems)
 }
 
+#' Check that details on the patient's surgery is consistent
+#' 
+#' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
+#' @param rep which set of form
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_surgery_consistency <- function(form, rep) {
+  operat <-  pull(form, str_c("operat", rep, sep = "_"))
+  failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
+  delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
+  
+  problems = form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, northinj,
+      operat, failsurg, delsurg,
+      comment = "The patient's surgery information must be consistent"
+    ) %>%
+    filter(
+      ptstatus == 1 & rep <= northinj &
+        (
+          operat == 1 & (failsurg == 3 | delsurg == 3) |
+          operat == 0 & (failsurg < 3 | delsurg < 3) |
+          failsurg == 1 & delsurg == 1
+        )
+    )
+  return(problems)
+}
+
 #' Check that all entries in form1.1 are filled with valid values
 #' 
 #' @param form dataframe containing form1.1
