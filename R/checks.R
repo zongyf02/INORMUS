@@ -929,6 +929,26 @@ check_locabx <- function(form) {
   return(problems)
 }
 
+#' Check that the response to I&D is related to whether the fracture is open or closed 
+#' in one set of form5.x are related
+#' 
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_openclose_iandd <- function(form, rep){
+  openclose = pull(form, str_c("openclos", rep, sep = "_"))
+  iandd = pull(form, str_c("iandd", rep, sep = "_"))
+  
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,
+    openclose, iandd,
+    comment = "The response to I&D should be related to whether the fracture is open or closed ") %>% 
+    filter(ptstatus == 1 & 
+             (openclose == 1 & iandd == 3 | openclose == 2 & iandd != 3))
+  return(problems)
+}
+
 #' Check that all entries in form1.1 are filled with valid values
 #' 
 #' @param form dataframe containing form1.1
