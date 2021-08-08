@@ -971,7 +971,7 @@ check_invalid_form1.1 <- function(form) {
         is_invalid_na_or_n(comply) | comply == 0 |
         is_invalid_na_or_n(ptstatus) | ptstatus == 0 |
         (ptstatus == 1 & is_n(condate)) |
-        (ptstatus == 2 & is_na(parse_dmY(condate)))
+        (ptstatus == 2 & is.na(parse_dmY(condate)))
     )
 }
 
@@ -1112,6 +1112,80 @@ check_invalid_form3.1 <- function(form, checkIntent = FALSE) {
   return(problems)
 }
 
+#' Check that all entries in form3.2 are filled with valid values
+#' 
+#' @param form dataframe containing form3.2
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form3.2 <- function(form) {
+  form %>%
+    mutate(comment="Invalid or missing entries") %>%
+    filter(ptstatus == 1 &
+             (is_invalid_na_or_n(placeinj) | placeinj == 0 |
+                is_invalid_or_n(othplace) |
+                is_invalid_na_or_n(transfus) |  transfus == 0 |
+                is_invalid_or_n(transoth) |
+                is_invalid_or_na(transnot) | (transfus == 2 & is_n(transnot)) |
+                
+                (is_invalid_na_or_n(nonorth) | nonorth == 0 |
+                   is_invalid_or_na(chest) | is_invalid_or_na(pneumot) |  
+                   is_invalid_or_na(rib) | is_invalid_or_na(hemopneu) | 
+                   is_invalid_or_na(hvasc) | is_invalid_or_na(contbr) |
+                   is_invalid_or_na(othchest) | is_invalid_or_n(chestsp) |
+                   
+                   is_invalid_or_na(abdo) | is_invalid_or_na(spleen) |
+                   is_invalid_or_na(liver) | is_invalid_or_na(lbowel) | 
+                   is_invalid_or_na(sbowel) | is_invalid_or_na(urethra) | 
+                   is_invalid_or_na(bladder) | is_invalid_or_na(kidney) |
+                   is_invalid_or_na(othabdo) | is_invalid_or_n(abdosp) |
+                   
+                   is_invalid_or_na(hdneck) | is_invalid_or_na(majfacl) |
+                   is_invalid_or_na(minfacl) | is_invalid_or_na(faclfrac) |
+                   is_invalid_or_na(concuss) | is_invalid_or_na(icbleed) | 
+                   is_invalid_or_na(minhead) | is_invalid_or_na(sklfrac) | 
+                   is_invalid_or_na(othhn) | is_invalid_or_n(hdnecksp) |
+                   
+                   is_invalid_or_na(burn) |
+                   is_invalid_or_na(burnsev) | is_invalid_or_na(sarea) |
+                   
+                   (nonorth == 1 &
+                      (is_n(chest) | is_n(abdo) | is_n(hdneck) | is_n(burn) |
+                         (chest == 1 &
+                            (is_n(pneumot) | is_n(rib) |
+                               is_n(hemopneu) |is_n(hvasc) |
+                               is_n(contbr) | is_n(othchest) |
+                               (pneumot == 1) + (rib == 1) +
+                               (hemopneu == 1) + (hvasc == 1) +
+                               (contbr == 1) + (othchest == 1) == 0)) |
+                         
+                         (abdo == 1 &
+                            (is_n(spleen) | is_n(liver) | 
+                               is_n(lbowel) | is_n(sbowel) | 
+                               is_n(urethra) | is_n(bladder) |
+                               is_n(kidney) | is_n(othabdo) |
+                               (spleen == 1) + (liver == 1) +
+                               (lbowel == 1) + (sbowel == 1) +
+                               (urethra == 1) + (bladder == 1) +
+                               (kidney == 1) + (othabdo == 1) == 0)) |
+                         
+                         (hdneck == 1 &
+                            (is_n(majfacl) | is_n(minfacl) |
+                               is_n(faclfrac) | is_n(concuss) |
+                               is_n(icbleed) | is_n(minhead) |
+                               is_n(sklfrac) | is_n(othhn) |
+                               (majfacl == 1) + (minfacl == 1) +
+                               (faclfrac == 1) + (concuss == 1) +
+                               (icbleed == 1) + (minhead == 1) +
+                               (sklfrac == 1) + (othhn == 1) == 0)) |
+                         
+                         (burn == 1 & (is_n(burnsev) | burnsev == 0 |
+                                         is_n(sarea) | sarea == 0))))) |
+                
+                is_invalid_na_or_n(northinj) | northinj == 0))
+}
+
 #' Check that all entries in form4.1 are filled with valid values
 #' 
 #' @param form dataframe containing form1.1 and form4.1
@@ -1154,69 +1228,6 @@ check_invalid_form4.1 <- function(form) {
     ) %>%
     mutate(comment="Invalid or missing entries")
   return(problems)
-}
-
-#' Check that all entries in form3.2 are filled with valid values
-#' 
-#' @param form dataframe containing form3.2
-#' @return a dataframe containing problematic entries
-#' 
-#' @import tidyverse
-#' @export
-
-check_invalid_form3.2 <- function(form) {
-  return(form %>% 
-           filter(
-             ((ptstatus == 1) &
-                (northinj == 0 | is_invalid_na_or_n(northinj))) |
-               ((ptstatus == 1) & 
-                  (is_invalid_na_or_n(nonorth) | 
-                     nonorth == 0 |
-                     (chest == 1 & (is_invalid_na_or_n(pneumot) |  
-                                      is_invalid_na_or_n(rib) |
-                                      is_invalid_na_or_n(hemopneu) | 
-                                      is_invalid_na_or_n(hvasc) | 
-                                      is_invalid_na_or_n(contbr) |
-                                      is_invalid_na_or_n(othchest) | 
-                                      ((pneumot == 1) + (rib == 1) +
-                                         (hemopneu == 1) + (hvasc == 1) +
-                                         (contbr == 1) + (othchest == 1) == 0))) |
-                     
-                     (abdo == 1 &  (is_invalid_na_or_n(spleen) |
-                                      is_invalid_na_or_n(liver) | 
-                                      is_invalid_na_or_n(lbowel) | 
-                                      is_invalid_na_or_n(sbowel) | 
-                                      is_invalid_na_or_n(urethra) | 
-                                      is_invalid_na_or_n(bladder) |
-                                      is_invalid_na_or_n(kidney) |
-                                      is_invalid_na_or_n(othabdo) | 
-                                      ((spleen == 1) + (liver == 1) +
-                                         (lbowel == 1) + (sbowel == 1) +
-                                         (urethra == 1) + (bladder == 1) +
-                                         (kidney == 1) + (othabdo == 1) == 0))) |
-                     
-                     (hdneck == 1 & (is_invalid_na_or_n(majfacl) |
-                                       is_invalid_na_or_n(minfacl) |
-                                       is_invalid_na_or_n(faclfrac) |
-                                       is_invalid_na_or_n(concuss) |
-                                       is_invalid_na_or_n(icbleed) | 
-                                       is_invalid_na_or_n(minhead) |
-                                       is_invalid_na_or_n(sklfrac) | 
-                                       is_invalid_na_or_n(othhn) | 
-                                       ((majfacl == 1) + (minfacl == 1) +
-                                          (faclfrac == 1) + (concuss == 1) +
-                                          (icbleed == 1) + (minhead == 1) +
-                                          (sklfrac == 1) + (othhn == 1) == 0))) |
-                     (burn == 1 & (burnsev == 0 | is_invalid_na_or_n(burnsev) | 
-                                     (burnsev != 0 & (is_invalid_na_or_n(sarea) | sarea == 0)))))) |
-               ((ptstatus == 1) &
-                  (is_invalid_na_or_n(transfus) | 
-                     transfus == 0 |
-                     (transfus == 2 & is_invalid_na_or_n(transnot)))) | 
-               ((ptstatus == 1) & 
-                  (is_invalid_na_or_n(placeinj) | 
-                     placeinj == 0))) %>%
-           mutate(comment="Invalid or missing entries"))
 }
 
 #' Check that all entries in form5.2 are filled with valid values
