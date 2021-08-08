@@ -908,7 +908,7 @@ check_locabx <- function(form) {
       inj_to_abx = if_else(iaunits == 1, iahrs,
                            if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
       hsp_to_stab = if_else(hsunits_1 == 1, ishrs_1,
-                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
+                            if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
       diff_inj_to_abx_inj_to_hsp = inj_to_abx - inj_to_hsp,
       diff_inj_to_abx_inj_to_stab = inj_to_abx - (inj_to_hsp + hsp_to_stab),
       comment = "The time from injury to the first antibiotic administration must be consistent with the location of the first administration") %>% 
@@ -925,6 +925,32 @@ check_locabx <- function(form) {
                 diff_inj_to_abx_inj_to_stab < 0)) %>%
     mutate(diff_inj_to_abx_inj_to_hsp = NULL,
            diff_inj_to_abx_inj_to_stab = NULL)
+  
+  return(problems)
+}
+
+#' Check that details on the patient's surgery is consistent
+#' 
+#' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
+#' @param rep which set of form
+#' @return a dataframe containing problematic entries with relevant columns
+#' 
+#' @import tidyverse
+#' @export 
+check_operat_failsurg_delsurg <- function(form, rep) {
+  operat <-  pull(form, str_c("operat", rep, sep = "_"))
+  failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
+  delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
+  
+  problems = form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, northinj,
+      operat, failsurg, delsurg,
+      comment = "The patient's surgery information must be consistent") %>%
+    filter(ptstatus == 1 & rep <= northinj &
+             ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
+                (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
+                (failsurg == 1 & delsurg == 1)))
   
   return(problems)
 }
@@ -976,7 +1002,7 @@ check_invalid_form2.1 <- function(form){
 #' Check that all entries in form2.2 are filled with valid values
 #' 
 #' @param form dataframe containing form1.1 and form2.2
- #' @return a dataframe containing problematic entries
+#' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
 #' @export
@@ -1021,6 +1047,112 @@ check_invalid_form2.2 <- function(form) {
                 (nonecm == 1 & num_comorb > 0))) %>%
     mutate(num_comorb = NULL,
            comment = "Invalid or missing entries")
+  return(problems)
+}
+#' Check that all entries in form3.1 are filled with valid values
+#' 
+#' @param form dataframe containing form1.1 and form3.1
+#' @param checkIntent logical True to check question 4.1 Intent of Injury
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form3.1 <- function(form, checkIntent = FALSE) {
+  problems <- form %>% 
+    filter(ptstatus == 1 &
+             (is.na(parse_dmY(injdate)) |
+                is_invalid_na_or_n(alcohol) | alcohol == 0 |
+                is_invalid_na_or_n(selfi) | selfi == 0 |
+                # transport column
+                is_invalid_na_or_n(trans) |
+                is_invalid_or_na(transsp) | 
+                is_invalid_or_na(bhelm) | is_invalid_or_na(mhelm) |
+                is_invalid_or_na(tbsbelt) | is_invalid_or_na(asbelt) |
+                is_invalid(othtrans) |
+                (trans == 1 &
+                   (is_n(transsp) | transsp == 0 | is_n(othtrans) |
+                      (transsp == 6 & (is_n(bhelm) | bhelm == 0)) |
+                      (transsp == 7 & (is_n(mhelm) | mhelm == 0)) |
+                      (transsp == 8 & (is_n(tbsbelt) | tbsbelt == 0)) |
+                      (transsp == 9 & (is_n(asbelt) | asbelt == 0)))) |
+                # fall column
+                is_invalid_na_or_n(fall) |
+                is_invalid_or_na(fallfrom) | 
+                is_invalid_or_na(lowhigh) |
+                (fall == 1 &
+                   (is_n(fallfrom) | fallfrom == 0 |
+                      (fallfrom == 2 & (is_n(lowhigh) | lowhigh == 0)))) |
+                # intentional column
+                is_invalid_na_or_n(intent) |
+                is_invalid_or_na(intentsp) |
+                is_invalid(othinten) |
+                (intent == 1 & (is_n(intentsp) | intentsp == 0 |
+                                  is_n(othinten))) |
+                # struck/lifting column
+                is_invalid_na_or_n(strklift) |
+                is_invalid_or_na(stliftsp)  |
+                is_invalid(othstlif) |
+                (strklift == 1 & (is_n(stliftsp) | stliftsp == 0
+                                  | is_n(othstlif))) |
+                # other column
+                is_invalid_na_or_n(othmech) |
+                is_invalid_or_na(omechsp) | 
+                is_invalid(othmoth) |
+                (othmech == 1 & (is_n(omechsp) | omechsp == 0 |
+                                   is_n(othmoth))) |
+                # number of injuries should be one
+                (trans == 1) + (fall == 1) + (intent == 1) + (strklift == 1) +
+                (othmech == 1) != 1 |
+                # Intent of injury
+                (checkIntent &
+                   (is_invalid_na_or_n(intinj) | intinj == 0 |
+                      is_invalid_or_na(intentof) |
+                      (intinj == 2 & is_n(intentof)))))) %>%
+    mutate(comment="Invalid or missing entries")
+  return(problems)
+}
+
+#' Check that all entries in form4.1 are filled with valid values
+#' 
+#' @param form dataframe containing form1.1 and form4.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_invalid_form4.1 <- function(form) {
+  problems <- form %>% 
+    filter(ptstatus == 1 & 
+             (is.na(parse_dmY(hspdate)) |
+                is_invalid_na_or_n(admfrom) | admfrom == 0 |
+                is_invalid_or_n(othfrom) |
+                is_invalid_na_or_n(transto) | transto == 0 |
+                is_invalid_or_n(othto) |
+                is_invalid_na_or_n(ihunits) | ihunits == 0 |
+                is_invalid_or_n(ihhrs) | is_invalid_or_n(ihdays) |
+                is_invalid_or_na(rsdelay) | rsdelay == 0 |
+                is_invalid_or_n(othdelay) |
+                (((ihunits == 1 & ihhrs > 24) | ihunits == 2) &
+                   is_n(rsdelay)) |
+                # Q6
+                is_invalid_na_or_n(abx) | abx == 0 |
+                is_invalid_or_na(iaunits) | iaunits == 0 |
+                is_invalid(iahrs) | is_invalid(iadays) |
+                is_invalid_or_na(locabx) | locabx == 0 |
+                is_invalid_or_na(injscene) | is_invalid_or_na(erinhosp) |
+                is_invalid_or_na(preop) | is_invalid_or_na(oper) |
+                is_invalid_or_na(postop) | is_invalid_or_na(dnradabx) |
+                (abx == 1 &
+                   (is_n(iaunits) | is_n(iahrs) | is_n(iadays) |
+                      is_n(locabx) |
+                      is_n(injscene) | is_n(erinhosp) |
+                      is_n(preop) | is_n(oper) | 
+                      is_n(postop) | is_n(dnradabx) |
+                      (injscene + erinhosp + preop + oper + postop +
+                         dnradabx == 0) |
+                      (dnradabx == 1 &
+                         injscene + erinhosp + preop + oper + postop > 0))))
+    ) %>%
+    mutate(comment="Invalid or missing entries")
   return(problems)
 }
 
@@ -1175,7 +1307,6 @@ check_initials <- function(list) {
   i <- 1
   end <- length(cols)
   while (i < end) {
-    print(i)
     cond <- cond | (pull(merged, cols[i]) != pull(merged, cols[i + 1]))
     i <- i + 1
   }

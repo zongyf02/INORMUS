@@ -335,12 +335,22 @@ problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
+# Check that details on the patient's surgery is consistent
+# Check 12
+problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
+problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
+problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
 problems_invalid_form2.1 <- check_invalid_form2.1(form)
 # Check for invalid/missing entries in form2.2
 problems_invalid_form2.2 <- check_invalid_form2.2(form)
+# Check for invalid/missing entries in form3.1, do not check question 4.1, intent of injury
+problems_invalid_form3.1 <- check_invalid_form3.1(form, checkIntent = FALSE)
+# Check for invalid/missing entries in form4.1
+problems_invalid_form4.1 <- check_invalid_form4.1(form)
 # Check for invalid/missing entries in form5.2
 problems_invalid_form5.2x <- check_invalid_form5.2(form, 1)
 problems_invalid_form5.2x <- check_invalid_form5.2(form, 2)
