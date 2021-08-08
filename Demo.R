@@ -337,9 +337,9 @@ problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
 # Check that details on the patient's surgery is consistent
 # Check 12
-problems_surgery_consistency <- check_surgery_consistency(form, 1)
-problems_surgery_consistency <- check_surgery_consistency(form, 2)
-problems_surgery_consistency <- check_surgery_consistency(form, 3)
+problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
+problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
+problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)

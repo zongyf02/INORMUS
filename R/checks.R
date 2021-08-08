@@ -908,7 +908,7 @@ check_locabx <- function(form) {
       inj_to_abx = if_else(iaunits == 1, iahrs,
                            if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
       hsp_to_stab = if_else(hsunits_1 == 1, ishrs_1,
-                           if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
+                            if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
       diff_inj_to_abx_inj_to_hsp = inj_to_abx - inj_to_hsp,
       diff_inj_to_abx_inj_to_stab = inj_to_abx - (inj_to_hsp + hsp_to_stab),
       comment = "The time from injury to the first antibiotic administration must be consistent with the location of the first administration") %>% 
@@ -934,9 +934,10 @@ check_locabx <- function(form) {
 #' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
 #' @param rep which set of form
 #' @return a dataframe containing problematic entries with relevant columns
+#' 
 #' @import tidyverse
 #' @export 
-check_surgery_consistency <- function(form, rep) {
+check_operat_failsurg_delsurg <- function(form, rep) {
   operat <-  pull(form, str_c("operat", rep, sep = "_"))
   failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
   delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
@@ -945,16 +946,12 @@ check_surgery_consistency <- function(form, rep) {
     transmute(
       region, site, studyid, ptinit, ptstatus, northinj,
       operat, failsurg, delsurg,
-      comment = "The patient's surgery information must be consistent"
-    ) %>%
-    filter(
-      ptstatus == 1 & rep <= northinj &
-        (
-          operat == 1 & (failsurg == 3 | delsurg == 3) |
-          operat == 0 & (failsurg < 3 | delsurg < 3) |
-          failsurg == 1 & delsurg == 1
-        )
-    )
+      comment = "The patient's surgery information must be consistent") %>%
+    filter(ptstatus == 1 & rep <= northinj &
+             ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
+                (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
+                (failsurg == 1 & delsurg == 1)))
+  
   return(problems)
 }
 
