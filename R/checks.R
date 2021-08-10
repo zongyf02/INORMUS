@@ -951,7 +951,26 @@ check_operat_failsurg_delsurg <- function(form, rep) {
              ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
                 (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
                 (failsurg == 1 & delsurg == 1)))
+  return(problems)
+}
+
+#' Check that the response to I&D is related to whether the fracture is open or closed 
+#' in one set of form5.x are related
+#' 
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_openclose_iandd <- function(form, rep){
+  openclose = pull(form, str_c("openclos", rep, sep = "_"))
+  iandd = pull(form, str_c("iandd", rep, sep = "_"))
   
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,
+    openclose, iandd,
+    comment = "The response to I&D should be related to whether the fracture is open or closed ") %>% 
+    filter(ptstatus == 1 & 
+             (openclose == 1 & iandd == 3 | openclose == 2 & iandd != 3))
   return(problems)
 }
 
