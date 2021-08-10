@@ -1,4 +1,4 @@
-# Last Updated: August 7, 2021
+# Last Updated: August 8, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -335,6 +335,12 @@ problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
+# Check that the response to I&D is consistent with whether the fracture is open or closed 
+# Check 11
+problems_openclos_iandd_1 <- check_openclos_iandd(form, 1)
+problems_openclos_iandd_2 <- check_openclos_iandd(form, 2)
+problems_openclos_iandd_3 <- check_openclos_iandd(form, 3)
+
 # Check that details on the patient's surgery is consistent
 # Check 12
 problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
@@ -354,10 +360,9 @@ problems_invalid_form3.2 <- check_invalid_form3.2(form)
 # Check for invalid/missing entries in form4.1
 problems_invalid_form4.1 <- check_invalid_form4.1(form)
 # Check for invalid/missing entries in form5.2
-problems_invalid_form5.2x <- check_invalid_form5.2(form, 1)
-problems_invalid_form5.2x <- check_invalid_form5.2(form, 2)
-problems_invalid_form5.2x <- check_invalid_form5.2(form, 3)
-problems_invalid_form5.2x <- check_invalid_form5.2(form, 4)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 1)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 2)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 3)
 
 # Check initials
 problems_initials <- check_initials(forms)
