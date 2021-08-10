@@ -335,6 +335,12 @@ problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
+# Check that the response to I&D is consistent with whether the fracture is open or closed 
+# Check 11
+check_openclos_iandd_1 <- check_openclos_iandd(from, 1)
+check_openclos_iandd_2 <- check_openclos_iandd(from, 2)
+check_openclos_iandd_3 <- check_openclos_iandd(from, 3)
+
 # Check that details on the patient's surgery is consistent
 # Check 12
 problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)

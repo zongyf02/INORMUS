@@ -9,7 +9,7 @@ check_operat_failsurg_delsurg(form, rep)
 \arguments{
 \item{form}{dataframe containing ptstatus, form3.2, form5.3, and form5.4}
 
-\item{rep}{which set of form}
+\item{rep}{which set of form 5.3x}
 }
 \value{
 a dataframe containing problematic entries with relevant columns
