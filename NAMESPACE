@@ -54,7 +54,11 @@ export(check_invalid_form5.2x)
 export(check_locabx)
 export(check_northinj_form5.14)
 export(check_northinj_form5.x)
+<<<<<<< HEAD
 export(check_operat_failsurg_delsurg)
+=======
+export(check_openclose_iandd)
+>>>>>>> 8a5e9cda24d5481e948ac26246dd3bfaa2796305
 export(filter_precovid)
 export(is_invalid)
 export(is_invalid_na_or_n)

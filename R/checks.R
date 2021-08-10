@@ -929,6 +929,7 @@ check_locabx <- function(form) {
   return(problems)
 }
 
+<<<<<<< HEAD
 #' Check that details on the patient's surgery is consistent
 #' 
 #' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
@@ -952,6 +953,25 @@ check_operat_failsurg_delsurg <- function(form, rep) {
                 (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
                 (failsurg == 1 & delsurg == 1)))
   
+=======
+#' Check that the response to I&D is related to whether the fracture is open or closed 
+#' in one set of form5.x are related
+#' 
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_openclose_iandd <- function(form, rep){
+  openclose = pull(form, str_c("openclos", rep, sep = "_"))
+  iandd = pull(form, str_c("iandd", rep, sep = "_"))
+  
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,
+    openclose, iandd,
+    comment = "The response to I&D should be related to whether the fracture is open or closed ") %>% 
+    filter(ptstatus == 1 & 
+             (openclose == 1 & iandd == 3 | openclose == 2 & iandd != 3))
+>>>>>>> 8a5e9cda24d5481e948ac26246dd3bfaa2796305
   return(problems)
 }
 
