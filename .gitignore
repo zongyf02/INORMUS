@@ -2,3 +2,6 @@
 .RData
 .Rproj.user
 .csv
+.o
+.so
+.dll

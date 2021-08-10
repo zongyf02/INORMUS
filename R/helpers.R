@@ -1,21 +1,3 @@
-#' Convert string to number
-#'
-#' M will be converted to -2
-#' * (lost) will be converted to -3
-#' N will be converted to -1
-#'
-#' @param x string
-#' @return integer
-#' @export
-#' @import tidyverse
-parse_num <- function(x) {
-  x = if_else(x == "M", "-2",
-          if_else(x == "*", "-3",
-                  if_else(x == "N", "-1", x)))
-
-  return(parse_number(x))
-}
-
 #' Convert string in d/m/Y format to dates
 #'
 #' Check parse_date for details
