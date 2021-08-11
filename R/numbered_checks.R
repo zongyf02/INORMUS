@@ -335,3 +335,20 @@ check_openclos_iandd <- function(form, rep){
              (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
+
+#' Check that date of follow-up is 30 or more days after hospital admission 
+#' 
+#' @param form dataframe containing ptstatus, form4.1, and form6.1
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_formdate_ocrecyes <- function(form){
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, hspdate, formdate, ocrecyes,
+      comment = "The date of follow-up should be 30 or more days after hospital admission") %>%
+    filter(
+      ptstatus == 1 & parse_dmY(formdate) - parse_dmY(hspdate) < 30
+    )
+  return(problems)
+}

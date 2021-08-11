@@ -347,6 +347,10 @@ problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
 problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
 problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 
+#' Check that date of follow-up is 30 or more days after hospital admission 
+#' Check 16
+problems_formdate_ocrecyes <- check_formdate_ocrecyes(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
