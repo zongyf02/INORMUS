@@ -373,3 +373,27 @@ check_condate_hdcdate_dthdate <- function(form){
     mutate(parsed_condate = NULL)
   return(problems)
 }
+
+#' Check that he time difference between the time from injury to hsp admission and 
+#' the time from injury to prep solution in ER is within +/- 24 hr range
+#' 
+#' @param form a dataframe containing form1.1, form4.1, form5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_ihunits_ipunits <- function(form){
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus, 
+    ihunits, ihdays, ihhrs, ipunits1, ipreph1, iprepd1, ipunits2, ipreph2, iprepd2,
+    ipunits3, ipreph3, iprepd3,
+    comment = "The time difference between the time from injury to hsp admission and the time from injury to prep solution in ER should be within +/- 24 hr range") %>% 
+    filter(ptstatus == 1 & 
+             ((ihunits == 1 & ipunits1 == 1 & abs(ihhrs - ipreph1) >= 24) | 
+                (ihunits == 1 & ipunits2 == 1 & abs(ihhrs - ipreph2) >= 24) | 
+                (ihunits == 1 & ipunits3 == 1 & abs(ihhrs - ipreph3) >= 24)) | 
+             ((ihunits == 2 & ipunits1 == 2 & abs(ihdays - iprepd1) >= 1) | 
+                (ihunits == 2 & ipunits2 == 2 & abs(ihdays - iprepd2) >= 1) | 
+                (ihunits == 2 & ipunits3 == 2 & abs(ihdays - iprepd3) >= 1)))
+  return(problems)
+}

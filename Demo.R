@@ -355,6 +355,10 @@ problems_openclos_NA <- check_openclos_NA(form)
 #' Check 17
 problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)
 
+# Check that he time difference between the time from injury to hsp admission and the time from injury to prep solution in ER is within +/- 24 hr range
+# Check 14
+problems_ihunits_ipunits <- check_ihunits_ipunits(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
