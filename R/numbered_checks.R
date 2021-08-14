@@ -335,3 +335,31 @@ check_openclos_iandd <- function(form, rep){
              (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
+  
+#' Check that closed fracture injuries have have NA selected in form5.14 
+#' 
+#' @param form a dataframe containing form5.1x, form5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+
+check_openclos_NA <- function(form) {
+  fracwith1 <- pull(form, str_c("fracwith", 1, sep = "_"))
+  openclos1 <- pull(form, str_c("openclos", 1, sep = "_"))
+  fracwith2 <- pull(form, str_c("fracwith", 2, sep = "_"))
+  openclos2 <- pull(form, str_c("openclos", 2, sep = "_"))
+  fracwith3 <- pull(form, str_c("fracwith", 3, sep = "_"))
+  openclos3 <- pull(form, str_c("openclos", 3, sep = "_"))
+  
+  return (form %>% 
+            transmute(
+              region, site, studyid, ptinit, ptstatus, 
+              fracwith1,fracwith2,fracwith3, openclos1,openclos2,openclos3, naprep1, naprep2, naprep3, 
+              comment="Not Applicable should be selected for closed fracture injuries") %>% 
+            filter(ptstatus == 1 & 
+                     ((fracwith1 == 1 & openclos1 == 2 & naprep1 != 1) | 
+                        (fracwith2 == 1 & openclos2 == 2 & naprep2 != 1) | 
+                        (fracwith3 == 1 & openclos3 == 2 & naprep3 != 1))
+            ))
+}
