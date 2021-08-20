@@ -17,3 +17,15 @@ parse_num <- function(x) {
     .Call(`_INORMUS_parse_num`, x)
 }
 
+#' Convert id to site location
+#'
+#' Convert studyid to site location
+#'
+#' @param id studyid
+#' @return string of site location or NA
+#' @export
+#' @import tidyverse
+parse_site_c <- function(id) {
+    .Call(`_INORMUS_parse_site_c`, id)
+}
+
