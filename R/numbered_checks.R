@@ -335,3 +335,19 @@ check_openclos_iandd <- function(form, rep){
              (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
+
+#' Check that consent date is before discharge date
+#' 
+#' @param form a dataframe containing form1.1 and form6.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_condate_hdcdate <- function(form){
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus, condate, hdcdate, 
+    diffdate = difftime(parse_dmY(hdcdate), parse_dmY(condate), units = "days"),
+    comment = "Consent date should be before discharge date") %>%
+    filter(ptstatus == 1 & diffdate < 0)
+  return(problems)
+}
