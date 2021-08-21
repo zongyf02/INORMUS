@@ -338,7 +338,7 @@ check_openclos_iandd <- function(form, rep){
   
 #' Check that closed fracture injuries have have NA selected in form5.14 
 #' 
-#' @param form a dataframe containing form5.1x, form5.14
+#' @param form a dataframe containing form1.1, form5.1x, form5.14
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
@@ -353,4 +353,23 @@ check_openclos_NA <- function(form) {
                      ((openclos_1 == 2 & naprep1 != 1) | 
                         (openclos_2 == 2 & naprep2 != 1) | 
                         (openclos_3 == 2 & naprep3 != 1))))
+}
+
+#' Check that consent date is before or on discharge date or date of death
+#' 
+#' @param form a dataframe containing form1.1 and form6.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_condate_hdcdate_dthdate <- function(form){
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus, condate,
+    parsed_condate = parse_dmY(condate), dchosp, hdcdate, deceased, dthdate,
+    comment = "Consent date should be before or on discharge date or date of death") %>%
+    filter(ptstatus == 1 &
+             ((dchosp == 1 & parsed_condate > parse_dmY(hdcdate)) |
+             (deceased == 1 & parsed_condate > parse_dmY(dthdate)))) %>%
+    mutate(parsed_condate = NULL)
+  return(problems)
 }
