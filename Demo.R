@@ -347,6 +347,10 @@ problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
 problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
 problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 
+# Check that closed fracture injuries have have NA selected in form5.14
+# Check 13
+problems_openclos_NA <- check_openclos_NA(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
