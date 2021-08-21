@@ -351,6 +351,10 @@ problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 # Check 13
 problems_openclos_NA <- check_openclos_NA(form)
 
+#' Check that consent date is before discharge date
+#' Check 17
+problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1

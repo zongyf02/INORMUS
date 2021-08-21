@@ -7,7 +7,7 @@
 check_openclos_NA(form)
 }
 \arguments{
-\item{form}{a dataframe containing form5.1x, form5.14}
+\item{form}{a dataframe containing form1.1, form5.1x, form5.14}
 }
 \value{
 a dataframe containing problematic entries
