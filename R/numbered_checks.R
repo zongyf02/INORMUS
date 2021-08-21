@@ -354,3 +354,24 @@ check_openclos_NA <- function(form) {
                         (openclos2 == 2 & naprep2 != 1) | 
                         (openclos3 == 2 & naprep3 != 1))))
 }
+
+#' Check that the follow-up occurs in-hospital if the patient is still 
+#' in the hospital after 30 days
+#' 
+#' @param form dataframe containing ptstatus, form 4.1 and form 6.1
+#' @return a dataframe containing problematic entries
+#' @import tidyverse
+#' @export 
+check_admission_followup <- function(form) {
+  return (form %>% 
+            transmute(
+              region, site, studyid, ptinit, ptstatus, 
+              stillhsp, ocrecyes,howcmpl, hspdate, formdate,
+              diff_date = difftime(parse_dmY(formdate),
+                                   parse_dmY(hspdate),
+                                   units = "days"),
+              comment="Follow up should be 'In-hospital' if patient is still in the hospital") %>% 
+            filter(ptstatus == 1 & 
+                     (stillhsp == 1 & (ocrecyes == 1 & 
+                                         (howcmpl != 2 | is_invalid_or_na(howcmpl))))))
+}
