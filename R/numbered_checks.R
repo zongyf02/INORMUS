@@ -350,7 +350,7 @@ check_openclos_NA <- function(form) {
               openclos_3, naprep1, naprep2, naprep3, 
               comment="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
             filter(ptstatus == 1 & 
-                     ((openclos1 == 2 & naprep1 != 1) | 
-                        (openclos2 == 2 & naprep2 != 1) | 
-                        (openclos3 == 2 & naprep3 != 1))))
+                     ((openclos_1 == 2 & naprep1 != 1) | 
+                        (openclos_2 == 2 & naprep2 != 1) | 
+                        (openclos_3 == 2 & naprep3 != 1))))
 }
