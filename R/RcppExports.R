@@ -25,7 +25,7 @@ parse_num <- function(x) {
 #' @return string of site location or NA
 #' @export
 #' @import tidyverse
-parse_site_c <- function(id) {
-    .Call(`_INORMUS_parse_site_c`, id)
+parse_site <- function(id) {
+    .Call(`_INORMUS_parse_site`, id)
 }
 

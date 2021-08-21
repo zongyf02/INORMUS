@@ -21,21 +21,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// parse_site_c
-CharacterVector parse_site_c(IntegerVector id);
-RcppExport SEXP _INORMUS_parse_site_c(SEXP idSEXP) {
+// parse_site
+CharacterVector parse_site(IntegerVector id);
+RcppExport SEXP _INORMUS_parse_site(SEXP idSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type id(idSEXP);
-    rcpp_result_gen = Rcpp::wrap(parse_site_c(id));
+    rcpp_result_gen = Rcpp::wrap(parse_site(id));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_INORMUS_parse_num", (DL_FUNC) &_INORMUS_parse_num, 1},
-    {"_INORMUS_parse_site_c", (DL_FUNC) &_INORMUS_parse_site_c, 1},
+    {"_INORMUS_parse_site", (DL_FUNC) &_INORMUS_parse_site, 1},
     {NULL, NULL, 0}
 };
 
