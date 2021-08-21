@@ -343,25 +343,16 @@ check_openclos_iandd <- function(form, rep){
 #' 
 #' @import tidyverse
 #' @export
-
 check_openclos_NA <- function(form) {
-  fracwith1 <- pull(form, str_c("fracwith", 1, sep = "_"))
-  openclos1 <- pull(form, str_c("openclos", 1, sep = "_"))
-  fracwith2 <- pull(form, str_c("fracwith", 2, sep = "_"))
-  openclos2 <- pull(form, str_c("openclos", 2, sep = "_"))
-  fracwith3 <- pull(form, str_c("fracwith", 3, sep = "_"))
-  openclos3 <- pull(form, str_c("openclos", 3, sep = "_"))
-  
   return (form %>% 
             transmute(
-              region, site, studyid, ptinit, ptstatus, 
-              fracwith1,fracwith2,fracwith3, openclos1,openclos2,openclos3, naprep1, naprep2, naprep3, 
-              comment="Not Applicable should be selected for closed fracture injuries") %>% 
+              region, site, studyid, ptinit, ptstatus,openclos_1, openclos_2,
+              openclos_3, naprep1, naprep2, naprep3, 
+              comment="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
             filter(ptstatus == 1 & 
-                     ((fracwith1 == 1 & openclos1 == 2 & naprep1 != 1) | 
-                        (fracwith2 == 1 & openclos2 == 2 & naprep2 != 1) | 
-                        (fracwith3 == 1 & openclos3 == 2 & naprep3 != 1))
-            ))
+                     ((openclos1 == 2 & naprep1 != 1) | 
+                        (openclos2 == 2 & naprep2 != 1) | 
+                        (openclos3 == 2 & naprep3 != 1))))
 }
 
 #' Check that the follow-up occurs in-hospital if the patient is still 
@@ -384,4 +375,3 @@ check_admission_followup <- function(form) {
                      (stillhsp == 1 & (ocrecyes == 1 & 
                                          (howcmpl != 2 | is_invalid_or_na(howcmpl))))))
 }
-
