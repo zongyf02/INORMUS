@@ -344,7 +344,6 @@ check_openclos_iandd <- function(form, rep){
 #' @import tidyverse
 #' @export
 check_openclos_NA <- function(form) {
-  
   return (form %>% 
             transmute(
               region, site, studyid, ptinit, ptstatus,openclos_1, openclos_2,
@@ -353,6 +352,5 @@ check_openclos_NA <- function(form) {
             filter(ptstatus == 1 & 
                      ((openclos1 == 2 & naprep1 != 1) | 
                         (openclos2 == 2 & naprep2 != 1) | 
-                        (openclos3 == 2 & naprep3 != 1))
-            ))
+                        (openclos3 == 2 & naprep3 != 1))))
 }
