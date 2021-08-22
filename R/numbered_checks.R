@@ -386,7 +386,7 @@ check_formdate_ocrecyes <- function(form){
       region, site, studyid, ptinit, ptstatus, hspdate, formdate, ocrecyes,
       comment = "The date of follow-up should be 30 or more days after hospital admission") %>%
     filter(
-      ptstatus == 1 & parse_dmY(formdate) - parse_dmY(hspdate) < 30
+      ptstatus == 1 & parse_dmY(formdate) - parse_dmY(hspdate) < 30 & ocrecyes == 1
     )
   return(problems)
 }
