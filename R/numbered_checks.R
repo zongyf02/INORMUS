@@ -174,6 +174,43 @@ check_admfrom_ihunits <- function(form) {
   return(problems)
 }
 
+#' Check that the time from injury to the first antibiotic administration must
+#' be consistent with the location of the first administration 
+#' 
+#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_locabx <- function(form) {
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, locabx, abxprior_1,
+      inj_to_hsp = if_else(ihunits == 1, ihhrs,
+                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+      inj_to_abx = if_else(iaunits == 1, iahrs,
+                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
+      hsp_to_stab = if_else(hsunits_1 == 1, ishrs_1,
+                            if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
+      diff_inj_to_abx_inj_to_hsp = inj_to_abx - inj_to_hsp,
+      diff_inj_to_abx_inj_to_stab = inj_to_abx - (inj_to_hsp + hsp_to_stab),
+      comment = "The time from injury to the first antibiotic administration must be consistent with the location of the first administration") %>% 
+    filter(ptstatus == 1 &
+             (locabx == 1 &
+                diff_inj_to_abx_inj_to_hsp < -24 &
+                diff_inj_to_abx_inj_to_hsp > 0) &
+             ((locabx == 2 | locabx == 3) &
+                diff_inj_to_abx_inj_to_stab < -24 &
+                diff_inj_to_abx_inj_to_stab > 0) &
+             (locabx == 2 & abxprior_1 != 1) &
+             (locabx == 4 |
+                diff_inj_to_abx_inj_to_stab > 24 &
+                diff_inj_to_abx_inj_to_stab < 0)) %>%
+    mutate(diff_inj_to_abx_inj_to_hsp = NULL,
+           diff_inj_to_abx_inj_to_stab = NULL)
+  
+  return(problems)
+}
+
 #' Check that the location of fracture and the location of dislocation in one
 #' set of form5.x are related
 #' 
@@ -253,40 +290,24 @@ check_fracwith_diswith <- function(form, rep) {
   return(problems)
 }
 
-#' Check that the time from injury to the first antibiotic administration must
-#' be consistent with the location of the first administration 
+#' Check that the response to I&D is consistent with whether the fracture is open or closed 
+#' in one set of form5.x are related
 #' 
-#' @param form dataframe containing ptstatus, form 4.1, and form5.3
+#' @param form dataframe containing ptstatus and one set of form5.x
+#' @param rep which set of form 5.x
 #' @return a dataframe containing problematic entries with relevant columns
 #' @import tidyverse
 #' @export 
-check_locabx <- function(form) {
-  problems <- form %>% 
-    transmute(
-      region, site, studyid, ptinit, ptstatus, locabx, abxprior_1,
-      inj_to_hsp = if_else(ihunits == 1, ihhrs,
-                           if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
-      inj_to_abx = if_else(iaunits == 1, iahrs,
-                           if_else(iaunits == 2,  iadays * 24, as.numeric(NA))),
-      hsp_to_stab = if_else(hsunits_1 == 1, ishrs_1,
-                            if_else(hsunits_1 == 2, isdays_1 * 24, as.numeric(NA))),
-      diff_inj_to_abx_inj_to_hsp = inj_to_abx - inj_to_hsp,
-      diff_inj_to_abx_inj_to_stab = inj_to_abx - (inj_to_hsp + hsp_to_stab),
-      comment = "The time from injury to the first antibiotic administration must be consistent with the location of the first administration") %>% 
-    filter(ptstatus == 1 &
-             (locabx == 1 &
-                diff_inj_to_abx_inj_to_hsp < -24 &
-                diff_inj_to_abx_inj_to_hsp > 0) &
-             ((locabx == 2 | locabx == 3) &
-                diff_inj_to_abx_inj_to_stab < -24 &
-                diff_inj_to_abx_inj_to_stab > 0) &
-             (locabx == 2 & abxprior_1 != 1) &
-             (locabx == 4 |
-                diff_inj_to_abx_inj_to_stab > 24 &
-                diff_inj_to_abx_inj_to_stab < 0)) %>%
-    mutate(diff_inj_to_abx_inj_to_hsp = NULL,
-           diff_inj_to_abx_inj_to_stab = NULL)
+check_openclos_iandd <- function(form, rep){
+  openclos <- pull(form, str_c("openclos", rep, sep = "_"))
+  iandd <- pull(form, str_c("iandd", rep, sep = "_"))
   
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,  openclos, iandd,
+    comment = "The response to I&D should be consistent with whether the fracture is open or closed ") %>% 
+    filter(ptstatus == 1 & 
+             (openclos == 1 & iandd == 3) |
+             (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
 
@@ -299,7 +320,7 @@ check_locabx <- function(form) {
 #' @import tidyverse
 #' @export 
 check_operat_failsurg_delsurg <- function(form, rep) {
-  operat <-  pull(form, str_c("operat", rep, sep = "_"))
+  operat <- pull(form, str_c("operat", rep, sep = "_"))
   failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
   delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
   
@@ -312,27 +333,6 @@ check_operat_failsurg_delsurg <- function(form, rep) {
              ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
                 (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
                 (failsurg == 1 & delsurg == 1)))
-  return(problems)
-}
-
-#' Check that the response to I&D is consistent with whether the fracture is open or closed 
-#' in one set of form5.x are related
-#' 
-#' @param form dataframe containing ptstatus and one set of form5.x
-#' @param rep which set of form 5.x
-#' @return a dataframe containing problematic entries with relevant columns
-#' @import tidyverse
-#' @export 
-check_openclos_iandd <- function(form, rep){
-  openclos = pull(form, str_c("openclos", rep, sep = "_"))
-  iandd = pull(form, str_c("iandd", rep, sep = "_"))
-  
-  problems <- form %>% transmute(
-    region, site, studyid, ptinit, ptstatus,  openclos, iandd,
-    comment = "The response to I&D should be consistent with whether the fracture is open or closed ") %>% 
-    filter(ptstatus == 1 & 
-             (openclos == 1 & iandd == 3) |
-             (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
   
@@ -348,7 +348,7 @@ check_openclos_NA <- function(form) {
             transmute(
               region, site, studyid, ptinit, ptstatus,openclos_1, openclos_2,
               openclos_3, naprep1, naprep2, naprep3, 
-              comment="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
+              comment ="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
             filter(ptstatus == 1 & 
                      ((openclos_1 == 2 & naprep1 != 1) | 
                         (openclos_2 == 2 & naprep2 != 1) | 

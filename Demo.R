@@ -1,4 +1,4 @@
-# Last Updated: August 8, 2021
+# Last Updated: August 21, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
