@@ -1,4 +1,4 @@
-# Last Updated: August 8, 2021
+# Last Updated: August 21, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -347,9 +347,17 @@ problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
 problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
 problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 
+# Check that closed fracture injuries have have NA selected in form5.14
+# Check 13
+problems_openclos_NA <- check_openclos_NA(form)
+
 #' Check that date of follow-up is 30 or more days after hospital admission 
 #' Check 16
 problems_formdate_ocrecyes <- check_formdate_ocrecyes(form)
+
+#' Check that consent date is before discharge date
+#' Check 17
+problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)
 
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)

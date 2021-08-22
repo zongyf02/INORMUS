@@ -186,9 +186,12 @@ summarize_form(form, colnames(form)[3:11], region)
 ```R
 # IE coding box related problems in question 5 form2.1
 problems_form2.1_box5 <- check_form2.1_box5(form)
+
+# IE coding box related problems in question 1 form5.1x (rep is the number of iterations)
+problems_form5.1_box1 <- check_form5.1x_box1(form, rep)
 ```
 
-2.&nbsp; Date consistency checks
+2.&nbsp; Numbered Checks
 ```R
 # Check that consent date should be on the same day, or after the date of injury
 # Check 1
@@ -202,6 +205,12 @@ problems_hspdate_injdate <- check_hspdate_injdate(form)
 # Check 3
 problems_condate_hspdate <- check_condate_hspdate(form)
 
+# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
+# Check 4
+problems_northinf <- check_northinj(form)
+#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
+problems_northinj_form5.14 <- check_northinj_form5.14(form)
+
 # Check that time from injury to hsp admission should be within +/- 24 hrs range of difference between injdate and hspdate
 # Check 5
 problems_injdate_hspdate <- check_injdate_hspdate(form)
@@ -213,40 +222,50 @@ problems_admfrom_ihunits <- check_admfrom_ihunits(form)
 # Check that for antibiotics first administered at the injury scene, time from injury to antibiotics administration is at most 5 hours before time from injury to hospital admission
 # Check 7
 problems_abx_locabx_1 <- check_abx_locabx_1(form)
-```
 
-3.&nbsp; Number of injuries checks
-```R
-# Check that the number of orthopedic injuries stated on form 3.2 is consistent with the number of sets of injury forms completed
-# Check 4
-problems_northinf <- check_northinj(form)
-#' Check that the number of orthopedic injuries stated on form 3.2 is consistent with the Wound & Skin Prep form 5.14
-problems_northinj_form5.14 <- check_northinj_form5.14(form)
-
-# Check if the number of fractures, if any, is valid for the set form5.x
-#Checks 9
-problems_check_fracwith_1 <-check_fracwith(form, 1)
-problems_check_fracwith_2 <-check_fracwith(form, 2)
-problems_check_fracwith_3 <-check_fracwith(form, 3)
-```
-
-4.&nbsp; Location of injuries checks
-```R
 # Check that the location of fracture and the location of dislocation in one set of form5.x are related
 # Also ensures only 1 fracture per set of form
-# Checks 8
+# Checks 8 and 9
 problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
+
+# Check that the response to I&D is consistent with whether the fracture is open or closed 
+# Check 11
+problems_openclos_iandd_1 <- check_openclos_iandd(form, 1)
+problems_openclos_iandd_2 <- check_openclos_iandd(form, 2)
+problems_openclos_iandd_3 <- check_openclos_iandd(form, 3)
+
+# Check that details on the patient's surgery is consistent
+# Check 12
+problems_operat_failsurg_delsurg_1 <- check_operat_failsurg_delsurg(form, 1)
+problems_operat_failsurg_delsurg_2 <- check_operat_failsurg_delsurg(form, 2)
+problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
+
+# Check that closed fracture injuries have have NA selected in form5.14
+# Check 13
+problems_openclos_NA <- check_openclos_NA(form)
 ```
 
-5.&nbsp; Invalid/Missing Entries checks
+3.&nbsp; Invalid/Missing Entries checks
 ```R
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
 problems_invalid_form2.1 <- check_invalid_form2.1(form)
+# Check for invalid/missing entries in form2.2
+problems_invalid_form2.2 <- check_invalid_form2.2(form)
+# Check for invalid/missing entries in form3.1, do not check question 4.1, intent of injury
+problems_invalid_form3.1 <- check_invalid_form3.1(form, checkIntent = FALSE)
+# Check for invalid/missing entries in form3.2
+problems_invalid_form3.2 <- check_invalid_form3.2(form)
+# Check for invalid/missing entries in form4.1
+problems_invalid_form4.1 <- check_invalid_form4.1(form)
 # Check for invalid/missing entries in form5.2
-problems_invalid_form5.2 <- check_invalid_form5.2(form)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 1)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 2)
+problems_invalid_form5.2x <- check_invalid_form5.2x(form, 3)
 ```
+
+
 
