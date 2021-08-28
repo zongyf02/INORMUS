@@ -1,3 +1,4 @@
+#' Check 1
 #' Check that consent date should be on the same day, or after the date of injury
 #' 
 #' condate after injdate 0-92 days
@@ -20,6 +21,7 @@ check_condate_injdate <- function(form) {
   return(problems)
 }
 
+#' Check 2
 #' Check that hospital admission date should be on the same day,
 #' or after the date of injury
 #' 
@@ -43,6 +45,7 @@ check_hspdate_injdate <- function(form) {
   return(problems)
 }
 
+#' Check 3
 #' Check that consent date should be 0 - 30 days after hospital admission date
 #' 
 #' condate after hspdate 0-30 days
@@ -65,31 +68,7 @@ check_condate_hspdate <- function(form) {
   return(problems)
 }
 
-#' Check that time from injury to hsp admission should be within +/- 24 hrs
-#' range of difference between injdate and hspdate
-#' 
-#' @param form a dataframe containing form1.1, form3.1, form4.1
-#' @return a dataframe containing problematic entries
-#' 
-#' @import tidyverse
-#' @export
-check_injdate_hspdate <- function(form) {
-  problems <- form %>%
-    transmute(
-      region, site, studyid, ptinit, ptstatus, injdate, hspdate, ihunits, ihhrs,
-      ihdays, date_diff = difftime(parse_dmY(hspdate),
-                                   parse_dmY(injdate),
-                                   units = "hours"),
-      comment = "Time of injury to hsp admission should be within +/- 24 hr range of date difference between injdate and hspdate") %>%
-    filter(ptstatus == 1 &
-             ((ihunits == 1 &
-                 ((ihhrs < (date_diff - 24)) | (ihhrs > (date_diff + 24)))) |
-                (ihunits == 2 &
-                   ((ihdays * 24 < (date_diff - 24)) | (ihdays * 24 > (date_diff + 24))))))
-  
-  return(problems)
-}
-
+#' Check 4
 #' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 #' with the number of sets of injury forms completed
 #' 
@@ -137,6 +116,7 @@ check_northinj_form5.x <- function(form) {
   return (problems)
 }
 
+#' Check 4
 #' Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 #' with the Wound & Skin Prep form 5.14
 #' 
@@ -157,6 +137,33 @@ check_northinj_form5.14 <- function(form) {
                 ((northinj != 3 & northinj != 4) | noinj2 != 0 | noinj3 != 0)))
 }
 
+#' Check 5
+#' Check that time from injury to hsp admission should be within +/- 24 hrs
+#' range of difference between injdate and hspdate
+#' 
+#' @param form a dataframe containing form1.1, form3.1, form4.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_injdate_hspdate <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, injdate, hspdate, ihunits, ihhrs,
+      ihdays, date_diff = difftime(parse_dmY(hspdate),
+                                   parse_dmY(injdate),
+                                   units = "hours"),
+      comment = "Time of injury to hsp admission should be within +/- 24 hr range of date difference between injdate and hspdate") %>%
+    filter(ptstatus == 1 &
+             ((ihunits == 1 &
+                 ((ihhrs < (date_diff - 24)) | (ihhrs > (date_diff + 24)))) |
+                (ihunits == 2 &
+                   ((ihdays * 24 < (date_diff - 24)) | (ihdays * 24 > (date_diff + 24))))))
+  
+  return(problems)
+}
+
+#' Check 6
 #' The time from injury to hospital admission should be within 24 hours
 #' if the patient is coming from the Accident/Injury Site 
 #' 
@@ -174,6 +181,7 @@ check_admfrom_ihunits <- function(form) {
   return(problems)
 }
 
+#' Check 7
 #' Check that the time from injury to the first antibiotic administration must
 #' be consistent with the location of the first administration 
 #' 
@@ -211,6 +219,7 @@ check_locabx <- function(form) {
   return(problems)
 }
 
+#' Check 8 and 9
 #' Check that the location of fracture and the location of dislocation in one
 #' set of form5.x are related
 #' 
@@ -290,6 +299,7 @@ check_fracwith_diswith <- function(form, rep) {
   return(problems)
 }
 
+#' Check 11
 #' Check that the response to I&D is consistent with whether the fracture is open or closed 
 #' in one set of form5.x are related
 #' 
@@ -310,6 +320,54 @@ check_openclos_iandd <- function(form, rep){
              (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
+
+#' Check 12
+#' Check that details on the patient's surgery is consistent
+#' 
+#' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
+#' @param rep which set of form 5.3x
+#' @return a dataframe containing problematic entries with relevant columns
+#' 
+#' @import tidyverse
+#' @export 
+check_operat_failsurg_delsurg <- function(form, rep) {
+  operat <- pull(form, str_c("operat", rep, sep = "_"))
+  failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
+  delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
+  
+  problems = form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, northinj,
+      operat, failsurg, delsurg,
+      comment = "The patient's surgery information must be consistent") %>%
+    filter(ptstatus == 1 & rep <= northinj &
+             ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
+                (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
+                (failsurg == 1 & delsurg == 1)))
+  return(problems)
+}
+
+#' Check 13
+#' Check that closed fracture injuries have have NA selected in form5.14 
+#' 
+#' @param form a dataframe containing form1.1, form5.1x, form5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_openclos_NA <- function(form) {
+  return (form %>% 
+            transmute(
+              region, site, studyid, ptinit, ptstatus,openclos_1, openclos_2,
+              openclos_3, naprep1, naprep2, naprep3, 
+              comment ="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
+            filter(ptstatus == 1 & 
+                     ((openclos_1 == 2 & naprep1 != 1) | 
+                        (openclos_2 == 2 & naprep2 != 1) | 
+                        (openclos_3 == 2 & naprep3 != 1))))
+}
+
+#' Check 14
 #' The time difference between the time from injury to hsp admission and 
 #' the time from injury to prep solution in ER is within +/- 24 hr range
 #' 
@@ -337,50 +395,7 @@ check_ihunits_ipunits <- function(form){
   return(problems)
 }
 
-#' Check that details on the patient's surgery is consistent
-#' 
-#' @param form dataframe containing ptstatus, form3.2, form5.3, and form5.4
-#' @param rep which set of form 5.3x
-#' @return a dataframe containing problematic entries with relevant columns
-#' 
-#' @import tidyverse
-#' @export 
-check_operat_failsurg_delsurg <- function(form, rep) {
-  operat <- pull(form, str_c("operat", rep, sep = "_"))
-  failsurg <- pull(form, str_c("failsurg", rep, sep = "_"))
-  delsurg <- pull(form, str_c("delsurg", rep, sep = "_"))
-  
-  problems = form %>%
-    transmute(
-      region, site, studyid, ptinit, ptstatus, northinj,
-      operat, failsurg, delsurg,
-      comment = "The patient's surgery information must be consistent") %>%
-    filter(ptstatus == 1 & rep <= northinj &
-             ((operat == 1 & (failsurg == 3 | delsurg == 3)) |
-                (operat == 0 & !(failsurg == 3 & delsurg == 3)) |
-                (failsurg == 1 & delsurg == 1)))
-  return(problems)
-}
-  
-#' Check that closed fracture injuries have have NA selected in form5.14 
-#' 
-#' @param form a dataframe containing form1.1, form5.1x, form5.14
-#' @return a dataframe containing problematic entries
-#' 
-#' @import tidyverse
-#' @export
-check_openclos_NA <- function(form) {
-  return (form %>% 
-            transmute(
-              region, site, studyid, ptinit, ptstatus,openclos_1, openclos_2,
-              openclos_3, naprep1, naprep2, naprep3, 
-              comment ="On question 1 of form5.14, Not Applicable should be selected for closed fracture injuries") %>% 
-            filter(ptstatus == 1 & 
-                     ((openclos_1 == 2 & naprep1 != 1) | 
-                        (openclos_2 == 2 & naprep2 != 1) | 
-                        (openclos_3 == 2 & naprep3 != 1))))
-}
-
+#' Check 16
 #' Check that date of follow-up is 30 or more days after hospital admission 
 #' 
 #' @param form dataframe containing ptstatus, form4.1, and form6.1
@@ -398,6 +413,7 @@ check_formdate_ocrecyes <- function(form){
   return(problems)
 }
 
+#' Check 17
 #' Check that consent date is before or on discharge date or date of death
 #' 
 #' @param form a dataframe containing form1.1 and form6.1
