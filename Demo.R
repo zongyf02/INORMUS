@@ -351,6 +351,10 @@ problems_operat_failsurg_delsurg_3 <- check_operat_failsurg_delsurg(form, 3)
 # Check 13
 problems_openclos_NA <- check_openclos_NA(form)
 
+#' Check that date of follow-up is 30 or more days after hospital admission 
+#' Check 16
+problems_formdate_ocrecyes <- check_formdate_ocrecyes(form)
+
 #' Check that consent date is before discharge date
 #' Check 17
 problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)

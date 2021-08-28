@@ -381,6 +381,23 @@ check_openclos_NA <- function(form) {
                         (openclos_3 == 2 & naprep3 != 1))))
 }
 
+#' Check that date of follow-up is 30 or more days after hospital admission 
+#' 
+#' @param form dataframe containing ptstatus, form4.1, and form6.1
+#' @return a dataframe containing problematic entries with relevant columns
+#' @import tidyverse
+#' @export 
+check_formdate_ocrecyes <- function(form){
+  problems <- form %>% 
+    transmute(
+      region, site, studyid, ptinit, ptstatus, hspdate, formdate, ocrecyes,
+      comment = "The date of follow-up should be 30 or more days after hospital admission") %>%
+    filter(
+      ptstatus == 1 & ocrecyes == 1 & parse_dmY(formdate) - parse_dmY(hspdate) < 30 
+    )
+  return(problems)
+}
+
 #' Check that consent date is before or on discharge date or date of death
 #' 
 #' @param form a dataframe containing form1.1 and form6.1
@@ -390,12 +407,10 @@ check_openclos_NA <- function(form) {
 #' @export
 check_condate_hdcdate_dthdate <- function(form){
   problems <- form %>% transmute(
-    region, site, studyid, ptinit, ptstatus, condate,
-    parsed_condate = parse_dmY(condate), dchosp, hdcdate, deceased, dthdate,
+    region, site, studyid, ptinit, ptstatus, condate, dchosp, hdcdate, deceased, dthdate,
     comment = "Consent date should be before or on discharge date or date of death") %>%
     filter(ptstatus == 1 &
-             ((dchosp == 1 & parsed_condate > parse_dmY(hdcdate)) |
-             (deceased == 1 & parsed_condate > parse_dmY(dthdate)))) %>%
-    mutate(parsed_condate = NULL)
+             ((dchosp == 1 & parse_dmY(condate) > parse_dmY(hdcdate)) |
+             (deceased == 1 & parse_dmY(condate) > parse_dmY(dthdate))))
   return(problems)
 }
