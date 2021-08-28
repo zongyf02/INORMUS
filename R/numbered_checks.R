@@ -374,7 +374,7 @@ check_condate_hdcdate_dthdate <- function(form){
   return(problems)
 }
 
-#' Check that he time difference between the time from injury to hsp admission and 
+#' The time difference between the time from injury to hsp admission and 
 #' the time from injury to prep solution in ER is within +/- 24 hr range
 #' 
 #' @param form a dataframe containing form1.1, form4.1, form5.14
@@ -383,17 +383,20 @@ check_condate_hdcdate_dthdate <- function(form){
 #' @import tidyverse
 #' @export
 check_ihunits_ipunits <- function(form){
-  problems <- form %>% transmute(
-    region, site, studyid, ptinit, ptstatus, 
-    ihunits, ihdays, ihhrs, ipunits1, ipreph1, iprepd1, ipunits2, ipreph2, iprepd2,
-    ipunits3, ipreph3, iprepd3,
+  problems <- form %>% mutate(
+    ihtime = if_else(ihunits == 1, ihhrs,
+                     if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+    iprep1_time = if_else(ipunits1 == 1 & !is_invalid(ipreph1), ipreph1,
+                          if_else(ipunits1 == 2 & !is_invalid(iprepd1), iprepd1 * 24, as.numeric(NA))),
+    iprep2_time = if_else(ipunits2 == 1 & !is_invalid(ipreph2), ipreph2,
+                          if_else(ipunits2 == 2 & !is_invalid(iprepd2), iprepd2 * 24, as.numeric(NA))), 
+    iprep3_time = if_else(ipunits3 == 1 & !is_invalid(ipreph3), ipreph3,
+                          if_else(ipunits3 == 2 & !is_invalid(ipreph3), iprepd3 * 24, as.numeric(NA))),
     comment = "The time difference between the time from injury to hsp admission and the time from injury to prep solution in ER should be within +/- 24 hr range") %>% 
-    filter(ptstatus == 1 & 
-             ((ihunits == 1 & ipunits1 == 1 & abs(ihhrs - ipreph1) >= 24) | 
-                (ihunits == 1 & ipunits2 == 1 & abs(ihhrs - ipreph2) >= 24) | 
-                (ihunits == 1 & ipunits3 == 1 & abs(ihhrs - ipreph3) >= 24)) | 
-             ((ihunits == 2 & ipunits1 == 2 & abs(ihdays - iprepd1) >= 1) | 
-                (ihunits == 2 & ipunits2 == 2 & abs(ihdays - iprepd2) >= 1) | 
-                (ihunits == 2 & ipunits3 == 2 & abs(ihdays - iprepd3) >= 1)))
+    filter(ptstatus == 1 & (
+      abs(ihhrs - iprep1_time) >= 24 | 
+        abs(ihhrs - iprep2_time) >= 24 |
+        abs(ihhrs - iprep3_time) >= 24)) %>% 
+    select(region, site, studyid, ptinit, ptstatus, ihtime, iprep1_time, iprep2_time, iprep3_time)
   return(problems)
 }
