@@ -335,6 +335,10 @@ problems_fracwith_diswith_1 <- check_fracwith_diswith(form, 1)
 problems_fracwith_diswith_2 <- check_fracwith_diswith(form, 2)
 problems_fracwith_diswith_3 <- check_fracwith_diswith(form, 3)
 
+# Check that the temporary form of stabilization (question 4, form 5.2) and the definitive form of stabilization (question 5, form 5.3) cannot be the same treatment, if same treatment, time must be different
+# Check 10
+problems_treatment_method <- check_treatment_method(form)
+
 # Check that the response to I&D is consistent with whether the fracture is open or closed 
 # Check 11
 problems_openclos_iandd_1 <- check_openclos_iandd(form, 1)
@@ -354,6 +358,10 @@ problems_openclos_NA <- check_openclos_NA(form)
 # Check that he time difference between the time from injury to hsp admission and the time from injury to prep solution in ER is within +/- 24 hr range
 # Check 14
 problems_ihunits_ipunits <- check_ihunits_ipunits(form)
+
+# Check that Had No Surgery on form 5.14 must be selected if patient did not receive srugery
+# Check 15
+problems_check_surgery <- check_surgery(form)
 
 #' Check that date of follow-up is 30 or more days after hospital admission 
 #' Check 16

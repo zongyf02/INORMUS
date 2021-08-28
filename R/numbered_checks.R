@@ -430,3 +430,37 @@ check_condate_hdcdate_dthdate <- function(form){
              (deceased == 1 & parse_dmY(condate) > parse_dmY(dthdate))))
   return(problems)
 }
+
+#' Check that the temporary form of stabilization (question 4, form 5.2) and the definitive form of stabilization (question 5, form 5.3) cannot be the same treatment, if same treatment, time must be different
+#' @param form dataframe containing form5.2 and form 5.3
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_treatment_method <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, howstab_1, hspstab_1, extfix_1, intfix_1, traction_1 , plaster_1, hsunits_1, ishrs_1, isdays_1,
+      comment = "The temporary form of stabilization (question 4, form 5.2) and the definitive form of stabilization (question 5, form 5.3) cannot be the same treatment, if same treatment, time must be different") %>%
+    filter((ptstatus == 1) & 
+             ((howstab_1 == 1 & extfix_1 == 1) | (howstab_1 == 2 & intfix_1 == 1) | (howstab_1 == 3 & traction_1== 1) | (howstab_1 == 4 & plaster_1 == 1) | (howstab_1 == 5 & traction_1== 1)) & 
+             ((hsunits_1 == 1 & ishrs_1 <= 6 & hspstab_1 == 1) | (hsunits_1 == 1 & 6 < ishrs_1 & ishrs_1 < 12 & hspstab_1 == 2) | (hsunits_1 == 1 & 12 < ishrs_1 & ishrs_1 < 24 & hspstab_1 == 3) | (hsunits_1 == 2 & 1 < isdays_1 & isdays_1 < 2 & hspstab_1 == 4) | (hsunits_1 == 2 & 2 < isdays_1 & isdays_1 < 7 & hspstab_1 == 5) | (hsunits_1 == 2 & isdays_1 >= 7 & hspstab_1 == 6)))
+  return(problems)
+}
+
+#' Check that Had No Surgery on form 5.14 must be selected if patient did not receive srugery
+#' @param form dataframe containing form5.2, form 5.3 and form 5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_surgery <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, method_1, operat_1, hadnos1,
+      comment = "Had No Surgery on form 5.14 must be selected if patient did not receive surgery based on form 5.2 & 5.3") %>%
+    filter((ptstatus == 1) & ((method_1 == 0) | (method_1 == 2)) & (operat_1 == 0) & (hadnos1 == 0))
+  
+  return(problems)
+}
+
