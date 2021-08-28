@@ -310,6 +310,32 @@ check_openclos_iandd <- function(form, rep){
              (openclos == 2 & (iandd == 1 | iandd == 2)))
   return(problems)
 }
+#' The time difference between the time from injury to hsp admission and 
+#' the time from injury to prep solution in ER is within +/- 24 hr range
+#' 
+#' @param form a dataframe containing form1.1, form4.1, form5.14
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_ihunits_ipunits <- function(form){
+  problems <- form %>% mutate(
+    ihtime = if_else(ihunits == 1, ihhrs,
+                     if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
+    iprep1_time = if_else(ipunits1 == 1, ipreph1,
+                          if_else(ipunits1 == 2, iprepd1 * 24, as.numeric(NA))),
+    iprep2_time = if_else(ipunits2 == 1, ipreph2,
+                          if_else(ipunits2 == 2, iprepd2 * 24, as.numeric(NA))), 
+    iprep3_time = if_else(ipunits3 == 1, ipreph3,
+                          if_else(ipunits3 == 2, iprepd3 * 24, as.numeric(NA))),
+    comment = "The time difference between the time from injury to hsp admission and the time from injury to prep solution in ER should be within +/- 24 hr range") %>% 
+    filter(ptstatus == 1 & (
+      abs(ihhrs - iprep1_time) >= 24 | 
+        abs(ihhrs - iprep2_time) >= 24 |
+        abs(ihhrs - iprep3_time) >= 24)) %>% 
+    select(region, site, studyid, ptinit, ptstatus, ihtime, iprep1_time, iprep2_time, iprep3_time)
+  return(problems)
+}
 
 #' Check that details on the patient's surgery is consistent
 #' 
@@ -371,32 +397,5 @@ check_condate_hdcdate_dthdate <- function(form){
              ((dchosp == 1 & parsed_condate > parse_dmY(hdcdate)) |
              (deceased == 1 & parsed_condate > parse_dmY(dthdate)))) %>%
     mutate(parsed_condate = NULL)
-  return(problems)
-}
-
-#' The time difference between the time from injury to hsp admission and 
-#' the time from injury to prep solution in ER is within +/- 24 hr range
-#' 
-#' @param form a dataframe containing form1.1, form4.1, form5.14
-#' @return a dataframe containing problematic entries
-#' 
-#' @import tidyverse
-#' @export
-check_ihunits_ipunits <- function(form){
-  problems <- form %>% mutate(
-    ihtime = if_else(ihunits == 1, ihhrs,
-                     if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
-    iprep1_time = if_else(ipunits1 == 1 & !is_invalid(ipreph1), ipreph1,
-                          if_else(ipunits1 == 2 & !is_invalid(iprepd1), iprepd1 * 24, as.numeric(NA))),
-    iprep2_time = if_else(ipunits2 == 1 & !is_invalid(ipreph2), ipreph2,
-                          if_else(ipunits2 == 2 & !is_invalid(iprepd2), iprepd2 * 24, as.numeric(NA))), 
-    iprep3_time = if_else(ipunits3 == 1 & !is_invalid(ipreph3), ipreph3,
-                          if_else(ipunits3 == 2 & !is_invalid(ipreph3), iprepd3 * 24, as.numeric(NA))),
-    comment = "The time difference between the time from injury to hsp admission and the time from injury to prep solution in ER should be within +/- 24 hr range") %>% 
-    filter(ptstatus == 1 & (
-      abs(ihhrs - iprep1_time) >= 24 | 
-        abs(ihhrs - iprep2_time) >= 24 |
-        abs(ihhrs - iprep3_time) >= 24)) %>% 
-    select(region, site, studyid, ptinit, ptstatus, ihtime, iprep1_time, iprep2_time, iprep3_time)
   return(problems)
 }
