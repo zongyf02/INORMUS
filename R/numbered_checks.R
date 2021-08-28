@@ -432,19 +432,33 @@ check_condate_hdcdate_dthdate <- function(form){
 }
 
 #' Check that the temporary form of stabilization (question 4, form 5.2) and the definitive form of stabilization (question 5, form 5.3) cannot be the same treatment, if same treatment, time must be different
+#' 
 #' @param form dataframe containing form5.2 and form 5.3
+#' @param rep which set of form 5.x
 #' @return a dataframe containing problematic entries
 #' 
 #' @import tidyverse
 #' @export
-check_treatment_method <- function(form) {
+check_howstab_method <- function(form, rep) {
+  howstab <- str_C("howstab", rep, sep = "_")
+  hspstab <- str_c("hspstab", rep, sep = "_")
+  intfix <- str_c("intfix", rep, sep = "_")
+  extfix <- str_c("extfix", rep, sep = "_")
+  plaster <- str_c("plaster", rep, sep = "_")
+  traction <- str_c("traction", rep, sep = "_")
+  hsunits <- str_c("hsunits", rep, sep = "_")
+  ishrs <- str_c("ishrs", rep, sep = "_")
+  isdays <- str_c("isdays", rep, sep = "_")
+  
   problems <- form %>%
     transmute(
-      region, site, studyid, ptinit, ptstatus, howstab_1, hspstab_1, extfix_1, intfix_1, traction_1 , plaster_1, hsunits_1, ishrs_1, isdays_1,
+      region, site, studyid, ptinit, ptstatus, howstab, hspstab, intfix,
+      extfix, plaster, traction,
+      time_hsp_to_def_stab = if_else(hsunits == 1, ishrs,
+                                     if_else(hsunits == 2, isdays * 24))
       comment = "The temporary form of stabilization (question 4, form 5.2) and the definitive form of stabilization (question 5, form 5.3) cannot be the same treatment, if same treatment, time must be different") %>%
-    filter((ptstatus == 1) & 
-             ((howstab_1 == 1 & extfix_1 == 1) | (howstab_1 == 2 & intfix_1 == 1) | (howstab_1 == 3 & traction_1== 1) | (howstab_1 == 4 & plaster_1 == 1) | (howstab_1 == 5 & traction_1== 1)) & 
-             ((hsunits_1 == 1 & ishrs_1 <= 6 & hspstab_1 == 1) | (hsunits_1 == 1 & 6 < ishrs_1 & ishrs_1 < 12 & hspstab_1 == 2) | (hsunits_1 == 1 & 12 < ishrs_1 & ishrs_1 < 24 & hspstab_1 == 3) | (hsunits_1 == 2 & 1 < isdays_1 & isdays_1 < 2 & hspstab_1 == 4) | (hsunits_1 == 2 & 2 < isdays_1 & isdays_1 < 7 & hspstab_1 == 5) | (hsunits_1 == 2 & isdays_1 >= 7 & hspstab_1 == 6)))
+    filter(ptstatus == 1)
+             
   return(problems)
 }
 
