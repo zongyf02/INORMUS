@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_injdate_hspdate}
 \alias{check_injdate_hspdate}
-\title{Check that time from injury to hsp admission should be within +/- 24 hrs
+\title{Check 5
+Check that time from injury to hsp admission should be within +/- 24 hrs
 range of difference between injdate and hspdate}
 \usage{
 check_injdate_hspdate(form)
@@ -14,6 +15,7 @@ check_injdate_hspdate(form)
 a dataframe containing problematic entries
 }
 \description{
+Check 5
 Check that time from injury to hsp admission should be within +/- 24 hrs
 range of difference between injdate and hspdate
 }

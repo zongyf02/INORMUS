@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_locabx}
 \alias{check_locabx}
-\title{Check that the time from injury to the first antibiotic administration must
+\title{Check 7
+Check that the time from injury to the first antibiotic administration must
 be consistent with the location of the first administration}
 \usage{
 check_locabx(form)
@@ -14,6 +15,7 @@ check_locabx(form)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
+Check 7
 Check that the time from injury to the first antibiotic administration must
 be consistent with the location of the first administration
 }

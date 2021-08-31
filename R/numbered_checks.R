@@ -430,3 +430,32 @@ check_condate_hdcdate_dthdate <- function(form){
              (deceased == 1 & parse_dmY(condate) > parse_dmY(dthdate))))
   return(problems)
 }
+
+#' Check 21
+#' Check number of reported complications at follow-up is consistent with number of completed complication forms
+#' 
+#' @param form a dataframe containing ptstatus, form6.1, and form 7.x
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_compno_7.x <- function(form){
+  col_7.1 <- select(test_form, ends_with("~1"))
+  col_7.2 <- select(test_form, ends_with("~2"))
+  col_7.3 <- select(test_form, ends_with("~3"))
+  col_7.4 <- select(test_form, ends_with("~4"))
+  
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus, compno, col_7.1, col_7.2, col_7.3, col_7.4,
+    is_empty_7.1 = rowSums(is.na(col_7.1)) == ncol(col_7.1),
+    is_empty_7.2 = rowSums(is.na(col_7.2)) == ncol(col_7.2),
+    is_empty_7.3 = rowSums(is.na(col_7.3)) == ncol(col_7.3),
+    is_empty_7.4 = rowSums(is.na(col_7.4)) == ncol(col_7.4),
+    comment = "number of reported complications at follow-up should be consistent with number of completed complication forms") %>%
+  filter(ptstatus == 1 & 
+           (compno == 1 & !(!is_empty_7.1 & is_empty_7.2 & is_empty_7.3 & is_empty_7.4)) |
+           (compno == 2 & !(!is_empty_7.1 & !is_empty_7.2 & is_empty_7.3 & is_empty_7.4)) |
+           (compno == 3 & !(!is_empty_7.1 & !is_empty_7.2 & !is_empty_7.3 & is_empty_7.4)) |
+           (compno == 4 & !(!is_empty_7.1 & !is_empty_7.2 & !is_empty_7.3 & !is_empty_7.4)))
+  return(problems)
+}

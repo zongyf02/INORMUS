@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_operat_failsurg_delsurg}
 \alias{check_operat_failsurg_delsurg}
-\title{Check that details on the patient's surgery is consistent}
+\title{Check 12
+Check that details on the patient's surgery is consistent}
 \usage{
 check_operat_failsurg_delsurg(form, rep)
 }
@@ -15,5 +16,6 @@ check_operat_failsurg_delsurg(form, rep)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
+Check 12
 Check that details on the patient's surgery is consistent
 }

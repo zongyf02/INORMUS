@@ -363,6 +363,10 @@ problems_formdate_ocrecyes <- check_formdate_ocrecyes(form)
 #' Check 17
 problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)
 
+#' Check that number of reported complications at follow-up is consistent with number of completed complication forms
+#' Check 21
+problems_compno_7.x <- check_compno_7.x(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1

@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_ihunits_ipunits}
 \alias{check_ihunits_ipunits}
-\title{The time difference between the time from injury to hsp admission and 
+\title{Check 14
+The time difference between the time from injury to hsp admission and 
 the time from injury to prep solution in ER is within +/- 24 hr range}
 \usage{
 check_ihunits_ipunits(form)
@@ -14,6 +15,7 @@ check_ihunits_ipunits(form)
 a dataframe containing problematic entries
 }
 \description{
+Check 14
 The time difference between the time from injury to hsp admission and 
 the time from injury to prep solution in ER is within +/- 24 hr range
 }
