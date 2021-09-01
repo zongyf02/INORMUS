@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_condate_hdcdate_dthdate}
 \alias{check_condate_hdcdate_dthdate}
-\title{Check that consent date is before or on discharge date or date of death}
+\title{Check 17
+Check that consent date is before or on discharge date or date of death}
 \usage{
 check_condate_hdcdate_dthdate(form)
 }
@@ -13,5 +14,6 @@ check_condate_hdcdate_dthdate(form)
 a dataframe containing problematic entries
 }
 \description{
+Check 17
 Check that consent date is before or on discharge date or date of death
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_condate_injdate}
 \alias{check_condate_injdate}
-\title{Check that consent date should be on the same day, or after the date of injury}
+\title{Check 1
+Check that consent date should be on the same day, or after the date of injury}
 \usage{
 check_condate_injdate(form)
 }

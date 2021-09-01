@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_fracwith_diswith}
 \alias{check_fracwith_diswith}
-\title{Check that the location of fracture and the location of dislocation in one
+\title{Check 8 and 9
+Check that the location of fracture and the location of dislocation in one
 set of form5.x are related}
 \usage{
 check_fracwith_diswith(form, rep)
@@ -16,6 +17,7 @@ check_fracwith_diswith(form, rep)
 a dataframe containing problematic entries
 }
 \description{
+Check 8 and 9
 Check that the location of fracture and the location of dislocation in one
 set of form5.x are related
 }

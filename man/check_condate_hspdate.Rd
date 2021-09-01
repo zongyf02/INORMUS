@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_condate_hspdate}
 \alias{check_condate_hspdate}
-\title{Check that consent date should be 0 - 30 days after hospital admission date}
+\title{Check 3
+Check that consent date should be 0 - 30 days after hospital admission date}
 \usage{
 check_condate_hspdate(form)
 }

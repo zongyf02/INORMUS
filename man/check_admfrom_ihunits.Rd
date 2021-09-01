@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_admfrom_ihunits}
 \alias{check_admfrom_ihunits}
-\title{The time from injury to hospital admission should be within 24 hours
+\title{Check 6
+The time from injury to hospital admission should be within 24 hours
 if the patient is coming from the Accident/Injury Site}
 \usage{
 check_admfrom_ihunits(form)
@@ -14,6 +15,7 @@ check_admfrom_ihunits(form)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
+Check 6
 The time from injury to hospital admission should be within 24 hours
 if the patient is coming from the Accident/Injury Site
 }

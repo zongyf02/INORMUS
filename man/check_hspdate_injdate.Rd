@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_hspdate_injdate}
 \alias{check_hspdate_injdate}
-\title{Check that hospital admission date should be on the same day,
+\title{Check 2
+Check that hospital admission date should be on the same day,
 or after the date of injury}
 \usage{
 check_hspdate_injdate(form)

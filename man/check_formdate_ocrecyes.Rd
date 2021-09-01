@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_formdate_ocrecyes}
 \alias{check_formdate_ocrecyes}
-\title{Check that date of follow-up is 30 or more days after hospital admission}
+\title{Check 16
+Check that date of follow-up is 30 or more days after hospital admission}
 \usage{
 check_formdate_ocrecyes(form)
 }
@@ -13,5 +14,6 @@ check_formdate_ocrecyes(form)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
+Check 16
 Check that date of follow-up is 30 or more days after hospital admission
 }

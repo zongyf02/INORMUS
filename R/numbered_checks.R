@@ -377,7 +377,8 @@ check_openclos_NA <- function(form) {
 #' @import tidyverse
 #' @export
 check_ihunits_ipunits <- function(form){
-  problems <- form %>% mutate(
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,
     ihtime = if_else(ihunits == 1, ihhrs,
                      if_else(ihunits == 2, ihdays * 24, as.numeric(NA))),
     iprep1_time = if_else(ipunits1 == 1, ipreph1,
@@ -387,11 +388,10 @@ check_ihunits_ipunits <- function(form){
     iprep3_time = if_else(ipunits3 == 1, ipreph3,
                           if_else(ipunits3 == 2, iprepd3 * 24, as.numeric(NA))),
     comment = "The time difference between the time from injury to hsp admission and the time from injury to prep solution in ER should be within +/- 24 hr range") %>% 
-    filter(ptstatus == 1 & (
-      abs(ihhrs - iprep1_time) >= 24 | 
-        abs(ihhrs - iprep2_time) >= 24 |
-        abs(ihhrs - iprep3_time) >= 24)) %>% 
-    select(region, site, studyid, ptinit, ptstatus, ihtime, iprep1_time, iprep2_time, iprep3_time)
+    filter(ptstatus == 1 & 
+             (abs(ihtime - iprep1_time) > 24 | 
+                abs(ihtime - iprep2_time) > 24 |
+                abs(ihtime - iprep3_time) > 24))
   return(problems)
 }
 
@@ -428,5 +428,27 @@ check_condate_hdcdate_dthdate <- function(form){
     filter(ptstatus == 1 &
              ((dchosp == 1 & parse_dmY(condate) > parse_dmY(hdcdate)) |
              (deceased == 1 & parse_dmY(condate) > parse_dmY(dthdate))))
+  return(problems)
+}
+
+#' Check 22
+#' Check that any omplication reported is within 30 days of hospital admission
+#' 
+#' @param form a dataframe containing form1.1, form4.1, form7.1, form7.2, form7.3, form7.4
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_dxdate_hspdate <- function(form){
+  problems <- form %>% transmute(
+    region, site, studyid, ptinit, ptstatus,
+    hspdate, `dxdate~1`, `dxdate~2`, `dxdate~3`, `dxdate~4`,
+    date_diff1 = difftime(parse_dmY(`dxdate~1`), parse_dmY(hspdate), units = "days"),
+    date_diff2 = difftime(parse_dmY(`dxdate~2`), parse_dmY(hspdate), units = "days"),
+    date_diff3 = difftime(parse_dmY(`dxdate~3`), parse_dmY(hspdate), units = "days"),
+    date_diff4 = difftime(parse_dmY(`dxdate~4`), parse_dmY(hspdate), units = "days"),
+    comment = "Any complication reported should be within 30 days of hospital admission") %>%
+    filter(ptstatus == 1 & 
+             (date_diff1 > 30 | date_diff2 > 30 | date_diff3 > 30| date_diff4 > 30))
   return(problems)
 }
