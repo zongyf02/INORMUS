@@ -1,4 +1,4 @@
-# Last Updated: August 21, 2021
+# Last Updated: Sept 2, 2021
 # Run this if you want to restart R
 # .rs.restartR()
 
@@ -27,7 +27,7 @@ library(tidyverse)
 library(INORMUS)
 
 # Change if needed
-setwd("C:\\Users\\Yifan Zong\\Documents\\INORMUSData")
+setwd("../Data")
 
 # Read in all forms
 form1.1 <- read_form1.1("1.1.csv")
@@ -119,6 +119,9 @@ form <- merge_forms(forms)
 
 # Select the precovid forms
 precovid_form <- filter_precovid(form)
+
+# Select the forms with hip fractures
+hip_only_form <- filter_hip(form)
 
 # View the structure of all columns of form
 str(form, list.len = ncol(form))

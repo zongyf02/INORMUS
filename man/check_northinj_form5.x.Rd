@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_northinj_form5.x}
 \alias{check_northinj_form5.x}
-\title{Check that the number of orthopedic injuries stated on form 3.2 is consistent 
+\title{Check 4
+Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 with the number of sets of injury forms completed}
 \usage{
 check_northinj_form5.x(form)
@@ -14,6 +15,7 @@ check_northinj_form5.x(form)
 a dataframe containing problematic entries
 }
 \description{
+Check 4
 Check that the number of orthopedic injuries stated on form 3.2 is consistent 
 with the number of sets of injury forms completed
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_openclos_iandd}
 \alias{check_openclos_iandd}
-\title{Check that the response to I&D is consistent with whether the fracture is open or closed 
+\title{Check 11
+Check that the response to I&D is consistent with whether the fracture is open or closed 
 in one set of form5.x are related}
 \usage{
 check_openclos_iandd(form, rep)
@@ -16,6 +17,7 @@ check_openclos_iandd(form, rep)
 a dataframe containing problematic entries with relevant columns
 }
 \description{
+Check 11
 Check that the response to I&D is consistent with whether the fracture is open or closed 
 in one set of form5.x are related
 }

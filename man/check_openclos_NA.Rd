@@ -2,7 +2,8 @@
 % Please edit documentation in R/numbered_checks.R
 \name{check_openclos_NA}
 \alias{check_openclos_NA}
-\title{Check that closed fracture injuries have have NA selected in form5.14}
+\title{Check 13
+Check that closed fracture injuries have have NA selected in form5.14}
 \usage{
 check_openclos_NA(form)
 }
@@ -13,5 +14,6 @@ check_openclos_NA(form)
 a dataframe containing problematic entries
 }
 \description{
+Check 13
 Check that closed fracture injuries have have NA selected in form5.14
 }
