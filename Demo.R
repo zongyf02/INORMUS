@@ -368,6 +368,10 @@ problems_formdate_ocrecyes <- check_formdate_ocrecyes(form)
 #' Check 17
 problems_condate_hdcdate_dthdate <- check_condate_hdcdate_dthdate(form)
 
+#' Check 22
+#' Check that any omplication reported is within 30 days of hospital admission
+problems_dxdate_hspdate <- check_dxdate_hspdate(form)
+
 # Check for invalid/missing entries in form1.1
 problems_invalid_form1.1 <- check_invalid_form1.1(form)
 # Check for invalid/missing entries in form2.1
