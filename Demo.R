@@ -380,6 +380,10 @@ problems_invalid_form3.1 <- check_invalid_form3.1(form, checkIntent = FALSE)
 problems_invalid_form3.2 <- check_invalid_form3.2(form)
 # Check for invalid/missing entries in form4.1
 problems_invalid_form4.1 <- check_invalid_form4.1(form)
+# Check for invalid/missing entries in form5.1
+problems_invalid_form5.1x <- check_invalid_form5.1x(form, 1)
+problems_invalid_form5.1x <- check_invalid_form5.1x(form, 2)
+problems_invalid_form5.1x <- check_invalid_form5.1x(form, 3)
 # Check for invalid/missing entries in form5.2
 problems_invalid_form5.2x <- check_invalid_form5.2x(form, 1)
 problems_invalid_form5.2x <- check_invalid_form5.2x(form, 2)
