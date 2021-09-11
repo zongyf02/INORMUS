@@ -430,3 +430,20 @@ check_condate_hdcdate_dthdate <- function(form){
              (deceased == 1 & parse_dmY(condate) > parse_dmY(dthdate))))
   return(problems)
 }
+
+#' Check that If the patient was discharged more than 30 days post-hospitalization, the discharge date should not be reported on form 6.1
+#' @param form dataframe containing form6.1
+#' @return a dataframe containing problematic entries
+#' 
+#' @import tidyverse
+#' @export
+check_18 <- function(form) {
+  problems <- form %>%
+    transmute(
+      region, site, studyid, ptinit, ptstatus, stillhsp, dchosp, hdcdate,
+      comment = "If the patient was discharged more than 30 days post-hospitalization, the discharge date should not be reported on form 6.1") %>%
+    filter((stillhsp == 1 & hdcdate != "N"))
+  
+  return(problems)
+}
+
