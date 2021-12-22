@@ -133,6 +133,12 @@ str(form, list.len = ncol(form))
 # Create a table with region, site, studyid, and sex columns
 select(form, c(region, site, studyid, sex))
 
+# Create a table with all columns between region and ptinit
+select(form, region:ptinit)
+
+# Create a table without columns between region and ptinit
+select(form, !(region:ptinit))
+
 # Create a table with columns starting with "pneu"
 select(form, starts_with("pneu"))
 
@@ -140,6 +146,9 @@ select(form, starts_with("pneu"))
 
 # Create a table with only male patients
 filter(form, sex == 1)
+
+# Create a table with only male patients who are participating
+filter(form, sex == 1 & ptstatus == 1)
 
 # Create a table with only admitted patients, grouped by sex
 filter(form, ptstatus == 1) %>%
